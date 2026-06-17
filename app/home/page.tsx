@@ -1,8 +1,29 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { homeGallery, homePageMeta } from "@/lib/content/home";
 import { site } from "@/lib/content/site";
+import { social } from "@/lib/content/social";
+
+async function fetchOEmbed(endpoint: string): Promise<string | null> {
+  try {
+    const res = await fetch(endpoint, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    const data = await res.json() as { html?: string };
+    return data.html ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function instagramOEmbedUrl(postUrl: string) {
+  return `https://graph.facebook.com/v21.0/instagram_oembed?url=${encodeURIComponent(postUrl)}&omitscript=true`;
+}
+
+function facebookOEmbedUrl(postUrl: string) {
+  return `https://graph.facebook.com/v21.0/oembed_post?url=${encodeURIComponent(postUrl)}&omitscript=true`;
+}
 
 export const metadata: Metadata = {
   title: homePageMeta.title,
@@ -13,8 +34,15 @@ export const metadata: Metadata = {
 
 
 
-export default function Home() {
+export default async function Home() {
   const galleryImages = homeGallery;
+  const [igEmbeds, fbEmbeds] = await Promise.all([
+    Promise.all(social.instagramPosts.map((u) => fetchOEmbed(instagramOEmbedUrl(u)))),
+    Promise.all(social.facebookPosts.map((u) => fetchOEmbed(facebookOEmbedUrl(u)))),
+  ]);
+  const instagramEmbeds = igEmbeds.filter((h): h is string => h !== null);
+  const facebookEmbeds = fbEmbeds.filter((h): h is string => h !== null);
+  const hasSocial = instagramEmbeds.length > 0 || facebookEmbeds.length > 0;
 
   return (
     <div className="bg-white text-[#1a1a1a]">
@@ -133,6 +161,40 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {hasSocial && (
+        <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
+          <h2 className="text-center text-3xl font-semibold md:text-5xl">{social.heading}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-[#56585e]">{social.description}</p>
+          <div className="mt-12 grid gap-10 md:grid-cols-2">
+            {instagramEmbeds.length > 0 && (
+              <div className="flex flex-col items-center gap-6">
+                {instagramEmbeds.map((html, i) => (
+                  <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
+                ))}
+                <a href={social.instagramUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
+                  {social.instagramHandle}
+                </a>
+              </div>
+            )}
+            {facebookEmbeds.length > 0 && (
+              <div className="flex flex-col items-center gap-6">
+                <div id="fb-root" />
+                {facebookEmbeds.map((html, i) => (
+                  <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
+                ))}
+                <a href={social.facebookUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
+                  {social.facebookHandle}
+                </a>
+              </div>
+            )}
+          </div>
+          <Script src="https://www.instagram.com/embed.js" strategy="lazyOnload" />
+          {facebookEmbeds.length > 0 && (
+            <Script src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0" strategy="lazyOnload" />
+          )}
+        </section>
+      )}
     </div>
   );
 }

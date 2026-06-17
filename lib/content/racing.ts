@@ -21,7 +21,7 @@ export const langtownLegacy = [
 export const racers = [
   {
     name: "Bobby Langin",
-    image: "/images/athletes/bobby-langin.jpg",
+    image: "/images/coaches/bobby-langin.jpg",
     bio: "Bobby has an undeniable passion for two wheels. Growing up in a home with a backyard mini bike track and a father who raced BMX professionally, it was no surprise he started racing bicycles at just three years old and motorcycles by four. Racing motocross and various forms of bicycles gave Bobby the opportunity to travel across North America, competing against some of the best riders in the world. A true student of the sport, he is constantly expanding his knowledge to refine his training methods and techniques, both on and off the bike.",
   },
   {
