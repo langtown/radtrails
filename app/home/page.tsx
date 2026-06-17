@@ -55,7 +55,7 @@ export default function Home() {
 
         <div className="mt-20 grid items-center gap-10 md:grid-cols-2">
           <div className="relative min-h-[320px] overflow-hidden rounded-lg md:min-h-[440px]">
-            <Image src="/images/home/joe-and-mia.jpg" alt="Ride and Develop community members" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" />
+            <Image src="/images/home/gallery/joe-and-mia.jpg" alt="Ride and Develop community members" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" />
           </div>
           <p className="text-lg leading-relaxed text-[#56585e]">
             Ride and Develop started because we know what a bike can do—turn a tough day around, teach resilience when you crash and get back up, and connect people who might never meet otherwise. We empower stronger minds and capable riders by racing mountain bikes, giving back through trail service, sharing outdoor knowledge, and building a welcoming community where everyone belongs.
@@ -105,7 +105,7 @@ export default function Home() {
           </article>
           <article className="grid gap-5">
             <div className="relative min-h-80 overflow-hidden rounded-lg">
-              <Image src="/images/home/kern.jpg" alt="Community engagement through riding" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-center" />
+              <Image src="/images/home/gallery/kern.jpg" alt="Community engagement through riding" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-center" />
             </div>
             <h3 className="text-xl font-semibold">Community Engagement</h3>
             <p className="leading-relaxed text-[#56585e]">

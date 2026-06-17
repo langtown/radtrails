@@ -30,7 +30,7 @@ export default function RacingPage() {
 
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:grid-cols-[0.8fr_1.2fr] md:px-8">
         <div className="relative min-h-[460px] overflow-hidden rounded-lg bg-[#dadce0]">
-          <Image src={featured.image} alt={featured.name} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-contain object-center" />
+          <Image src={featured.image} alt={featured.name} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-top" />
         </div>
         <div className="flex flex-col justify-center">
           <h2 className="text-4xl font-semibold md:text-6xl">{featured.name}</h2>
@@ -51,7 +51,7 @@ export default function RacingPage() {
               <article key={racer.name} className="overflow-hidden rounded-lg bg-white shadow-sm">
                 <div className="relative min-h-72 bg-[#dadce0]">
                   {racer.image ? (
-                    <Image src={racer.image} alt={racer.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-contain object-center" />
+                    <Image src={racer.image} alt={racer.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
                   ) : (
                     <div className="h-full min-h-72 w-full bg-[#dadce0]" aria-label={`${racer.name} photo placeholder`} />
                   )}

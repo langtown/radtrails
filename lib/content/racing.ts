@@ -41,7 +41,7 @@ export const racers = [
   },
   {
     name: "Joe Morris",
-    image: "/images/home/joe-and-mia.jpg",
+    image: "/images/home/gallery/joe-and-mia.jpg",
     bio: "He has been riding mountain bikes on and off for over 30 years but became more consistent in 2007. In 2018, he became a NICA coach for a high school cross-country racing team, a role he continued for the next five years. The following year, he competed in two local enduros, placing in the top five in both. He repeated these races in 2020 with the same top-five results. After the pandemic, he returned to the same enduro races in 2023, securing 2nd overall in the Team Big Bear Kenda Cup series in the Master 60+ class. Due to injury, he was only able to race twice in 2024, earning a 1st-place finish at a Team Big Bear Kenda Cup enduro and a 2nd-place finish at the California Enduro Series China Peak enduro. For the 2025 season, he plans to compete in all Team Big Bear Kenda Cup Enduro races and the majority of the California Enduro Series.",
   },
   {
