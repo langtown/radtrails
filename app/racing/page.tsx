@@ -18,7 +18,7 @@ export default function RacingPage() {
   return (
     <div className="bg-white text-[#1a1a1a]">
       <section className="relative min-h-[620px] overflow-hidden">
-        <Image src="/images/athletes/bobby-langin.jpg" alt="Langtown Racing Academy team" fill priority sizes="100vw" className="object-cover object-center" />
+        <Image src="/images/athletes/chinapeak-team-2024.jpg" alt="Langtown Racing Academy team" fill priority sizes="100vw" className="object-cover object-center" />
         <div className="absolute inset-0 bg-black/35" />
         <div className="relative mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 md:px-8">
           <div className="max-w-3xl text-white">
