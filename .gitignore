@@ -15,6 +15,7 @@
 
 # next.js
 .open-next/**
+.wrangler/**
 /.next/
 /out/
 
