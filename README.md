@@ -43,3 +43,4 @@ BASE_URL=http://localhost:3000 ./test_pages.sh
 ## Deployment
 
 Deploy through Vercel using the standard Next.js project detection. Configure both `radtrails.org` and `www.radtrails.org` in Vercel before DNS cutover.
+
