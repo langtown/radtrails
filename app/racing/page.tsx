@@ -51,7 +51,14 @@ export default function RacingPage() {
               <article key={racer.name} className="overflow-hidden rounded-lg bg-white shadow-sm">
                 <div className="relative min-h-72 bg-[#dadce0]">
                   {racer.image ? (
-                    <Image src={racer.image} alt={racer.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
+                    <Image
+                      src={racer.image}
+                      alt={racer.name}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                      style={{ objectPosition: racer.imagePosition ?? "center top" }}
+                    />
                   ) : (
                     <div className="h-full min-h-72 w-full bg-[#dadce0]" aria-label={`${racer.name} photo placeholder`} />
                   )}

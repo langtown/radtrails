@@ -32,6 +32,7 @@ export const racers = [
   {
     name: "Beatrice Blackburn",
     image: "/images/athletes/bebe-blackburn.jpg",
+    imagePosition: "center 32%",
     bio: "I've been riding since I was 4 or 5 years old but started racing at 12. This will be my third year of racing. Until recently, I only competed in SoCal League XC races, but earlier this year, I began participating in other events. I placed on the podium in two of the three SoCal League races I entered and also earned podium finishes in both Rim Nordic XC races I competed in.",
   },
   {
@@ -61,17 +62,19 @@ export const racers = [
   },
   {
     name: "Josh Abugow",
-    image: "",
+    image: "/images/logo.png",
     bio: "Josh Abugow is a high school student at Royal High School, enrolled in Advanced Placement classes with a 4.87 GPA. Outside of school, he works as a host at a local Italian restaurant, though he is more often found doing what he loves most - riding bikes and exploring the outdoors. He plans to attend San Diego State University to pursue a degree in biopsychology while competing in bike races at both the collegiate and national levels.",
   },
   {
     name: "Matt Bradley",
     image: "/images/athletes/matt.jpg",
+    imagePosition: "center 18%",
     bio: "Matt is a father of three children, a husband to an incredible wife that supports his need to be active, a commercial property manager, a NICA coach, and amateur bicycle mechanic. When not riding bikes or working, Matt spends his time with his family; investing in their activities and sports.",
   },
   {
     name: "Kyle Johnson",
     image: "/images/athletes/kyle-johnson-podium.jpeg",
+    imagePosition: "center 30%",
     bio: "Kyle is 16 and fell in love with mountain biking at 9 years old and racing at 10. I grew up riding in the Santa Cruz Mountains with my dad. It's been a huge part of my life and doing it with friends makes it even better. Joining the local team in Santa Cruz really elevated my riding; that's when I competed in my first race, the Sea Otter Classic. It set off my passion for racing my bike. A few years later, we moved to Southern California. I was unsure how it would affect my riding. Then I joined this team. Since then, I've seen massive improvements in my skills, fitness, and confidence on gnarly trails. That's not the only thing that improved, however, I raced many races in the California Enduro Series and did well there. The team atmosphere at the races is amazing! I plan to continue having fun on the trails with my friends, and looking forward to the races!",
   },
   {
@@ -87,11 +90,13 @@ export const racers = [
   {
     name: "Sullivan Hartman",
     image: "/images/athletes/sullivan-hartman.jpg",
+    imagePosition: "center 44%",
     bio: "Sullivan is a 15-year-old from Thousand Oaks, California, who has been riding bikes for most of his life. What started as a fun way to explore the outdoors with friends turned into a passion for mountain biking, especially during the COVID-19 pandemic. What was once just an escape into nature soon became a lifestyle, with daily rides after online school helping to sharpen his skills. His racing journey began at age 11, though at the time, he was more focused on tackling the most challenging terrain in his area. In his first race, he crashed on the final stage and injured his arm but still managed to reach the podium. That experience ignited a love for racing - pushing his limits, charging downhill as fast as possible, and striving to be the fastest on the course.",
   },
   {
     name: "Tyler Lawson",
     image: "/images/athletes/tyler.jpeg",
+    imagePosition: "center 22%",
     bio: "Tyler is a 15-year-old mountain bike racer who began his cycling journey in BMX, competing for about four years before transitioning to mountain biking in November of last year. He joined the Newbury Park Mountain Bike Team and quickly found success in cross-country racing, earning a podium finish in every race during the season. More recently, he developed an interest in enduro racing and now aims to compete in both cross-country and enduro events throughout the season.",
   },
 ];
