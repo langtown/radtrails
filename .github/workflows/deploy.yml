@@ -25,10 +25,6 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         env:
-          CF_API_TOKEN: ${{ vars.CLOUDFLARE_API_TOKEN }}
-          CF_ACCOUNT_ID: 857be0c1d837f7bbc6e6ccc212485d13
-        run: |
-          export CLOUDFLARE_API_TOKEN="$CF_API_TOKEN"
-          export CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID"
-          echo "Token length: ${#CLOUDFLARE_API_TOKEN}"
-          npx wrangler deploy .open-next/worker.js --name=radtrails
+          CLOUDFLARE_API_TOKEN: ${{ vars.CLOUDFLARE_API_TOKEN_TEST }}
+          CLOUDFLARE_ACCOUNT_ID: 857be0c1d837f7bbc6e6ccc212485d13
+        run: npx wrangler deploy .open-next/worker.js --name=radtrails
