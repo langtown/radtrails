@@ -75,3 +75,14 @@ Cloudflare deploy requires OpenNext artifacts:
 - `.open-next/worker.js`
 
 Plain `next build` does not create these. That is why `npm run build` routes through `scripts/build.mjs` and OpenNext. Do not simplify it back to `next build` unless the Cloudflare deploy settings are changed at the same time.
+
+## Pull Request Process
+
+1. Create a feature branch: `git checkout -b feature/description`
+2. Make your changes
+3. Commit with a clear message: `git commit -m "Description of change"`
+4. Push to origin: `git push -u origin feature/description`
+5. Create a PR on GitHub via the link shown after push, or at `github.com/langtown/radtrails/pull/new/feature/description`
+6. Use force push only if amending the commit: `git push -f origin branch-name`
+
+No GitHub CLI token is configured in this environment, so PRs must be created manually through the GitHub web interface.
