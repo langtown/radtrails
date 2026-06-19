@@ -27,4 +27,6 @@ jobs:
         run: |
           export CLOUDFLARE_API_TOKEN="${{ vars.CLOUDFLARE_API_TOKEN }}"
           export CLOUDFLARE_ACCOUNT_ID="857be0c1d837f7bbc6e6ccc212485d13"
+          echo "Token: ${CLOUDFLARE_API_TOKEN:0:10}..." # Print first 10 chars
+          echo "Token length: ${#CLOUDFLARE_API_TOKEN}"
           npx wrangler deploy .open-next/worker.js --name=radtrails
