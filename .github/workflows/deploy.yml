@@ -23,13 +23,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         env:
           CLOUDFLARE_API_TOKEN: ${{ vars.CLOUDFLARE_API_TOKEN_TEST }}
           CLOUDFLARE_ACCOUNT_ID: 857be0c1d837f7bbc6e6ccc212485d13
-        run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "ERROR: CLOUDFLARE_API_TOKEN is empty. Check repo secrets."
-            exit 1
-          fi
-          npx wrangler deploy .open-next/worker.js --name=radtrails
+        run: npx wrangler deploy .open-next/worker.js --name=radtrails
