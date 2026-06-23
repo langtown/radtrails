@@ -86,3 +86,7 @@ Plain `next build` does not create these. That is why `npm run build` routes thr
 6. Use force push only if amending the commit: `git push -f origin branch-name`
 
 No GitHub CLI token is configured in this environment, so PRs must be created manually through the GitHub web interface.
+
+## Site Manager Skill
+
+For step-by-step guidance on content changes, image sizing, section additions, and Playwright testing, see `.claude/skills/radtrails.md`.
