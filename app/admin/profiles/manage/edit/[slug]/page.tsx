@@ -15,7 +15,7 @@ export default function ProfileEdit({ params }: { params: { slug: string } }) {
       try {
         const res = await fetch(`/api/admin/profiles/${slug}`);
         if (!res.ok) throw new Error("not found");
-        const body = await res.json();
+        const body = (await res.json()) as { profile?: any };
         setProfile(body.profile);
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
