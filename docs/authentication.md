@@ -307,6 +307,33 @@ and needs its own registered URI or sign-in will fail there.
 
 ---
 
+## Racing team publication and caching
+
+The Racing page keeps every checked-in entry from `lib/content/racing.ts` and appends newly approved
+profiles holding the `theteam` persona. A name already present in the checked-in content is not added
+again. Only the immutable snapshot in `published_profiles` is eligible; pending and rejected content
+is never rendered, and an edit to an approved profile leaves the last approved snapshot visible until
+an admin approves the edit.
+
+`/racing` reads the shared public-profile data function directly, so it does not make an HTTP request
+to `/api/profiles`. The function uses Cloudflare's Cache API with the same origin-and-persona key as
+the public endpoint. A warm Cloudflare location therefore renders from cached JSON without querying
+D1. The edge entry has a five-minute TTL as a safety bound.
+
+After a review succeeds, the admin route waits for the profile snapshot to be published, deletes the
+team-list and profile cache keys for both the current preview origin and `radtrails.org`, and then
+returns success. The next Racing request in that Cloudflare location reloads the approved snapshot
+from D1 and caches it. Cloudflare Cache API entries are local to a data center, so another location
+that already cached the old list can retain it until its five-minute TTL expires. Achieving instant
+worldwide purge would require configuring Cloudflare's authenticated global cache-purge API or a
+persistent OpenNext cache/tag-cache stack; neither is required for this low-traffic site.
+
+Approved profile images use content-hash URLs and remain cached for one year because a changed image
+gets a new URL. Populated social links are rendered on the team card with safe external-link
+attributes.
+
+---
+
 ## Security properties
 
 | Threat | What stops it |

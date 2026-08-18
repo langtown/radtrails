@@ -11,9 +11,9 @@ export const PUBLIC_PROFILE_PERSONAS = [
 ] as const;
 
 export const PUBLIC_PROFILE_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=86400, must-revalidate";
+	"public, max-age=0, s-maxage=300, must-revalidate";
 
-type PublicPersona = (typeof PUBLIC_PROFILE_PERSONAS)[number];
+export type PublicPersona = (typeof PUBLIC_PROFILE_PERSONAS)[number];
 
 export type PublicProfile = {
   slug: string;
@@ -138,6 +138,67 @@ function listPersona(request: Request): PublicPersona | null {
   return isPublicPersona(persona) ? persona : null;
 }
 
+async function listPublicProfiles(
+	db: D1Database,
+	persona: PublicPersona,
+): Promise<PublicProfile[]> {
+	const { results } = await db
+		.prepare(
+			`SELECT pp.slug, pp.display_name, pp.bio, pp.image_key,
+                pp.image_position, pp.social_links
+         FROM published_profiles pp
+         INNER JOIN user_personas up ON up.user_id = pp.user_id
+         WHERE up.persona_key = ?
+         ORDER BY pp.display_name, pp.slug`,
+		)
+		.bind(persona)
+		.all<PublishedProfileRow>();
+
+	return results.map(publicProfile);
+}
+
+async function cachedPublicProfileListResponse(
+	db: D1Database,
+	request: Request,
+	persona: PublicPersona,
+	cache?: Cache,
+	waitUntil?: (promise: Promise<unknown>) => void,
+): Promise<Response> {
+	const origin = new URL(request.url).origin;
+	const key = cacheKey(origin, `/api/profiles?persona=${persona}`);
+	return cachedOrLoad(
+		request,
+		key,
+		cache,
+		async () => cacheableJson({ profiles: await listPublicProfiles(db, persona) }),
+		waitUntil,
+	);
+}
+
+/**
+ * Reads a public persona list through the same edge cache as the public API.
+ * Server pages use this directly, avoiding a public HTTP subrequest.
+ */
+export async function getCachedPublicProfiles(
+	db: D1Database,
+	originOrUrl: string,
+	persona: PublicPersona,
+	cache?: Cache,
+	waitUntil?: (promise: Promise<unknown>) => void,
+): Promise<PublicProfile[]> {
+	const origin = new URL(originOrUrl).origin;
+	const request = cacheKey(origin, `/api/profiles?persona=${persona}`);
+	const response = await cachedPublicProfileListResponse(
+		db,
+		request,
+		persona,
+		cache,
+		waitUntil,
+	);
+	const body = (await response.json()) as { profiles: PublicProfile[] };
+	return body.profiles;
+}
+
 /** Public GET /api/profiles, filtered by one explicitly public persona. */
 export async function handleListPublicProfiles(
   db: D1Database,
@@ -150,23 +211,13 @@ export async function handleListPublicProfiles(
     return noStoreJson({ error: "unknown public persona" }, 400);
   }
 
-  const origin = new URL(request.url).origin;
-  const key = cacheKey(origin, `/api/profiles?persona=${persona}`);
-  return cachedOrLoad(request, key, cache, async () => {
-    const { results } = await db
-      .prepare(
-        `SELECT pp.slug, pp.display_name, pp.bio, pp.image_key,
-                pp.image_position, pp.social_links
-         FROM published_profiles pp
-         INNER JOIN user_personas up ON up.user_id = pp.user_id
-         WHERE up.persona_key = ?
-         ORDER BY pp.display_name, pp.slug`,
-      )
-      .bind(persona)
-      .all<PublishedProfileRow>();
-
-    return cacheableJson({ profiles: results.map(publicProfile) });
-  }, waitUntil);
+	return cachedPublicProfileListResponse(
+		db,
+		request,
+		persona,
+		cache,
+		waitUntil,
+	);
 }
 
 function validSlug(slug: string): boolean {
@@ -226,20 +277,27 @@ export function getDefaultWorkerCache(): Cache | undefined {
 
 /** Purges every persona list and, when known, the profile's canonical URL. */
 export async function invalidatePublicProfileCache(
-  cache: Cache | undefined,
-  originOrUrl: string,
-  slug?: string | null,
+	cache: Cache | undefined,
+	originOrUrls: string | readonly string[],
+	slug?: string | null,
 ): Promise<void> {
-  if (!cache) return;
-  const origin = new URL(originOrUrl).origin;
-  const keys = PUBLIC_PROFILE_PERSONAS.map((persona) =>
-    cacheKey(origin, `/api/profiles?persona=${persona}`),
-  );
-  if (slug && validSlug(slug)) {
-    keys.push(cacheKey(origin, `/api/profiles/${slug}`));
-  }
+	if (!cache) return;
+	const inputs = typeof originOrUrls === "string" ? [originOrUrls] : originOrUrls;
+	const origins = new Set(inputs.map((value) => new URL(value).origin));
+	const keys: Request[] = [];
 
-  await Promise.all(keys.map((key) => cache.delete(key)));
+	for (const origin of origins) {
+		keys.push(
+			...PUBLIC_PROFILE_PERSONAS.map((persona) =>
+				cacheKey(origin, `/api/profiles?persona=${persona}`),
+			),
+		);
+		if (slug && validSlug(slug)) {
+			keys.push(cacheKey(origin, `/api/profiles/${slug}`));
+		}
+	}
+
+	await Promise.all(keys.map((key) => cache.delete(key)));
 }
 
 export async function findProfileSlug(

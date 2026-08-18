@@ -4,6 +4,7 @@ import { beforeEach, expect, test } from "vitest";
 import { applyPersonaChange } from "@/lib/persona-admin";
 import {
   PUBLIC_PROFILE_CACHE_CONTROL,
+  getCachedPublicProfiles,
   handleGetPublicProfile,
   handleListPublicProfiles,
   invalidatePublicProfileCache,
@@ -210,6 +211,12 @@ test("cache hits avoid D1 and matching If-None-Match returns 304", async () => {
     new Request(url, { headers: { "If-None-Match": etag! } }),
     cache.asCache(),
   );
+  const serverPageProfiles = await getCachedPublicProfiles(
+    bomb,
+    "https://radtrails.org/racing",
+    "theteam",
+    cache.asCache(),
+  );
 
   expect(first.headers.get("X-Radtrails-Cache")).toBe("MISS");
   expect(second.headers.get("X-Radtrails-Cache")).toBe("HIT");
@@ -217,6 +224,7 @@ test("cache hits avoid D1 and matching If-None-Match returns 304", async () => {
   expect(etag).toMatch(/^"[0-9a-f]{64}"$/);
   expect(conditional.status).toBe(304);
   expect(conditional.headers.get("ETag")).toBe(etag);
+  expect(serverPageProfiles).toMatchObject([{ name: "Cached Rider" }]);
   expect(cache.puts).toBe(1);
 });
 
@@ -256,20 +264,25 @@ test("edits keep the last approved snapshot public until the next approval", asy
 test("explicit invalidation removes list and slug cache entries", async () => {
   const cache = new MemoryCache();
   const cacheApi = cache.asCache();
-  const origin = "https://radtrails.org";
-  for (const url of [
-    `${origin}/api/profiles?persona=theteam`,
-    `${origin}/api/profiles?persona=coach`,
-    `${origin}/api/profiles?persona=alumni`,
-    `${origin}/api/profiles/cached-rider`,
-  ]) {
-    await cacheApi.put(new Request(url), new Response("cached"));
+  const origins = [
+    "https://radtrails.org",
+    "https://preview-radtrails.langtown.workers.dev",
+  ];
+  for (const origin of origins) {
+    for (const url of [
+      `${origin}/api/profiles?persona=theteam`,
+      `${origin}/api/profiles?persona=coach`,
+      `${origin}/api/profiles?persona=alumni`,
+      `${origin}/api/profiles/cached-rider`,
+    ]) {
+      await cacheApi.put(new Request(url), new Response("cached"));
+    }
   }
 
-  await invalidatePublicProfileCache(cacheApi, origin, "cached-rider");
+  await invalidatePublicProfileCache(cacheApi, origins, "cached-rider");
 
   expect(cache.entries.size).toBe(0);
-  expect(cache.deletes).toBe(4);
+  expect(cache.deletes).toBe(8);
 });
 
 test("public persona grants and revocations invalidate visibility immediately", async () => {

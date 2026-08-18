@@ -5,6 +5,7 @@ import {
   secureApiResponse,
 } from "@/lib/api-security";
 import { getAppRuntime } from "@/lib/db";
+import { site } from "@/lib/content/site";
 import { PUBLIC_PROFILES_CACHE_TAG } from "@/lib/profile-cache";
 import { handleReviewProfile } from "@/lib/profile-review";
 import {
@@ -34,7 +35,7 @@ export async function POST(
     return handleReviewProfile(db, request, profileUserId, async () => {
       await invalidatePublicProfileCache(
         getDefaultWorkerCache(),
-        request.url,
+        [request.url, site.domain],
         await findProfileSlug(db, profileUserId),
       );
       revalidateTag(PUBLIC_PROFILES_CACHE_TAG, { expire: 0 });

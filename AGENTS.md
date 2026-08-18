@@ -64,6 +64,8 @@ Racing athlete cards use `object-cover` plus an optional `imagePosition` field i
 
 - The first entry in `racers` is the featured profile.
 - Remaining racers are sorted alphabetically in `app/racing/page.tsx`.
+- Newly approved `theteam` profiles are appended at request time through the shared public-profile
+  Cache API data path; checked-in names win to prevent duplicate cards.
 - Josh Abugow currently uses `/images/logo.png` because no rider photo is available.
 - If adding a racer, include `name`, `image`, `bio`, and optionally `imagePosition`.
 

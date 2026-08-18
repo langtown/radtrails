@@ -5,6 +5,7 @@ import {
   secureApiResponse,
 } from "@/lib/api-security";
 import { getAppRuntime } from "@/lib/db";
+import { site } from "@/lib/content/site";
 import {
   PersonaChangeError,
   applyPersonaChange,
@@ -77,7 +78,7 @@ async function changePersona(
       onPublicVisibilityChanged: async (changedUserId) => {
         await invalidatePublicProfileCache(
           getDefaultWorkerCache(),
-          request.url,
+          [request.url, site.domain],
           await findProfileSlug(db, changedUserId),
         );
         revalidateTag(PUBLIC_PROFILES_CACHE_TAG, { expire: 0 });
