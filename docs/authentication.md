@@ -193,19 +193,22 @@ defines `npm run cf:preview:upload`, which runs:
 wrangler versions upload --preview-alias preview
 ```
 
-Configure **Workers & Pages → radtrails → Settings → Build** with these commands:
+Cloudflare Workers Builds can use its normal commands:
 
 | Setting | Command |
 |---|---|
 | Build command | `npm run build` |
-| Deploy command | `npm run cf:deploy` |
-| Non-production branch deploy command | `npm run cf:preview:upload` |
+| Deploy command | `npx wrangler deploy` |
+| Non-production branch deploy command | `npx wrangler versions upload` |
 
-A non-production build uploads a version without changing the production deployment, then assigns
-that version the stable alias `https://preview-radtrails.langtown.workers.dev`. Cloudflare also keeps
-the generated commit and branch preview URLs. The stable alias follows whichever build completes
-most recently. On `main`, `npm run cf:deploy` deploys production and then uploads the same built
-artifact with the alias; this intentionally makes the alias follow `main` after a merge.
+At the end of the outer OpenNext build, `scripts/build.mjs` detects Cloudflare's injected
+`WORKERS_CI=1` environment variable and runs `npm run cf:preview:upload`. Local builds and OpenNext's
+nested Next.js build skip the upload. No custom deploy command is required.
+
+The hook assigns the completed build the stable alias
+`https://preview-radtrails.langtown.workers.dev`. Cloudflare's normal deployment step also keeps the
+generated commit and branch preview URLs. The stable alias follows whichever build completes most
+recently, including `main` after a merge.
 
 The alias is another URL for a version of the production `radtrails` Worker, so it uses the same
 Worker secrets and the production D1 binding in `wrangler.jsonc`. Preview requests can therefore

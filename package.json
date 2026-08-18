@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "cf:build": "node scripts/build.mjs --cloudflare",
-    "cf:deploy": "opennextjs-cloudflare deploy && npm run cf:preview:upload",
+    "cf:deploy": "opennextjs-cloudflare deploy",
     "cf:preview:upload": "wrangler versions upload --preview-alias preview",
     "preview": "npm run cf:build && opennextjs-cloudflare preview",
     "deploy": "npm run cf:build && npm run cf:deploy",

@@ -102,21 +102,24 @@ In Cloudflare Workers Builds, use:
 npm run build
 ```
 
-as the build command. Use the package deployment command for the production branch:
+as the build command. The build wrapper detects Cloudflare's `WORKERS_CI=1` environment and runs
+`npm run cf:preview:upload` after the outer OpenNext build completes. Local builds and OpenNext's
+nested Next.js build do not upload anything.
+
+Cloudflare's default production deploy command can remain:
 
 ```bash
-npm run cf:deploy
+npx wrangler deploy
 ```
 
-For non-production branches, use:
+Its default non-production branch deploy command can also remain:
 
 ```bash
-npm run cf:preview:upload
+npx wrangler versions upload
 ```
 
-The non-production command uploads a preview without changing production and moves
-`preview-radtrails.langtown.workers.dev` to that version. The production command deploys the
-application and then uploads the same build with the preview alias.
+The build hook moves `preview-radtrails.langtown.workers.dev` to the completed build before
+Cloudflare runs the appropriate production or non-production deployment step.
 
 For local deployment, use:
 

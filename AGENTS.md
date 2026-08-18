@@ -16,7 +16,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cloudflare build: `npm run build` or `npm run cf:build`.
 - Plain Next.js build only: `npm run next:build`.
 - Local deploy: `npm run deploy`.
-- Cloudflare Workers Builds runs `npm run build` before `npm run cf:deploy` on `main`, or before `npm run cf:preview:upload` on non-production branches. `scripts/build.mjs` intentionally makes that default build produce OpenNext artifacts.
+- Cloudflare Workers Builds runs `npm run build` before its production or non-production deploy command. `scripts/build.mjs` makes that build produce OpenNext artifacts and, only when `WORKERS_CI=1`, uploads the completed build with the stable `preview` alias.
 
 ## App Structure
 
@@ -230,9 +230,10 @@ Cloudflare deploy requires OpenNext artifacts:
 
 Plain `next build` does not create these. That is why `npm run build` routes through `scripts/build.mjs` and OpenNext. Do not simplify it back to `next build` unless the Cloudflare deploy settings are changed at the same time.
 
-The production deploy script also uploads the completed build with the `preview` alias. Non-production
-branches only upload the aliased version, so they do not replace the active production deployment.
-Both flows update `preview-radtrails.langtown.workers.dev` to the most recently completed build.
+The outer build invokes `npm run cf:preview:upload` when Cloudflare injects `WORKERS_CI=1`; local and
+nested Next.js builds skip it. Cloudflare's default production and non-production deploy commands can
+remain unchanged. Every Workers Build updates `preview-radtrails.langtown.workers.dev` to its
+completed artifact.
 
 ## Pull Request Process
 

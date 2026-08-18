@@ -18,4 +18,28 @@ const result = spawnSync(command, args, {
 	stdio: "inherit",
 });
 
-process.exit(result.status ?? 1);
+if (result.status !== 0) {
+	process.exit(result.status ?? 1);
+}
+
+// Workers Builds runs the build and deploy phases separately. Upload the stable
+// alias after the outer OpenNext build so Cloudflare's default deploy commands
+// can remain unchanged. Local builds and OpenNext's nested Next.js build skip it.
+if (!runNextBuild && process.env.WORKERS_CI === "1") {
+	const previewArgs = ["run", "cf:preview:upload"];
+
+	// Lets CI behavior be exercised safely without creating a remote version.
+	if (process.env.RADTRAILS_PREVIEW_UPLOAD_DRY_RUN === "1") {
+		previewArgs.push("--", "--dry-run");
+	}
+
+	const previewResult = spawnSync("npm", previewArgs, {
+		env: process.env,
+		shell: process.platform === "win32",
+		stdio: "inherit",
+	});
+
+	process.exit(previewResult.status ?? 1);
+}
+
+process.exit(0);
