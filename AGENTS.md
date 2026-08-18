@@ -16,7 +16,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Cloudflare build: `npm run build` or `npm run cf:build`.
 - Plain Next.js build only: `npm run next:build`.
 - Local deploy: `npm run deploy`.
-- Cloudflare Workers Builds runs `npm run build` before its production or non-production deploy command. `scripts/build.mjs` makes that build produce OpenNext artifacts and, only when `WORKERS_CI=1`, uploads the completed build with the stable `preview` alias.
+- Cloudflare Workers Builds runs `npm run build` before its production or non-production deploy command. `scripts/build.mjs` makes that build produce OpenNext artifacts and, only when `WORKERS_CI=1`, applies pending production D1 migrations before uploading the completed build with the stable `preview` alias.
 
 ## App Structure
 

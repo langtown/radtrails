@@ -202,8 +202,9 @@ Cloudflare Workers Builds can use its normal commands:
 | Non-production branch deploy command | `npx wrangler versions upload` |
 
 At the end of the outer OpenNext build, `scripts/build.mjs` detects Cloudflare's injected
-`WORKERS_CI=1` environment variable and runs `npm run cf:preview:upload`. Local builds and OpenNext's
-nested Next.js build skip the upload. No custom deploy command is required.
+`WORKERS_CI=1` environment variable, runs `npm run db:migrate:remote`, and only after that succeeds
+runs `npm run cf:preview:upload`. Local builds and OpenNext's nested Next.js build skip both remote
+operations. No custom deploy command is required.
 
 The hook assigns the completed build the stable alias
 `https://preview-radtrails.langtown.workers.dev`. Cloudflare's normal deployment step also keeps the
@@ -215,6 +216,12 @@ Worker secrets and the production D1 binding in `wrangler.jsonc`. Preview reques
 read and write production users, profiles, sessions, personas, and images. Treat the preview URL as
 production access and do not share it broadly. No dedicated preview Worker, custom domain, GitHub
 Action, or GitHub Cloudflare token is required.
+
+The same sharing applies to schema: every successful Workers Build applies any pending checked-in
+migrations to production D1 before moving the alias. Wrangler tracks applied migrations, so builds
+with no pending migration are a no-op. A pull request migration must be backward-compatible with the
+currently deployed production Worker because the schema can arrive before that pull request is
+merged. If the migration fails, the stable alias is not updated.
 
 Register this exact Google OAuth redirect URI:
 

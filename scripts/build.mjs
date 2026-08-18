@@ -22,14 +22,27 @@ if (result.status !== 0) {
 	process.exit(result.status ?? 1);
 }
 
-// Workers Builds runs the build and deploy phases separately. Upload the stable
-// alias after the outer OpenNext build so Cloudflare's default deploy commands
-// can remain unchanged. Local builds and OpenNext's nested Next.js build skip it.
+// Workers Builds runs the build and deploy phases separately. Apply pending
+// schema changes before uploading the stable alias because that alias shares the
+// production D1 database. Local builds and OpenNext's nested Next.js build skip
+// both remote operations.
 if (!runNextBuild && process.env.WORKERS_CI === "1") {
+	const dryRun = process.env.RADTRAILS_PREVIEW_UPLOAD_DRY_RUN === "1";
+	const migrationScript = dryRun ? "db:migrate:local" : "db:migrate:remote";
+	const migrationResult = spawnSync("npm", ["run", migrationScript], {
+		env: process.env,
+		shell: process.platform === "win32",
+		stdio: "inherit",
+	});
+
+	if (migrationResult.status !== 0) {
+		process.exit(migrationResult.status ?? 1);
+	}
+
 	const previewArgs = ["run", "cf:preview:upload"];
 
-	// Lets CI behavior be exercised safely without creating a remote version.
-	if (process.env.RADTRAILS_PREVIEW_UPLOAD_DRY_RUN === "1") {
+	// Exercise the CI hook safely with local D1 and a dry-run version upload.
+	if (dryRun) {
 		previewArgs.push("--", "--dry-run");
 	}
 

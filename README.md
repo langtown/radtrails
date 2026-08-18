@@ -102,9 +102,10 @@ In Cloudflare Workers Builds, use:
 npm run build
 ```
 
-as the build command. The build wrapper detects Cloudflare's `WORKERS_CI=1` environment and runs
+as the build command. The build wrapper detects Cloudflare's `WORKERS_CI=1` environment, applies
+pending migrations to the production `radtrails-app` D1 database, and then runs
 `npm run cf:preview:upload` after the outer OpenNext build completes. Local builds and OpenNext's
-nested Next.js build do not upload anything.
+nested Next.js build do not perform either remote operation.
 
 Cloudflare's default production deploy command can remain:
 
@@ -119,7 +120,10 @@ npx wrangler versions upload
 ```
 
 The build hook moves `preview-radtrails.langtown.workers.dev` to the completed build before
-Cloudflare runs the appropriate production or non-production deployment step.
+Cloudflare runs the appropriate production or non-production deployment step. Because this stable
+preview deliberately shares production D1, a pull request containing a new migration changes the
+production schema as soon as its successful Workers Build reaches this hook. Migrations must remain
+backward-compatible with the currently deployed production Worker.
 
 For local deployment, use:
 
