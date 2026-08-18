@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { PublicPersona } from "@/lib/public-profiles";
-import { PUBLIC_PROFILE_PERSONAS } from "@/lib/public-profiles";
+import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
 import type { AdminProfileListItem } from "@/lib/profiles";
 
 const PERSONA_LABELS: Record<string, string> = {
@@ -34,8 +33,8 @@ function PersonaSelector({
   persona,
   setPersona,
 }: {
-  persona: PublicPersona;
-  setPersona: (persona: PublicPersona) => void;
+  persona: PersonaKey;
+  setPersona: (persona: PersonaKey) => void;
 }) {
   return (
     <div className="flex items-center gap-3">
@@ -45,10 +44,10 @@ function PersonaSelector({
       <select
         id="admin-persona"
         value={persona}
-        onChange={(event) => setPersona(event.target.value as PublicPersona)}
+        onChange={(event) => setPersona(event.target.value as PersonaKey)}
         className="rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
       >
-        {PUBLIC_PROFILE_PERSONAS.map((option) => (
+        {PERSONA_KEYS.map((option) => (
           <option key={option} value={option}>
             {PERSONA_LABELS[option] ?? option}
           </option>
@@ -124,9 +123,7 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
 }
 
 export default function AdminProfilesManager() {
-  const [persona, setPersona] = useState<PublicPersona>(
-    PUBLIC_PROFILE_PERSONAS[0],
-  );
+  const [persona, setPersona] = useState<PersonaKey>(PERSONA_KEYS[0]);
   const [profiles, setProfiles] = useState<AdminProfileListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
