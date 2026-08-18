@@ -184,6 +184,34 @@ does not act on anyone's behalf after login — it only needs to know who they a
 
 ## Development and production data workflow
 
+### PR preview at `preview.radtrails.org`
+
+Pull requests from this repository deploy automatically to the dedicated `radtrails-preview` Worker
+through `.github/workflows/preview.yml`. The Worker is routed through the stable custom domain
+`https://preview.radtrails.org`, so Google OAuth does not need a new redirect URI for every branch.
+The preview environment intentionally uses the production D1 binding configured in `wrangler.jsonc`.
+That means preview requests can read and write production users, profiles, sessions, personas, and
+images; treat the preview URL as production access and do not share it broadly.
+
+Before enabling the workflow, create the `preview.radtrails.org` Custom Domain on the
+`radtrails-preview` Worker in Cloudflare, set the repository variable
+`CLOUDFLARE_API_TOKEN_TEST`, and add the preview Worker secrets:
+
+```bash
+npx wrangler secret put GOOGLE_CLIENT_SECRET --env preview
+npx wrangler secret put ADMIN_BOOTSTRAP_TOKEN --env preview
+```
+
+Register this exact Google OAuth redirect URI:
+
+```text
+https://preview.radtrails.org/api/auth/callback
+```
+
+The workflow skips forked pull requests because GitHub does not expose deployment credentials to
+untrusted forks. Cloudflare's generated version/branch preview URLs remain available for non-authenticated
+testing, but they are not suitable as a wildcard OAuth redirect.
+
 Cloudflare D1 has separate local and remote databases. Local Wrangler state is under
 `.wrangler/state/v3/d1`; the deployed Worker uses the remote database identified by `database_id` in
 `wrangler.jsonc`. Running a local dev server does not read production unless a command explicitly uses
