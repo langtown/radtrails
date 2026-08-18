@@ -478,3 +478,47 @@ test("self-read responses never expose internal user or reviewer ids", async () 
   expect(serialized).not.toContain("reviewedBy");
   expect(response.headers.get("Cache-Control")).toBe("private, no-store");
 });
+
+test("adminListProfilesByPersona returns every account holding the persona", async () => {
+  const rider = await createUser("sub-admin-list-rider");
+  const coach = await createUser("sub-admin-list-coach");
+  const noProfile = await createUser("sub-admin-list-empty");
+  await grantPersona(rider, "theteam");
+  await grantPersona(coach, "coach");
+  await grantPersona(noProfile, "theteam");
+
+  await putProfile(rider, {
+    displayName: "Team Rider",
+    bio: "Rides enduro.",
+    imagePosition: "center 40%",
+  });
+  await putProfile(coach, { displayName: "Solo Coach" });
+
+  const { adminListProfilesByPersona } = await import("@/lib/profiles");
+  const theteam = await adminListProfilesByPersona(env.DB, "theteam");
+
+  expect(theteam).toHaveLength(2);
+  const riderEntry = theteam.find((entry) => entry.userId === rider);
+  const emptyEntry = theteam.find((entry) => entry.userId === noProfile);
+  expect(riderEntry).toBeDefined();
+  expect(emptyEntry).toBeDefined();
+  expect(riderEntry).toMatchObject({
+    userId: rider,
+    slug: "team-rider",
+    displayName: "Team Rider",
+    bio: "Rides enduro.",
+    imagePosition: "center 40%",
+    status: "pending",
+    personas: ["theteam"],
+  });
+  expect(emptyEntry).toMatchObject({
+    userId: noProfile,
+    slug: null,
+    displayName: null,
+    status: null,
+    personas: ["theteam"],
+  });
+
+  const coaches = await adminListProfilesByPersona(env.DB, "coach");
+  expect(coaches.map((entry) => entry.userId)).toEqual([coach]);
+});

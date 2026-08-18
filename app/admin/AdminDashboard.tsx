@@ -8,23 +8,12 @@ export default function AdminDashboard({
 }) {
   const sections = [
     {
-      href: "/admin/profiles",
-      title: "Review profiles",
-      count: stats.pendingProfiles,
-      countLabel:
-        stats.pendingProfiles === 1
-          ? "profile awaiting review"
-          : "profiles awaiting review",
-      description:
-        "Approve public names, photos, bios, and social links or return them with feedback.",
-    },
-    {
-      href: "/admin/personas",
-      title: "Manage people",
+      href: "/admin/profiles/manage",
+      title: "Profiles",
       count: stats.users,
       countLabel: stats.users === 1 ? "signed-in account" : "signed-in accounts",
       description:
-        "Grant team, coach, alumni, and admin personas without changing profile review status.",
+        "Browse people by persona, edit public names, photos, bios, and social links, and control where each person appears on the site.",
     },
   ];
 
@@ -39,8 +28,8 @@ export default function AdminDashboard({
             Admin dashboard
           </h1>
           <p className="mt-4 max-w-2xl text-[#56585e]">
-            Review member-submitted content and control where each person
-            appears on the site.
+            Manage member profiles and control where each person appears on
+            the site.
           </p>
         </div>
         <Link
@@ -73,9 +62,12 @@ export default function AdminDashboard({
       </div>
 
       <p className="mt-8 text-sm text-[#56585e]">
-        {stats.publishedProfiles} approved public {stats.publishedProfiles === 1
-          ? "profile is"
-          : "profiles are"} currently stored.
+        {stats.publishedProfiles} approved public{" "}
+        {stats.publishedProfiles === 1 ? "profile is" : "profiles are"}{" "}
+        currently stored
+        {stats.pendingProfiles > 0 &&
+          `, and ${stats.pendingProfiles} ${stats.pendingProfiles === 1 ? "profile is" : "profiles are"} waiting for review`}
+        .
       </p>
     </div>
   );

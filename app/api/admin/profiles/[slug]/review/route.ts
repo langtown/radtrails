@@ -18,11 +18,11 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   request: Request,
-  ctx: { params: Promise<{ id: string }> },
+  ctx: { params: Promise<{ slug: string }> },
 ) {
   return secureApiResponse(request, async () => {
-    const { id } = await ctx.params;
-    const profileUserId = Number(id);
+    const { slug } = await ctx.params;
+    const profileUserId = Number(slug);
     const { db, rateLimiters } = await getAppRuntime();
     const limited = await rateLimitResponse(
       request,

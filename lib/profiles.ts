@@ -2,7 +2,7 @@ import {
   AuthenticationError,
   requireAuthenticatedUser,
 } from "./auth";
-import { getUserPersonas } from "./personas";
+import { getUserPersonas, type PersonaKey } from "./personas";
 import {
   MAX_PROFILE_BIO_CHARACTERS,
   MAX_PROFILE_NAME_CHARACTERS,
@@ -297,7 +297,7 @@ export function parseStoredSocialLinks(value: string): SocialLinks {
   }
 }
 
-function validateProfileInput(input: unknown): ProfileInput {
+export function validateProfileInput(input: unknown): ProfileInput {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new ProfileError("profile body must be an object", 400);
   }
@@ -481,10 +481,81 @@ export async function getOwnProfile(
 
 /** Admin helpers --------------------------------------------------------- */
 
+export type AdminProfile = OwnProfile & {
+  userId: number;
+  personas: PersonaKey[];
+};
+
+export type AdminProfileListItem = {
+  userId: number;
+  email: string | null;
+  accountName: string | null;
+  personas: PersonaKey[];
+  /** Null when the account has never submitted a profile. */
+  slug: string | null;
+  displayName: string | null;
+  bio: string | null;
+  imageUrl: string | null;
+  imagePosition: string | null;
+  /** Profile review status, or null when no profile exists yet. */
+  status: string | null;
+};
+
+/**
+ * Every account holding a persona, with whatever profile content it has.
+ * Unlike the public listing this is not gated on approval: admins manage
+ * pending and rejected content from the same screen.
+ */
+export async function adminListProfilesByPersona(
+  db: D1Database,
+  persona: PersonaKey,
+): Promise<AdminProfileListItem[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT u.id AS user_id, u.email, u.display_name AS account_name,
+              p.slug, p.display_name, p.bio, p.image_key, p.image_position,
+              p.status,
+              (SELECT GROUP_CONCAT(up2.persona_key)
+                 FROM user_personas up2
+                WHERE up2.user_id = u.id) AS personas
+         FROM user_personas up
+         INNER JOIN users u ON u.id = up.user_id
+         LEFT JOIN profiles p ON p.user_id = u.id
+        WHERE up.persona_key = ?
+        ORDER BY COALESCE(p.display_name, u.display_name, u.email) COLLATE NOCASE`,
+    )
+    .bind(persona)
+    .all<{
+      user_id: number;
+      email: string | null;
+      account_name: string | null;
+      slug: string | null;
+      display_name: string | null;
+      bio: string | null;
+      image_key: string | null;
+      image_position: string | null;
+      status: string | null;
+      personas: string | null;
+    }>();
+
+  return results.map((row) => ({
+    userId: row.user_id,
+    email: row.email,
+    accountName: row.account_name,
+    personas: (row.personas?.split(",") ?? []) as PersonaKey[],
+    slug: row.slug,
+    displayName: row.display_name,
+    bio: row.bio,
+    imageUrl: row.image_key ? `/api/profiles/image/${row.image_key}` : null,
+    imagePosition: row.image_position,
+    status: row.status,
+  }));
+}
+
 export async function adminGetProfileBySlug(
   db: D1Database,
   slug: string,
-): Promise<OwnProfile & { userId: number } | null> {
+): Promise<AdminProfile | null> {
   const row = await db
     .prepare(
       `SELECT p.user_id, p.slug, p.display_name, p.bio, p.image_key,
@@ -516,7 +587,7 @@ export async function adminGetProfileBySlug(
     .bind(row.user_id)
     .all<{ persona_key: string }>();
 
-  const personas = personasRes.results.map((r) => r.persona_key);
+  const personas = personasRes.results.map((r) => r.persona_key as PersonaKey);
 
   return {
     userId: row.user_id,
@@ -531,9 +602,8 @@ export async function adminGetProfileBySlug(
     submittedAt: row.submitted_at,
     reviewedAt: row.reviewed_at,
     reviewNote: row.review_note,
-    // extra
     personas,
-  } as OwnProfile & { userId: number };
+  };
 }
 
 export async function adminUpdateProfile(

@@ -13,7 +13,7 @@ vi.mock("next/link", async () => {
 import AdminDashboard from "@/app/admin/AdminDashboard";
 import BootstrapAdminForm from "@/app/admin/setup/BootstrapAdminForm";
 
-test("the admin dashboard links both management areas and shows counts", () => {
+test("the admin dashboard links the profile manager and shows counts", () => {
   const html = renderToStaticMarkup(
     createElement(AdminDashboard, {
       stats: { users: 12, pendingProfiles: 3, publishedProfiles: 8 },
@@ -21,13 +21,13 @@ test("the admin dashboard links both management areas and shows counts", () => {
   );
 
   expect(html).toContain("Admin dashboard");
-  expect(html).toContain('href="/admin/profiles"');
-  expect(html).toContain('href="/admin/personas"');
-  expect(html).toContain("3");
-  expect(html).toContain("profiles awaiting review");
+  expect(html).toContain('href="/admin/profiles/manage"');
+  expect(html).not.toContain('href="/admin/personas"');
   expect(html).toContain("12");
   expect(html).toContain("signed-in accounts");
-  expect(html).toContain("8 approved public profiles");
+  expect(html).toContain("8 approved public");
+  expect(html).toContain("3");
+  expect(html).toContain("waiting for review");
 });
 
 test("the first-admin form treats the setup code as a password", () => {
