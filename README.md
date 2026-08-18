@@ -7,10 +7,20 @@ This repo contains the Next.js rebuild of `radtrails.org`, migrated away from Ho
 ```bash
 nvm use
 npm install
+npm run db:migrate:local
 npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+Copy `.dev.vars.example` to the gitignored `.dev.vars`, then provide the Google OAuth credentials and
+a random `ADMIN_BOOTSTRAP_TOKEN`. See [docs/authentication.md](docs/authentication.md) for OAuth,
+first-admin setup, database migrations, security, free-tier limits, and the production checklist.
+
+For D1 data copies and backups, use the Makefile targets documented in
+[docs/authentication.md](docs/authentication.md). In particular, `make db-pull-prod` refreshes local
+development data from production, while `make db-push-prod CONFIRM_PROD_SYNC=YES` is a destructive,
+backup-first production replacement.
 
 ## Content Editing
 
@@ -63,12 +73,18 @@ Update page titles and descriptions in the matching `*PageMeta` object in each c
 - `/services`
 - `/racing`
 - `/support`
+- `/profile` (signed-in profile editor)
+- `/admin` (admin dashboard)
+- `/admin/setup` (one-time first-admin setup)
+- `/admin/personas` (admin only)
+- `/admin/profiles` (admin only)
 
 ## Verification
 
 ```bash
 nvm use
 npm run lint
+npm test
 npm run build
 npm run cf:build
 BASE_URL=http://localhost:3000 ./test_pages.sh
@@ -80,17 +96,34 @@ BASE_URL=http://localhost:3000 ./test_pages.sh
 
 Cloudflare must run the OpenNext build before Wrangler deploys the Worker. A plain `next build` only creates `.next`; Wrangler expects OpenNext artifacts such as `.open-next/.build/open-next.config.mjs` and `.open-next/worker.js`.
 
-In Cloudflare, use:
+In Cloudflare Workers Builds, use:
 
 ```bash
 npm run build
 ```
 
-as the build command, then deploy with:
+as the build command. The build wrapper detects Cloudflare's `WORKERS_CI=1` environment, applies
+pending migrations to the production `radtrails-app` D1 database, and then runs
+`npm run cf:preview:upload` after the outer OpenNext build completes. Local builds and OpenNext's
+nested Next.js build do not perform either remote operation.
+
+Cloudflare's default production deploy command can remain:
 
 ```bash
 npx wrangler deploy
 ```
+
+Its default non-production branch deploy command can also remain:
+
+```bash
+npx wrangler versions upload
+```
+
+The build hook moves `preview-radtrails.langtown.workers.dev` to the completed build before
+Cloudflare runs the appropriate production or non-production deployment step. Because this stable
+preview deliberately shares production D1, a pull request containing a new migration changes the
+production schema as soon as its successful Workers Build reaches this hook. Migrations must remain
+backward-compatible with the currently deployed production Worker.
 
 For local deployment, use:
 
@@ -100,4 +133,3 @@ npm run deploy
 ```
 
 Use `npm run next:build` only when you specifically want a plain Next.js build without Cloudflare/OpenNext artifacts.
-
