@@ -7,10 +7,20 @@ This repo contains the Next.js rebuild of `radtrails.org`, migrated away from Ho
 ```bash
 nvm use
 npm install
+npm run db:migrate:local
 npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+Copy `.dev.vars.example` to the gitignored `.dev.vars`, then provide the Google OAuth credentials and
+a random `ADMIN_BOOTSTRAP_TOKEN`. See [docs/authentication.md](docs/authentication.md) for OAuth,
+first-admin setup, database migrations, security, free-tier limits, and the production checklist.
+
+For D1 data copies and backups, use the Makefile targets documented in
+[docs/authentication.md](docs/authentication.md). In particular, `make db-pull-prod` refreshes local
+development data from production, while `make db-push-prod CONFIRM_PROD_SYNC=YES` is a destructive,
+backup-first production replacement.
 
 ## Content Editing
 
@@ -63,12 +73,18 @@ Update page titles and descriptions in the matching `*PageMeta` object in each c
 - `/services`
 - `/racing`
 - `/support`
+- `/profile` (signed-in profile editor)
+- `/admin` (admin dashboard)
+- `/admin/setup` (one-time first-admin setup)
+- `/admin/personas` (admin only)
+- `/admin/profiles` (admin only)
 
 ## Verification
 
 ```bash
 nvm use
 npm run lint
+npm test
 npm run build
 npm run cf:build
 BASE_URL=http://localhost:3000 ./test_pages.sh
@@ -100,4 +116,3 @@ npm run deploy
 ```
 
 Use `npm run next:build` only when you specifically want a plain Next.js build without Cloudflare/OpenNext artifacts.
-

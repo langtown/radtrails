@@ -23,5 +23,47 @@
 		// Enable image optimization
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
-	}
+	},
+	"vars": {
+		// Not a secret: the client id travels in every redirect URL to Google.
+		// GOOGLE_CLIENT_SECRET and ADMIN_BOOTSTRAP_TOKEN are Cloudflare secrets,
+		// never vars in this file.
+		"GOOGLE_CLIENT_ID": "357644174029-7udsq7f5v70d86f760nb5t15j2kg237q.apps.googleusercontent.com"
+	},
+	"d1_databases": [
+		{
+			// Application database: users, sessions, personas, profiles, images, and per-user data.
+			// Apply schema changes with `npm run db:migrate:local` / `npm run db:migrate:remote`.
+			"binding": "DB",
+			"database_name": "radtrails-app",
+			"database_id": "c35f4283-dfa3-4d62-b246-fac86323b76f",
+			"migrations_dir": "migrations"
+		}
+	],
+	"ratelimits": [
+		{
+			"name": "LOGIN_RATE_LIMITER",
+			"namespace_id": "73001",
+			"simple": {
+				"limit": 10,
+				"period": 60
+			}
+		},
+		{
+			"name": "WRITE_RATE_LIMITER",
+			"namespace_id": "73002",
+			"simple": {
+				"limit": 60,
+				"period": 60
+			}
+		},
+		{
+			"name": "IMAGE_RATE_LIMITER",
+			"namespace_id": "73003",
+			"simple": {
+				"limit": 10,
+				"period": 60
+			}
+		}
+	]
 }

@@ -1,0 +1,8 @@
+# Copy this file to .dev.vars and replace every placeholder.
+# .dev.vars is gitignored; never commit real secret values.
+GOOGLE_CLIENT_ID=<your Google OAuth client id>
+GOOGLE_CLIENT_SECRET=<your Google OAuth client secret>
+
+# Generate with: openssl rand -base64 32
+# Enter this once at /admin/setup after signing in as the initial administrator.
+ADMIN_BOOTSTRAP_TOKEN=<a random value of at least 32 bytes>

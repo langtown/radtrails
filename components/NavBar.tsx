@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { navItems, site } from "@/lib/content/site";
+import AuthNav from "./AuthNav";
 
 function SocialIcon({ type }: { type: "facebook" | "instagram" }) {
   if (type === "facebook") {
@@ -20,6 +22,33 @@ function SocialIcon({ type }: { type: "facebook" | "instagram" }) {
   );
 }
 
+export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
+  return (
+    <div className="flex items-center gap-4">
+      {authControls}
+      <span className="mx-1 hidden h-5 w-px bg-[#dadce0] md:block" />
+      <a
+        href={site.social.facebook}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className="text-[#0d141a] transition-colors hover:text-[#673de6]"
+      >
+        <SocialIcon type="facebook" />
+      </a>
+      <a
+        href={site.social.instagram}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+        className="text-[#0d141a] transition-colors hover:text-[#673de6]"
+      >
+        <SocialIcon type="instagram" />
+      </a>
+    </div>
+  );
+}
+
 export default function NavBar() {
   return (
     <header className="sticky top-0 z-30 border-b border-[#dadce0] bg-white">
@@ -34,13 +63,7 @@ export default function NavBar() {
               {item.label}
             </Link>
           ))}
-          <span className="mx-1 hidden h-5 w-px bg-[#dadce0] md:block" />
-          <a href={site.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-[#0d141a] transition-colors hover:text-[#673de6]">
-            <SocialIcon type="facebook" />
-          </a>
-          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-[#0d141a] transition-colors hover:text-[#673de6]">
-            <SocialIcon type="instagram" />
-          </a>
+          <NavUtilityArea authControls={<AuthNav />} />
         </div>
       </nav>
     </header>
