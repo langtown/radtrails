@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "radtrails",
+  "project_id": "7607a1d4-d236-42dc-bca0-99b0a0f0f446"
+}

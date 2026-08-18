@@ -41,3 +41,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+
+# Cloudflare local dev secrets (holds GOOGLE_CLIENT_SECRET and bootstrap code)
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local D1 export files and moved persistence snapshots (may contain PII/images)
+.local/

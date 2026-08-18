@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
+import RacerGrid from "@/components/RacerGrid";
 import { featuredRacerDetails, langtownLegacy, racers, racingPageMeta } from "@/lib/content/racing";
 import { site } from "@/lib/content/site";
+import { getAppRuntime } from "@/lib/db";
+import { getCachedPublicProfiles, getDefaultWorkerCache } from "@/lib/public-profiles";
+import { buildRacingTeam } from "@/lib/racing-profiles";
 
 export const metadata: Metadata = {
   title: racingPageMeta.title,
@@ -11,9 +16,30 @@ export const metadata: Metadata = {
   alternates: { canonical: racingPageMeta.path },
 };
 
-export default function RacingPage() {
+export const dynamic = "force-dynamic";
+
+async function currentOrigin(): Promise<string> {
+  const requestHeaders = await headers();
+  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",", 1)[0].trim();
+  const host = forwardedHost || requestHeaders.get("host");
+  if (!host || !/^[a-z0-9.-]+(?::\d+)?$/i.test(host)) return site.domain;
+
+  const forwardedProtocol = requestHeaders.get("x-forwarded-proto")?.split(",", 1)[0].trim();
+  const protocol = forwardedProtocol === "http" ? "http" : "https";
+  return `${protocol}://${host}`;
+}
+
+export default async function RacingPage() {
   const featured = racers[0];
-  const team = racers.slice(1).sort((a, b) => a.name.localeCompare(b.name));
+  const { db, waitUntil } = await getAppRuntime();
+  const approvedTeamProfiles = await getCachedPublicProfiles(
+    db,
+    await currentOrigin(),
+    "theteam",
+    getDefaultWorkerCache(),
+    waitUntil,
+  );
+  const team = buildRacingTeam(racers, approvedTeamProfiles);
 
   return (
     <div className="bg-white text-[#1a1a1a]">
@@ -46,30 +72,7 @@ export default function RacingPage() {
       <section className="bg-[#f7f7f7]">
         <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
           <h2 className="text-4xl font-semibold md:text-6xl">The Team</h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {team.map((racer) => (
-              <article key={racer.name} className="overflow-hidden rounded-lg bg-white shadow-sm">
-                <div className="relative min-h-72 bg-[#dadce0]">
-                  {racer.image ? (
-                    <Image
-                      src={racer.image}
-                      alt={racer.name}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover"
-                      style={{ objectPosition: racer.imagePosition ?? "center top" }}
-                    />
-                  ) : (
-                    <div className="h-full min-h-72 w-full bg-[#dadce0]" aria-label={`${racer.name} photo placeholder`} />
-                  )}
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold">{racer.name}</h3>
-                  <p className="mt-4 leading-relaxed text-[#56585e]">{racer.bio}</p>
-                </div>
-              </article>
-            ))}
-          </div>
+          <RacerGrid racers={team} />
         </div>
       </section>
 
