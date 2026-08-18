@@ -10,6 +10,7 @@ import {
   PROFILE_IMAGE_TYPES,
   SOCIAL_LABELS,
   SOCIAL_PLATFORMS,
+  parseImagePosition,
   type SocialLinks,
 } from "@/lib/profile-constraints";
 import type { OwnProfile } from "@/lib/profiles";
@@ -86,20 +87,23 @@ export function buildProfilePayload(
     }
   }
 
-  // `|| 50` would be wrong here: it turns a deliberate 0% (top focus) into
+  // `|| 50` would be wrong here: it turns a deliberate 0% (edge focus) into
   // 50%. Only fall back when the field is missing or unparsable.
-  const parsedCropY = Number.parseInt(formString(data, "cropY"), 10);
-  const cropY = Number.isNaN(parsedCropY)
-    ? 50
-    : Math.max(0, Math.min(100, parsedCropY));
+  const cropX = parseCropValue(data, "cropX");
+  const cropY = parseCropValue(data, "cropY");
 
   return {
     displayName: formString(data, "displayName"),
     bio: formString(data, "bio"),
     imageKey,
-    imagePosition: imageKey ? `center ${cropY}%` : null,
+    imagePosition: imageKey ? `${cropX}% ${cropY}%` : null,
     socials,
   };
+}
+
+function parseCropValue(data: FormData, key: string): number {
+  const parsed = Number.parseInt(formString(data, key), 10);
+  return Number.isNaN(parsed) ? 50 : Math.max(0, Math.min(100, parsed));
 }
 
 export function validateProfileImageFile(file: {
@@ -113,12 +117,6 @@ export function validateProfileImageFile(file: {
     return "Please choose a JPEG, PNG, or WebP image.";
   }
   return null;
-}
-
-function initialCropY(position: string | null | undefined): number {
-  const match = position?.match(/^center (\d{1,3})(?:\.\d+)?%$/);
-  if (!match) return 50;
-  return Math.max(0, Math.min(100, Number(match[1])));
 }
 
 function statusLabel(status: string | undefined): string {
@@ -158,8 +156,14 @@ export function ProfileEditor({
   const [imageKey, setImageKey] = useState(initialProfile?.imageKey ?? null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
-  const [cropY, setCropY] = useState(initialCropY(initialProfile?.imagePosition));
-  const [isWidePreview, setIsWidePreview] = useState(false);
+  const [cropX, setCropX] = useState(
+    () => parseImagePosition(initialProfile?.imagePosition).x,
+  );
+  const [cropY, setCropY] = useState(
+    () => parseImagePosition(initialProfile?.imagePosition).y,
+  );
+  /** Which axis the photo overflows the card on, i.e. which slider moves it. */
+  const [overflowAxis, setOverflowAxis] = useState<"x" | "y" | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -303,15 +307,21 @@ export function ProfileEditor({
                 fill
                 sizes="(min-width: 768px) 35vw, 100vw"
                 className="object-cover"
-                style={{ objectPosition: `center ${cropY}%` }}
+                style={{ objectPosition: `${cropX}% ${cropY}%` }}
                 onLoad={(event) => {
                   const img = event.currentTarget;
-                  // The preview box is 4:3. A wider photo fills it exactly in
-                  // height, so object-cover has nothing to crop vertically
-                  // and the focus slider has no visible effect.
-                  setIsWidePreview(
-                    img.naturalHeight > 0 &&
-                      img.naturalWidth / img.naturalHeight > 4 / 3,
+                  const box = img.parentElement?.getBoundingClientRect();
+                  if (!img.naturalHeight || !box || box.height === 0) return;
+                  // object-cover only crops the axis the photo overflows on:
+                  // wide photos move horizontally, tall photos vertically.
+                  const ratio = img.naturalWidth / img.naturalHeight;
+                  const boxRatio = box.width / box.height;
+                  setOverflowAxis(
+                    ratio > boxRatio * 1.01
+                      ? "x"
+                      : ratio < boxRatio / 1.01
+                        ? "y"
+                        : null,
                   );
                 }}
                 unoptimized
@@ -342,6 +352,9 @@ export function ProfileEditor({
           <label className="mt-5 block text-sm font-semibold" htmlFor="cropY">
             Vertical crop focus: {cropY}%
           </label>
+          {overflowAxis === "x" && (
+            <input type="hidden" name="cropY" value={cropY} />
+          )}
           <input
             id="cropY"
             name="cropY"
@@ -349,18 +362,42 @@ export function ProfileEditor({
             min="0"
             max="100"
             value={cropY}
-            disabled={!previewUrl}
+            disabled={!previewUrl || overflowAxis === "x"}
             onChange={(event) => setCropY(Number(event.target.value))}
             className="mt-2 w-full accent-[#673de6] disabled:opacity-40"
           />
+
+          <label className="mt-4 block text-sm font-semibold" htmlFor="cropX">
+            Horizontal crop focus: {cropX}%
+          </label>
+          {overflowAxis === "y" && (
+            <input type="hidden" name="cropX" value={cropX} />
+          )}
+          <input
+            id="cropX"
+            name="cropX"
+            type="range"
+            min="0"
+            max="100"
+            value={cropX}
+            disabled={!previewUrl || overflowAxis === "y"}
+            onChange={(event) => setCropX(Number(event.target.value))}
+            className="mt-2 w-full accent-[#673de6] disabled:opacity-40"
+          />
+
           <p className="mt-1 text-xs text-[#56585e]">
             Move the focus until the card preview crops your photo correctly.
           </p>
-          {isWidePreview && previewUrl && (
+          {overflowAxis === "x" && previewUrl && (
             <p className="mt-1 text-xs text-amber-700">
-              This photo is wider than the profile card, so the vertical focus
-              has no visible effect. Crop the photo to a taller shape before
-              uploading for more control.
+              This photo is wider than the profile card, so it moves with the
+              horizontal focus; the vertical focus has no visible effect.
+            </p>
+          )}
+          {overflowAxis === "y" && previewUrl && (
+            <p className="mt-1 text-xs text-[#56585e]">
+              This photo fills the card width, so the horizontal focus has no
+              visible effect.
             </p>
           )}
         </section>

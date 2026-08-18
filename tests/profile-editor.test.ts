@@ -26,6 +26,7 @@ import {
 import {
   MAX_PROFILE_IMAGE_BYTES,
   canEditSocialLinks,
+  parseImagePosition,
 } from "@/lib/profile-constraints";
 import type { OwnProfile } from "@/lib/profiles";
 
@@ -65,7 +66,7 @@ test("the editor includes profile fields, the image limit, crop preview, and rev
   expect(html).toContain('accept="image/jpeg,image/png,image/webp"');
   expect(html).toContain("JPEG, PNG, or WebP up to 1 MB");
   expect(html).toContain("Pending review");
-  expect(html).toContain("object-position:center 32%");
+  expect(html).toContain("object-position:50% 32%");
   expect(html).toContain('value="Trail Rider"');
   expect(html).toContain("Loves technical trails.");
 });
@@ -141,7 +142,7 @@ test("profile payloads include social fields only for eligible accounts", () => 
     displayName: "Trail Rider",
     bio: "A bio",
     imageKey: "b".repeat(64),
-    imagePosition: "center 42%",
+    imagePosition: "50% 42%",
     socials: {
       instagram: "https://instagram.com/trailrider",
     },
@@ -154,22 +155,47 @@ test("profile payloads keep a 0% crop focus and only default when missing", () =
   data.set("cropY", "0");
   expect(
     buildProfilePayload(data, "b".repeat(64), false).imagePosition,
-  ).toBe("center 0%");
+  ).toBe("50% 0%");
 
   data.set("cropY", "not-a-number");
   expect(
     buildProfilePayload(data, "b".repeat(64), false).imagePosition,
-  ).toBe("center 50%");
+  ).toBe("50% 50%");
 
   data.delete("cropY");
   expect(
     buildProfilePayload(data, "b".repeat(64), false).imagePosition,
-  ).toBe("center 50%");
+  ).toBe("50% 50%");
 
   data.set("cropY", "140");
   expect(
     buildProfilePayload(data, "b".repeat(64), false).imagePosition,
-  ).toBe("center 100%");
+  ).toBe("50% 100%");
+});
+
+test("profile payloads carry the horizontal crop focus for wide photos", () => {
+  const data = new FormData();
+  data.set("displayName", "Trail Rider");
+  data.set("cropX", "20");
+  data.set("cropY", "80");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("20% 80%");
+
+  data.set("cropX", "0");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("0% 80%");
+});
+
+test("parseImagePosition reads stored positions into slider values", () => {
+  expect(parseImagePosition(null)).toEqual({ x: 50, y: 50 });
+  expect(parseImagePosition("center 32%")).toEqual({ x: 50, y: 32 });
+  expect(parseImagePosition("20% 80%")).toEqual({ x: 20, y: 80 });
+  expect(parseImagePosition("0% 100%")).toEqual({ x: 0, y: 100 });
+  expect(parseImagePosition("left top")).toEqual({ x: 0, y: 0 });
+  expect(parseImagePosition("center")).toEqual({ x: 50, y: 50 });
+  expect(parseImagePosition("nonsense")).toEqual({ x: 50, y: 50 });
 });
 
 test("image selection enforces the same type and size contract as the API", () => {

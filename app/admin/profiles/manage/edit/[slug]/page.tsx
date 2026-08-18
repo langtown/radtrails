@@ -12,6 +12,7 @@ import {
   MAX_SOCIAL_URL_CHARACTERS,
   SOCIAL_LABELS,
   SOCIAL_PLATFORMS,
+  parseImagePosition,
 } from "@/lib/profile-constraints";
 import type { AdminProfile } from "@/lib/profiles";
 
@@ -24,12 +25,6 @@ const PERSONA_LABELS: Record<PersonaKey, string> = {
 };
 
 type Feedback = { kind: "error" | "success"; message: string } | null;
-
-function initialCropY(position: string | null | undefined): number {
-  const match = position?.match(/^center (\d{1,3})(?:\.\d+)?%$/);
-  if (!match) return 50;
-  return Math.max(0, Math.min(100, Number(match[1])));
-}
 
 function statusLabel(status: string): string {
   switch (status) {
@@ -58,7 +53,10 @@ async function errorMessage(response: Response): Promise<string> {
 export default function AdminProfileEditPage() {
   const { slug } = useParams<{ slug: string }>();
   const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const [cropX, setCropX] = useState(50);
   const [cropY, setCropY] = useState(50);
+  /** Which axis the photo overflows the card on, i.e. which slider moves it. */
+  const [overflowAxis, setOverflowAxis] = useState<"x" | "y" | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [personaBusy, setPersonaBusy] = useState<PersonaKey | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
@@ -85,7 +83,9 @@ export default function AdminProfileEditPage() {
         }
         if (!cancelled) {
           setProfile(body.profile);
-          setCropY(initialCropY(body.profile.imagePosition));
+          const position = parseImagePosition(body.profile.imagePosition);
+          setCropX(position.x);
+          setCropY(position.y);
         }
       } catch (caught) {
         if (!cancelled) {
@@ -278,7 +278,27 @@ export default function AdminProfileEditPage() {
                       fill
                       sizes="(min-width: 768px) 25vw, 100vw"
                       className="object-cover"
-                      style={{ objectPosition: `center ${cropY}%` }}
+                      style={{ objectPosition: `${cropX}% ${cropY}%` }}
+                      onLoad={(event) => {
+                        const img = event.currentTarget;
+                        const box =
+                          img.parentElement?.getBoundingClientRect();
+                        if (!img.naturalHeight || !box || box.height === 0) {
+                          return;
+                        }
+                        // object-cover only crops the axis the photo
+                        // overflows on: wide photos move horizontally, tall
+                        // photos vertically.
+                        const ratio = img.naturalWidth / img.naturalHeight;
+                        const boxRatio = box.width / box.height;
+                        setOverflowAxis(
+                          ratio > boxRatio * 1.01
+                            ? "x"
+                            : ratio < boxRatio / 1.01
+                              ? "y"
+                              : null,
+                        );
+                      }}
                       unoptimized
                     />
                   ) : (
@@ -293,8 +313,11 @@ export default function AdminProfileEditPage() {
                       htmlFor="cropY"
                       className="block text-sm font-semibold"
                     >
-                      Photo crop position
+                      Vertical crop focus: {cropY}%
                     </label>
+                    {overflowAxis === "x" && (
+                      <input type="hidden" name="cropY" value={cropY} />
+                    )}
                     <input
                       id="cropY"
                       name="cropY"
@@ -302,9 +325,37 @@ export default function AdminProfileEditPage() {
                       min={0}
                       max={100}
                       value={cropY}
+                      disabled={overflowAxis === "x"}
                       onChange={(event) => setCropY(Number(event.target.value))}
-                      className="mt-2 w-full accent-[#673de6]"
+                      className="mt-2 w-full accent-[#673de6] disabled:opacity-40"
                     />
+                    <label
+                      htmlFor="cropX"
+                      className="mt-3 block text-sm font-semibold"
+                    >
+                      Horizontal crop focus: {cropX}%
+                    </label>
+                    {overflowAxis === "y" && (
+                      <input type="hidden" name="cropX" value={cropX} />
+                    )}
+                    <input
+                      id="cropX"
+                      name="cropX"
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={cropX}
+                      disabled={overflowAxis === "y"}
+                      onChange={(event) => setCropX(Number(event.target.value))}
+                      className="mt-2 w-full accent-[#673de6] disabled:opacity-40"
+                    />
+                    {overflowAxis === "x" && (
+                      <p className="mt-2 text-xs text-amber-700">
+                        This photo is wider than the card, so it moves with
+                        the horizontal focus; the vertical focus has no
+                        visible effect.
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
