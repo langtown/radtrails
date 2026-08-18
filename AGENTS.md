@@ -320,3 +320,7 @@ bd prime                # Refresh Beads context
 
 **Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
 <!-- END BEADS CODEX SETUP -->
+
+## Site Manager Skill
+
+For step-by-step guidance on content changes, image sizing, section additions, and Playwright testing, see `.claude/skills/radtrails.md`.
