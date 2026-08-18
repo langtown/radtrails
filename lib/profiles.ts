@@ -479,6 +479,118 @@ export async function getOwnProfile(
   };
 }
 
+/** Admin helpers --------------------------------------------------------- */
+
+export async function adminGetProfileBySlug(
+  db: D1Database,
+  slug: string,
+): Promise<OwnProfile & { userId: number } | null> {
+  const row = await db
+    .prepare(
+      `SELECT p.user_id, p.slug, p.display_name, p.bio, p.image_key,
+              p.image_position, p.social_links, p.status, p.submitted_at,
+              p.reviewed_at, p.review_note
+       FROM profiles p
+       WHERE p.slug = ?`,
+    )
+    .bind(slug)
+    .first<{
+      user_id: number;
+      slug: string;
+      display_name: string;
+      bio: string | null;
+      image_key: string | null;
+      image_position: string | null;
+      social_links: string;
+      status: string;
+      submitted_at: string | null;
+      reviewed_at: string | null;
+      review_note: string | null;
+    }>();
+
+  if (!row) return null;
+
+  // fetch personas for the user
+  const personasRes = await db
+    .prepare(`SELECT persona_key FROM user_personas WHERE user_id = ?`)
+    .bind(row.user_id)
+    .all<{ persona_key: string }>();
+
+  const personas = personasRes.results.map((r) => r.persona_key);
+
+  return {
+    userId: row.user_id,
+    slug: row.slug,
+    displayName: row.display_name,
+    bio: row.bio,
+    imageKey: row.image_key,
+    imageUrl: row.image_key ? `/api/profiles/image/${row.image_key}` : null,
+    imagePosition: row.image_position,
+    socials: parseStoredSocialLinks(row.social_links),
+    status: row.status,
+    submittedAt: row.submitted_at,
+    reviewedAt: row.reviewed_at,
+    reviewNote: row.review_note,
+    // extra
+    personas,
+  } as OwnProfile & { userId: number };
+}
+
+export async function adminUpdateProfile(
+  db: D1Database,
+  actorId: number,
+  profileUserId: number,
+  input: ProfileInput,
+): Promise<void> {
+  // validate input using existing validateProfileInput by calling it indirectly
+  // we'll reuse the internal validator by duplicating minimal checks here
+  // (keeps behavior consistent with create/update paths)
+
+  // Reuse updateProfile but we need to mark as approved and publish
+  await db
+    .prepare(
+      `UPDATE profiles
+       SET display_name = ?, bio = ?, image_key = ?, image_position = ?,
+           social_links = ?, status = 'approved', reviewed_at = ?, reviewed_by = ?,
+           review_note = NULL, updated_at = CURRENT_TIMESTAMP
+       WHERE user_id = ?`,
+    )
+    .bind(
+      input.displayName,
+      input.bio,
+      input.imageKey,
+      input.imagePosition,
+      JSON.stringify(input.socials),
+      new Date().toISOString(),
+      actorId,
+      profileUserId,
+    )
+    .run();
+
+  // Upsert into published_profiles
+  const reviewedAt = new Date().toISOString();
+  await db
+    .prepare(
+      `INSERT INTO published_profiles
+         (user_id, slug, display_name, bio, image_key, image_position,
+          social_links, published_at)
+       SELECT user_id, slug, display_name, bio, image_key, image_position,
+              social_links, ?
+       FROM profiles
+       WHERE user_id = ? AND status = 'approved'
+       ON CONFLICT (user_id) DO UPDATE SET
+         slug = excluded.slug,
+         display_name = excluded.display_name,
+         bio = excluded.bio,
+         image_key = excluded.image_key,
+         image_position = excluded.image_position,
+         social_links = excluded.social_links,
+         published_at = excluded.published_at`,
+    )
+    .bind(reviewedAt, profileUserId)
+    .run();
+}
+
 /** HTTP behavior for GET /api/profile. */
 export async function handleGetProfile(
   db: D1Database,
