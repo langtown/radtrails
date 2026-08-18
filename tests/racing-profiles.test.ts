@@ -63,9 +63,12 @@ test("approved team profiles append without replacing checked-in racers", () => 
 
   const html = renderToStaticMarkup(RacerGrid({ racers: team }));
   expect(html).toContain("New Team Rider");
+  expect(html).toContain("Socials");
   expect(html).toContain('href="https://instagram.com/newteamrider"');
   expect(html).toContain('href="https://strava.com/athletes/123"');
   expect(html).toContain("Instagram");
   expect(html).toContain("Strava");
   expect(html).not.toContain("X / Twitter");
+  // Each social link is prefixed with its brand glyph.
+  expect(html.indexOf("<svg")).toBeGreaterThan(-1);
 });

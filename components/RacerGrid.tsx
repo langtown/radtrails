@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { SOCIAL_LABELS, SOCIAL_PLATFORMS } from "@/lib/profile-constraints";
 import type { RacingCard } from "@/lib/racing-profiles";
+import SocialIcon from "./SocialIcon";
 
 export default function RacerGrid({ racers }: { racers: readonly RacingCard[] }) {
   return (
@@ -33,21 +34,27 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
               </p>
             )}
             {SOCIAL_PLATFORMS.some((platform) => racer.socials[platform]) && (
-              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                {SOCIAL_PLATFORMS.map((platform) => {
-                  const url = racer.socials[platform];
-                  return url ? (
-                    <a
-                      key={platform}
-                      href={url}
-                      target="_blank"
-                      rel="nofollow noopener noreferrer"
-                      className="font-semibold text-[#5025d1] underline decoration-1 underline-offset-4"
-                    >
-                      {SOCIAL_LABELS[platform]}
-                    </a>
-                  ) : null;
-                })}
+              <div className="mt-5">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                  Socials
+                </h4>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                  {SOCIAL_PLATFORMS.map((platform) => {
+                    const url = racer.socials[platform];
+                    return url ? (
+                      <a
+                        key={platform}
+                        href={url}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 font-semibold text-[#5025d1] underline decoration-1 underline-offset-4"
+                      >
+                        <SocialIcon platform={platform} className="h-4 w-4" />
+                        {SOCIAL_LABELS[platform]}
+                      </a>
+                    ) : null;
+                  })}
+                </div>
               </div>
             )}
           </div>
