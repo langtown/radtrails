@@ -93,11 +93,6 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
         <p className="mt-3 line-clamp-3 text-sm text-[#56585e]">
           {profile.bio || "No bio submitted."}
         </p>
-        {profile.slug && (
-          <p className="mt-4 text-sm font-semibold text-[#5025d1] underline">
-            Edit profile and personas
-          </p>
-        )}
       </div>
     </>
   );
