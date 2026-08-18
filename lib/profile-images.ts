@@ -2,11 +2,13 @@ import {
   AuthenticationError,
   requireAuthenticatedUser,
 } from "./auth";
+import { PersonaChangeError, requireAdminUser } from "./persona-admin";
 import {
   MAX_PROFILE_IMAGE_BYTES,
   PROFILE_IMAGE_TYPES,
   type ProfileImageType,
 } from "./profile-constraints";
+import { adminGetProfileBySlug } from "./profiles";
 
 export { MAX_PROFILE_IMAGE_BYTES } from "./profile-constraints";
 export const IMMUTABLE_IMAGE_CACHE_CONTROL =
@@ -35,7 +37,8 @@ function json(body: unknown, status: number): Response {
 function imageErrorResponse(error: unknown): Response | null {
   if (
     error instanceof AuthenticationError ||
-    error instanceof ProfileImageError
+    error instanceof ProfileImageError ||
+    error instanceof PersonaChangeError
   ) {
     return json({ error: error.message }, error.status);
   }
@@ -204,6 +207,40 @@ async function storeProfileImage(
   return imageKey;
 }
 
+async function uploadValidatedImage(
+  db: D1Database,
+  request: Request,
+  userId: number,
+): Promise<Response> {
+  const declaredType = normalizeContentType(
+    request.headers.get("Content-Type"),
+  );
+  if (!declaredType) {
+    throw new ProfileImageError(
+      "Please upload a JPEG, PNG, or WebP image.",
+      415,
+    );
+  }
+
+  const bytes = await readImageBytes(request);
+  const sniffedType = sniffImageContentType(bytes);
+  if (!sniffedType) {
+    throw new ProfileImageError(
+      "The uploaded bytes are not a valid JPEG, PNG, or WebP image.",
+      415,
+    );
+  }
+  if (sniffedType !== declaredType) {
+    throw new ProfileImageError(
+      "The image bytes do not match the declared Content-Type.",
+      415,
+    );
+  }
+
+  const imageKey = await storeProfileImage(db, userId, sniffedType, bytes);
+  return json({ imageKey, url: `/api/profiles/image/${imageKey}` }, 201);
+}
+
 /** HTTP behavior for POST /api/profile/image. */
 export async function handleProfileImageUpload(
   db: D1Database,
@@ -211,41 +248,34 @@ export async function handleProfileImageUpload(
 ): Promise<Response> {
   try {
     const userId = await requireAuthenticatedUser(db, request);
-    const declaredType = normalizeContentType(
-      request.headers.get("Content-Type"),
-    );
-    if (!declaredType) {
-      throw new ProfileImageError(
-        "Please upload a JPEG, PNG, or WebP image.",
-        415,
-      );
-    }
+    return await uploadValidatedImage(db, request, userId);
+  } catch (error) {
+    const response = imageErrorResponse(error);
+    if (response) return response;
+    throw error;
+  }
+}
 
-    const bytes = await readImageBytes(request);
-    const sniffedType = sniffImageContentType(bytes);
-    if (!sniffedType) {
-      throw new ProfileImageError(
-        "The uploaded bytes are not a valid JPEG, PNG, or WebP image.",
-        415,
-      );
+/**
+ * HTTP behavior for POST /api/admin/profiles/:slug/image.
+ *
+ * The image is recorded against the profile owner's account, not the
+ * admin's: ownership checks elsewhere (e.g. imageBelongsToUser) keep working
+ * exactly as if the owner had uploaded it themselves. The admin check runs
+ * before the slug lookup so a non-admin cannot probe for profile existence.
+ */
+export async function handleAdminProfileImageUpload(
+  db: D1Database,
+  request: Request,
+  slug: string,
+): Promise<Response> {
+  try {
+    await requireAdminUser(db, request);
+    const profile = await adminGetProfileBySlug(db, slug);
+    if (!profile) {
+      throw new ProfileImageError("profile not found", 404);
     }
-    if (sniffedType !== declaredType) {
-      throw new ProfileImageError(
-        "The image bytes do not match the declared Content-Type.",
-        415,
-      );
-    }
-
-    const imageKey = await storeProfileImage(
-      db,
-      userId,
-      sniffedType,
-      bytes,
-    );
-    return json(
-      { imageKey, url: `/api/profiles/image/${imageKey}` },
-      201,
-    );
+    return await uploadValidatedImage(db, request, profile.userId);
   } catch (error) {
     const response = imageErrorResponse(error);
     if (response) return response;

@@ -3,8 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
-import { buildProfilePayload } from "@/app/profile/ProfileEditor";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  buildProfilePayload,
+  validateProfileImageFile,
+} from "@/app/profile/ProfileEditor";
 import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
 import {
   MAX_PROFILE_BIO_CHARACTERS,
@@ -12,6 +15,7 @@ import {
   MAX_PROFILE_SPONSORS,
   MAX_SOCIAL_URL_CHARACTERS,
   MAX_SPONSOR_NAME_CHARACTERS,
+  PROFILE_IMAGE_TYPES,
   SOCIAL_LABELS,
   SOCIAL_PLATFORMS,
   parseImagePosition,
@@ -63,6 +67,48 @@ export default function AdminProfileEditPage() {
   const [personaBusy, setPersonaBusy] = useState<PersonaKey | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(
+    null,
+  );
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const previewObjectUrlRef = useRef<string | null>(null);
+
+  const previewUrl = previewObjectUrl ?? profile?.imageUrl ?? null;
+
+  useEffect(() => {
+    return () => {
+      if (previewObjectUrlRef.current) {
+        URL.revokeObjectURL(previewObjectUrlRef.current);
+      }
+    };
+  }, []);
+
+  function selectImage(file: File | null) {
+    setFeedback(null);
+    if (previewObjectUrlRef.current) {
+      URL.revokeObjectURL(previewObjectUrlRef.current);
+      previewObjectUrlRef.current = null;
+    }
+    if (!file) {
+      setSelectedFile(null);
+      setPreviewObjectUrl(null);
+      return;
+    }
+
+    const error = validateProfileImageFile(file);
+    if (error) {
+      setSelectedFile(null);
+      setPreviewObjectUrl(null);
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      setFeedback({ kind: "error", message: error });
+      return;
+    }
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    previewObjectUrlRef.current = objectUrl;
+    setPreviewObjectUrl(objectUrl);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -110,12 +156,42 @@ export default function AdminProfileEditPage() {
     event.preventDefault();
     if (!profile) return;
 
+    // Capture synchronously: currentTarget is null after the first await.
+    const form = event.currentTarget;
     setIsSaving(true);
     setFeedback(null);
     try {
+      // A newly chosen photo uploads first so its key can go in the payload.
+      let nextImageKey = profile.imageKey;
+      let nextImageUrl = profile.imageUrl;
+      if (selectedFile) {
+        const upload = await fetch(
+          `/api/admin/profiles/${encodeURIComponent(slug)}/image`,
+          {
+            method: "POST",
+            headers: { "Content-Type": selectedFile.type },
+            body: selectedFile,
+          },
+        );
+        if (!upload.ok) throw new Error(await errorMessage(upload));
+
+        const uploaded = (await upload.json()) as {
+          imageKey?: unknown;
+          url?: unknown;
+        };
+        if (
+          typeof uploaded.imageKey !== "string" ||
+          typeof uploaded.url !== "string"
+        ) {
+          throw new Error("The image upload returned an invalid response.");
+        }
+        nextImageKey = uploaded.imageKey;
+        nextImageUrl = uploaded.url;
+      }
+
       const payload = buildProfilePayload(
-        new FormData(event.currentTarget),
-        profile.imageKey,
+        new FormData(form),
+        nextImageKey,
         true,
       );
 
@@ -135,6 +211,8 @@ export default function AdminProfileEditPage() {
               ...current,
               displayName: payload.displayName,
               bio: payload.bio,
+              imageKey: payload.imageKey,
+              imageUrl: nextImageUrl,
               imagePosition: payload.imagePosition,
               socials: payload.socials,
               sponsors: payload.sponsors,
@@ -143,6 +221,8 @@ export default function AdminProfileEditPage() {
             }
           : current,
       );
+      selectImage(null);
+      if (imageInputRef.current) imageInputRef.current.value = "";
       setFeedback({
         kind: "success",
         message: "Saved. The updated profile is approved and live.",
@@ -274,13 +354,13 @@ export default function AdminProfileEditPage() {
             <div className="grid gap-6 md:grid-cols-[minmax(220px,0.6fr)_minmax(0,1.4fr)]">
               <div>
                 <div className="relative h-56 w-full overflow-hidden rounded-lg bg-[#dadce0]">
-                  {profile.imageUrl ? (
+                  {previewUrl ? (
                     <Image
-                      src={profile.imageUrl}
                       alt={`${profile.displayName} profile photo`}
                       fill
                       sizes="(min-width: 768px) 25vw, 100vw"
                       className="object-cover"
+                      src={previewUrl}
                       style={{ objectPosition: `${cropX}% ${cropY}%` }}
                       onLoad={(event) => {
                         const img = event.currentTarget;
@@ -310,7 +390,29 @@ export default function AdminProfileEditPage() {
                     </div>
                   )}
                 </div>
-                {profile.imageUrl && (
+                <div className="mt-3">
+                  <label
+                    htmlFor="photo"
+                    className="block text-sm font-semibold"
+                  >
+                    {profile.imageUrl ? "Replace photo" : "Choose a photo"}
+                  </label>
+                  <input
+                    ref={imageInputRef}
+                    id="photo"
+                    type="file"
+                    accept={PROFILE_IMAGE_TYPES.join(",")}
+                    onChange={(event) =>
+                      selectImage(event.target.files?.[0] ?? null)
+                    }
+                    className="mt-2 block w-full text-sm file:mr-3 file:rounded-[50px] file:border-0 file:bg-[#1a1a1a] file:px-4 file:py-2 file:font-semibold file:text-white"
+                  />
+                  <p className="mt-1 text-xs leading-relaxed text-[#56585e]">
+                    JPEG, PNG, or WebP up to 1 MB. The photo is uploaded when
+                    you save.
+                  </p>
+                </div>
+                {previewUrl && (
                   <div className="mt-3">
                     <label
                       htmlFor="cropY"

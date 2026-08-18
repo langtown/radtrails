@@ -275,3 +275,55 @@ test("invalid and unknown image keys return a cache-safe 404", async () => {
   expect(missing.status).toBe(404);
   expect(invalid.headers.get("Cache-Control")).toBe("no-store");
 });
+
+test("an admin uploads a replacement photo recorded against the profile owner", async () => {
+  const { handleAdminProfileImageUpload } = await import(
+    "@/lib/profile-images"
+  );
+  const admin = await createUser("admin-uploader");
+  const owner = await createUser("photo-owner");
+  await env.DB.prepare(
+    "INSERT INTO user_personas (user_id, persona_key) VALUES (?, 'admin')",
+  )
+    .bind(admin)
+    .run();
+  await env.DB.prepare(
+    "INSERT INTO profiles (user_id, slug, display_name) VALUES (?, 'owner-slug', 'Owner')",
+  )
+    .bind(owner)
+    .run();
+
+  // Non-admin is refused before the slug is even considered.
+  const outsider = await createUser("outsider");
+  const forbidden = await handleAdminProfileImageUpload(
+    env.DB,
+    await uploadRequest(outsider, PNG_BYTES, "image/png"),
+    "owner-slug",
+  );
+  expect(forbidden.status).toBe(403);
+
+  // Unknown slug 404s for a real admin.
+  const missing = await handleAdminProfileImageUpload(
+    env.DB,
+    await uploadRequest(admin, PNG_BYTES, "image/png"),
+    "no-such-slug",
+  );
+  expect(missing.status).toBe(404);
+
+  const created = await handleAdminProfileImageUpload(
+    env.DB,
+    await uploadRequest(admin, PNG_BYTES, "image/png"),
+    "owner-slug",
+  );
+  expect(created.status).toBe(201);
+  const body = (await created.json()) as { imageKey: string };
+
+  // Ownership sits with the profile owner, so they can reference the image
+  // in their own profile save just as if they had uploaded it.
+  const ownership = await env.DB.prepare(
+    "SELECT user_id FROM profile_image_uploads WHERE image_key = ?",
+  )
+    .bind(body.imageKey)
+    .first<{ user_id: number }>();
+  expect(ownership?.user_id).toBe(owner);
+});
