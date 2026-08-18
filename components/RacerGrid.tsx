@@ -33,6 +33,18 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
                 {racer.bio}
               </p>
             )}
+            {racer.sponsors.length > 0 && (
+              <div className="mt-5">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                  Sponsors
+                </h4>
+                <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#56585e]">
+                  {racer.sponsors.map((sponsor) => (
+                    <li key={sponsor}>{sponsor}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {SOCIAL_PLATFORMS.some((platform) => racer.socials[platform]) && (
               <div className="mt-5">
                 <h4 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">

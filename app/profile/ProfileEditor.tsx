@@ -6,7 +6,9 @@ import {
   MAX_PROFILE_BIO_CHARACTERS,
   MAX_PROFILE_IMAGE_BYTES,
   MAX_PROFILE_NAME_CHARACTERS,
+  MAX_PROFILE_SPONSORS,
   MAX_SOCIAL_URL_CHARACTERS,
+  MAX_SPONSOR_NAME_CHARACTERS,
   PROFILE_IMAGE_TYPES,
   SOCIAL_LABELS,
   SOCIAL_PLATFORMS,
@@ -44,6 +46,7 @@ type ProfilePayload = {
   imageKey: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
+  sponsors: string[];
 };
 
 type Feedback = { kind: "error" | "success"; message: string } | null;
@@ -92,12 +95,21 @@ export function buildProfilePayload(
   const cropX = parseCropValue(data, "cropX");
   const cropY = parseCropValue(data, "cropY");
 
+  // Sponsors are entered one per line in a plain textarea.
+  const sponsors = allowSocials
+    ? formString(data, "sponsors")
+        .split("\n")
+        .map((name) => name.trim())
+        .filter(Boolean)
+    : [];
+
   return {
     displayName: formString(data, "displayName"),
     bio: formString(data, "bio"),
     imageKey,
     imagePosition: imageKey ? `${cropX}% ${cropY}%` : null,
     socials,
+    sponsors,
   };
 }
 
@@ -438,6 +450,27 @@ export function ProfileEditor({
       </div>
 
       {canEditSocials ? (
+        <>
+        <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+          <h3 className="text-xl font-semibold">Sponsors</h3>
+          <p className="mt-1 text-sm text-[#56585e]">
+            Optional sponsor names, one per line, shown on your approved
+            profile.
+          </p>
+          <textarea
+            id="sponsors"
+            name="sponsors"
+            rows={4}
+            maxLength={(MAX_PROFILE_SPONSORS + 1) * MAX_SPONSOR_NAME_CHARACTERS}
+            defaultValue={(profile?.sponsors ?? []).join("\n")}
+            className={inputClass}
+          />
+          <p className="mt-1 text-xs text-[#56585e]">
+            Up to {MAX_PROFILE_SPONSORS} sponsors,{" "}
+            {MAX_SPONSOR_NAME_CHARACTERS} characters each.
+          </p>
+        </section>
+
         <section className="mt-10 border-t border-[#e3e3e3] pt-8">
           <h3 className="text-xl font-semibold">Social links</h3>
           <p className="mt-1 text-sm text-[#56585e]">
@@ -466,10 +499,11 @@ export function ProfileEditor({
             ))}
           </div>
         </section>
+        </>
       ) : (
         <p className="mt-10 rounded-lg bg-[#f7f7f7] px-5 py-4 text-sm text-[#56585e]">
-          Social links are available when an admin adds a team, coach, alumni,
-          or admin persona.
+          Sponsors and social links are available when an admin adds a team,
+          coach, alumni, or admin persona.
         </p>
       )}
 

@@ -3,7 +3,11 @@ import {
   requireAdminUser,
 } from "./persona-admin";
 import { hasPersona, type PersonaKey } from "./personas";
-import { parseStoredSocialLinks, type SocialLinks } from "./profiles";
+import {
+  parseStoredSocialLinks,
+  parseStoredSponsors,
+  type SocialLinks,
+} from "./profiles";
 
 export const MAX_REVIEW_NOTE_CHARACTERS = 500;
 
@@ -28,6 +32,7 @@ export type PendingProfile = {
   imageUrl: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
+  sponsors: string[];
   personas: PersonaKey[];
   submittedAt: string | null;
 };
@@ -68,7 +73,7 @@ export async function listPendingProfiles(
   const { results } = await db
     .prepare(
       `SELECT p.user_id, p.slug, p.display_name, p.bio, p.image_key,
-              p.image_position, p.social_links, p.submitted_at,
+              p.image_position, p.social_links, p.sponsors, p.submitted_at,
               up.persona_key
        FROM profiles p
        LEFT JOIN user_personas up ON up.user_id = p.user_id
@@ -83,6 +88,7 @@ export async function listPendingProfiles(
       image_key: string | null;
       image_position: string | null;
       social_links: string;
+      sponsors: string;
       submitted_at: string | null;
       persona_key: PersonaKey | null;
     }>();
@@ -101,6 +107,7 @@ export async function listPendingProfiles(
           : null,
         imagePosition: row.image_position,
         socials: parseStoredSocialLinks(row.social_links),
+        sponsors: parseStoredSponsors(row.sponsors),
         personas: [],
         submittedAt: row.submitted_at,
       };
@@ -200,9 +207,9 @@ export async function reviewProfile(
         .prepare(
           `INSERT INTO published_profiles
              (user_id, slug, display_name, bio, image_key, image_position,
-              social_links, published_at)
+              social_links, sponsors, published_at)
            SELECT user_id, slug, display_name, bio, image_key, image_position,
-                  social_links, ?
+                  social_links, sponsors, ?
            FROM profiles
            WHERE user_id = ? AND status = 'approved'
              AND reviewed_by = ? AND reviewed_at = ?
@@ -213,6 +220,7 @@ export async function reviewProfile(
              image_key = excluded.image_key,
              image_position = excluded.image_position,
              social_links = excluded.social_links,
+             sponsors = excluded.sponsors,
              published_at = excluded.published_at`,
         )
         .bind(reviewedAt, profileUserId, actorId, reviewedAt),

@@ -9,7 +9,9 @@ import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
 import {
   MAX_PROFILE_BIO_CHARACTERS,
   MAX_PROFILE_NAME_CHARACTERS,
+  MAX_PROFILE_SPONSORS,
   MAX_SOCIAL_URL_CHARACTERS,
+  MAX_SPONSOR_NAME_CHARACTERS,
   SOCIAL_LABELS,
   SOCIAL_PLATFORMS,
   parseImagePosition,
@@ -135,6 +137,7 @@ export default function AdminProfileEditPage() {
               bio: payload.bio,
               imagePosition: payload.imagePosition,
               socials: payload.socials,
+              sponsors: payload.sponsors,
               status: "approved",
               reviewNote: null,
             }
@@ -391,6 +394,23 @@ export default function AdminProfileEditPage() {
                   />
                 </div>
               </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold">Sponsors</h2>
+              <p className="mt-1 text-sm text-[#56585e]">
+                One sponsor name per line, shown on the public profile.
+              </p>
+              <textarea
+                id="sponsors"
+                name="sponsors"
+                rows={4}
+                maxLength={
+                  (MAX_PROFILE_SPONSORS + 1) * MAX_SPONSOR_NAME_CHARACTERS
+                }
+                defaultValue={profile.sponsors.join("\n")}
+                className="mt-3 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+              />
             </div>
 
             <div>

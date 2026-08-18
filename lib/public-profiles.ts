@@ -1,6 +1,7 @@
 import { PUBLIC_PROFILES_CACHE_TAG } from "./profile-cache";
 import {
   parseStoredSocialLinks,
+  parseStoredSponsors,
   type SocialLinks,
 } from "./profiles";
 
@@ -22,6 +23,7 @@ export type PublicProfile = {
   bio: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
+  sponsors: string[];
 };
 
 type PublishedProfileRow = {
@@ -31,6 +33,7 @@ type PublishedProfileRow = {
   image_key: string | null;
   image_position: string | null;
   social_links: string;
+  sponsors: string;
 };
 
 function isPublicPersona(value: string): value is PublicPersona {
@@ -45,6 +48,7 @@ function publicProfile(row: PublishedProfileRow): PublicProfile {
     bio: row.bio,
     imagePosition: row.image_position,
     socials: parseStoredSocialLinks(row.social_links),
+    sponsors: parseStoredSponsors(row.sponsors),
   };
 }
 
@@ -145,7 +149,7 @@ async function listPublicProfiles(
 	const { results } = await db
 		.prepare(
 			`SELECT pp.slug, pp.display_name, pp.bio, pp.image_key,
-                pp.image_position, pp.social_links
+                pp.image_position, pp.social_links, pp.sponsors
          FROM published_profiles pp
          INNER JOIN user_personas up ON up.user_id = pp.user_id
          WHERE up.persona_key = ?
@@ -246,7 +250,7 @@ export async function handleGetPublicProfile(
     const row = await db
       .prepare(
         `SELECT pp.slug, pp.display_name, pp.bio, pp.image_key,
-                pp.image_position, pp.social_links
+                pp.image_position, pp.social_links, pp.sponsors
          FROM published_profiles pp
          WHERE pp.slug = ?
            AND EXISTS (

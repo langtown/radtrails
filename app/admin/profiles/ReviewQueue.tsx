@@ -145,6 +145,19 @@ export default function ReviewQueue({
                   {profile.bio || "No bio submitted."}
                 </p>
 
+                {profile.sponsors.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                      Sponsors
+                    </h3>
+                    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#56585e]">
+                      {profile.sponsors.map((sponsor) => (
+                        <li key={sponsor}>{sponsor}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {Object.keys(profile.socials).length > 0 && (
                   <div className="mt-6">
                     <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">

@@ -41,6 +41,7 @@ const PROFILE: OwnProfile = {
     instagram: "https://www.instagram.com/trailrider/",
     twitter: "https://x.com/trailrider",
   },
+  sponsors: ["Rad Bikes", "Trail Snacks Co"],
   status: "pending",
   submittedAt: "2026-08-18 02:00:37",
   reviewedAt: null,
@@ -69,6 +70,11 @@ test("the editor includes profile fields, the image limit, crop preview, and rev
   expect(html).toContain("object-position:50% 32%");
   expect(html).toContain('value="Trail Rider"');
   expect(html).toContain("Loves technical trails.");
+  expect(html).not.toContain('name="sponsors"');
+
+  const withSocials = render(true);
+  expect(withSocials).toContain('name="sponsors"');
+  expect(withSocials).toContain("Rad Bikes\nTrail Snacks Co");
 });
 
 test("member-only accounts do not see editable social fields", () => {
@@ -77,7 +83,7 @@ test("member-only accounts do not see editable social fields", () => {
   expect(html).not.toContain(">Social links</h3>");
   expect(html).not.toContain('name="social-instagram"');
   expect(html).toContain(
-    "Social links are available when an admin adds a team, coach, alumni, or admin persona.",
+    "Sponsors and social links are available when an admin adds a team, coach, alumni, or admin persona.",
   );
 });
 
@@ -130,6 +136,7 @@ test("profile payloads include social fields only for eligible accounts", () => 
   data.set("cropY", "42");
   data.set("social-instagram", "https://instagram.com/trailrider");
   data.set("social-tiktok", "");
+  data.set("sponsors", " Rad Bikes \n\nTrail Snacks Co\n");
 
   expect(buildProfilePayload(data, null, false)).toEqual({
     displayName: "Trail Rider",
@@ -137,6 +144,7 @@ test("profile payloads include social fields only for eligible accounts", () => 
     imageKey: null,
     imagePosition: null,
     socials: {},
+    sponsors: [],
   });
   expect(buildProfilePayload(data, "b".repeat(64), true)).toEqual({
     displayName: "Trail Rider",
@@ -146,6 +154,7 @@ test("profile payloads include social fields only for eligible accounts", () => 
     socials: {
       instagram: "https://instagram.com/trailrider",
     },
+    sponsors: ["Rad Bikes", "Trail Snacks Co"],
   });
 });
 

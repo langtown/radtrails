@@ -139,6 +139,7 @@ test("list reads require approval and the requested public persona", async () =>
         bio: "Team Rider bio",
         imagePosition: "center 37%",
         socials: { instagram: "https://instagram.com/teamrider" },
+        sponsors: [],
       },
     ],
   });

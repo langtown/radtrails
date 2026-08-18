@@ -256,7 +256,7 @@ test("member-only accounts may save profiles but may not add social links", asyn
   expect(plainProfile.status).toBe(201);
   expect(withSocial.status).toBe(403);
   await expect(withSocial.json()).resolves.toEqual({
-    error: "a non-member persona is required to add social links",
+    error: "a non-member persona is required to add social links or sponsors",
   });
 
   const read = await handleGetProfile(
@@ -521,4 +521,58 @@ test("adminListProfilesByPersona returns every account holding the persona", asy
 
   const coaches = await adminListProfilesByPersona(env.DB, "coach");
   expect(coaches.map((entry) => entry.userId)).toEqual([coach]);
+});
+
+test("sponsors round-trip through save and read with validation", async () => {
+  const userId = await createUser("sub-sponsors");
+  await grantPersona(userId, "theteam");
+
+  const saved = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: ["  Rad Bikes  ", "", "Trail Snacks Co"],
+  });
+  expect(saved.status).toBe(201);
+  expect(await saved.json()).toMatchObject({
+    profile: { sponsors: ["Rad Bikes", "Trail Snacks Co"] },
+  });
+
+  const read = await handleGetProfile(env.DB, await requestForUser(userId));
+  expect(await read.json()).toMatchObject({
+    profile: { sponsors: ["Rad Bikes", "Trail Snacks Co"] },
+  });
+
+  const tooMany = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: Array.from({ length: 11 }, (_, i) => `Sponsor ${i}`),
+  });
+  expect(tooMany.status).toBe(400);
+
+  const tooLong = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: ["x".repeat(81)],
+  });
+  expect(tooLong.status).toBe(400);
+
+  const wrongShape = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: "Rad Bikes",
+  });
+  expect(wrongShape.status).toBe(400);
+
+  const markup = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: ["<b>Rad Bikes</b>"],
+  });
+  expect(markup.status).toBe(400);
+});
+
+test("member-only accounts cannot add sponsors", async () => {
+  const userId = await createUser("sub-member-sponsors");
+  await grantPersona(userId, "member");
+
+  const response = await putProfile(userId, {
+    displayName: "Member Rider",
+    sponsors: ["Rad Bikes"],
+  });
+  expect(response.status).toBe(403);
 });

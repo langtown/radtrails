@@ -6,7 +6,9 @@ import { getUserPersonas, type PersonaKey } from "./personas";
 import {
   MAX_PROFILE_BIO_CHARACTERS,
   MAX_PROFILE_NAME_CHARACTERS,
+  MAX_PROFILE_SPONSORS,
   MAX_SOCIAL_URL_CHARACTERS,
+  MAX_SPONSOR_NAME_CHARACTERS,
   SOCIAL_PLATFORMS,
   type SocialLinks,
   type SocialPlatform,
@@ -15,7 +17,9 @@ import {
 export {
   MAX_PROFILE_BIO_CHARACTERS,
   MAX_PROFILE_NAME_CHARACTERS,
+  MAX_PROFILE_SPONSORS,
   MAX_SOCIAL_URL_CHARACTERS,
+  MAX_SPONSOR_NAME_CHARACTERS,
   SOCIAL_PLATFORMS,
 } from "./profile-constraints";
 export type { SocialLinks, SocialPlatform } from "./profile-constraints";
@@ -29,6 +33,7 @@ const PROFILE_FIELDS = [
   "imageKey",
   "imagePosition",
   "socials",
+  "sponsors",
 ] as const;
 
 const SOCIAL_HOSTS: Partial<Record<SocialPlatform, readonly string[]>> = {
@@ -56,6 +61,7 @@ type ProfileInput = {
   imageKey: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
+  sponsors: string[];
 };
 
 export type OwnProfile = ProfileInput & {
@@ -297,6 +303,44 @@ export function parseStoredSocialLinks(value: string): SocialLinks {
   }
 }
 
+function normalizeSponsors(value: unknown): string[] {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) {
+    throw new ProfileError("sponsors must be an array of names", 400);
+  }
+  if (value.length > MAX_PROFILE_SPONSORS) {
+    throw new ProfileError("too many sponsors", 400);
+  }
+
+  const sponsors: string[] = [];
+  for (const entry of value) {
+    if (typeof entry !== "string") {
+      throw new ProfileError("sponsors must be an array of names", 400);
+    }
+    const name = entry.trim();
+    if (!name) continue;
+    if (Array.from(name).length > MAX_SPONSOR_NAME_CHARACTERS) {
+      throw new ProfileError("a sponsor name is too long", 400);
+    }
+    if (/[<>\u0000-\u001f\u007f]/.test(name)) {
+      throw new ProfileError(
+        "sponsor names may not contain markup or control characters",
+        400,
+      );
+    }
+    sponsors.push(name);
+  }
+  return sponsors;
+}
+
+export function parseStoredSponsors(value: string): string[] {
+  try {
+    return normalizeSponsors(JSON.parse(value) as unknown);
+  } catch {
+    throw new Error("profile contains invalid stored sponsors");
+  }
+}
+
 export function validateProfileInput(input: unknown): ProfileInput {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw new ProfileError("profile body must be an object", 400);
@@ -338,6 +382,7 @@ export function validateProfileInput(input: unknown): ProfileInput {
     imageKey,
     imagePosition: normalizeImagePosition(record.imagePosition),
     socials: normalizeSocialLinks(record.socials),
+    sponsors: normalizeSponsors(record.sponsors),
   };
 }
 
@@ -389,8 +434,8 @@ async function createProfile(
       .prepare(
         `INSERT OR IGNORE INTO profiles
            (user_id, slug, display_name, bio, image_key, image_position,
-            social_links, status, submitted_at, reviewed_at, reviewed_by)
-         VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP, NULL, NULL)`,
+            social_links, sponsors, status, submitted_at, reviewed_at, reviewed_by)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP, NULL, NULL)`,
       )
       .bind(
         userId,
@@ -400,6 +445,7 @@ async function createProfile(
         input.imageKey,
         input.imagePosition,
         JSON.stringify(input.socials),
+        JSON.stringify(input.sponsors),
       )
       .run();
 
@@ -418,7 +464,7 @@ async function updateProfile(
     .prepare(
       `UPDATE profiles
        SET display_name = ?, bio = ?, image_key = ?, image_position = ?,
-           social_links = ?,
+           social_links = ?, sponsors = ?,
            status = 'pending', submitted_at = CURRENT_TIMESTAMP,
            reviewed_at = NULL, reviewed_by = NULL, review_note = NULL,
            updated_at = CURRENT_TIMESTAMP
@@ -430,6 +476,7 @@ async function updateProfile(
       input.imageKey,
       input.imagePosition,
       JSON.stringify(input.socials),
+      JSON.stringify(input.sponsors),
       userId,
     )
     .run();
@@ -442,7 +489,7 @@ export async function getOwnProfile(
   const row = await db
     .prepare(
       `SELECT slug, display_name, bio, image_key, image_position, social_links,
-              status, submitted_at, reviewed_at, review_note
+              sponsors, status, submitted_at, reviewed_at, review_note
        FROM profiles
        WHERE user_id = ?`,
     )
@@ -454,6 +501,7 @@ export async function getOwnProfile(
       image_key: string | null;
       image_position: string | null;
       social_links: string;
+      sponsors: string;
       status: string;
       submitted_at: string | null;
       reviewed_at: string | null;
@@ -472,6 +520,7 @@ export async function getOwnProfile(
       : null,
     imagePosition: row.image_position,
     socials: parseStoredSocialLinks(row.social_links),
+    sponsors: parseStoredSponsors(row.sponsors),
     status: row.status,
     submittedAt: row.submitted_at,
     reviewedAt: row.reviewed_at,
@@ -559,8 +608,8 @@ export async function adminGetProfileBySlug(
   const row = await db
     .prepare(
       `SELECT p.user_id, p.slug, p.display_name, p.bio, p.image_key,
-              p.image_position, p.social_links, p.status, p.submitted_at,
-              p.reviewed_at, p.review_note
+              p.image_position, p.social_links, p.sponsors, p.status,
+              p.submitted_at, p.reviewed_at, p.review_note
        FROM profiles p
        WHERE p.slug = ?`,
     )
@@ -573,6 +622,7 @@ export async function adminGetProfileBySlug(
       image_key: string | null;
       image_position: string | null;
       social_links: string;
+      sponsors: string;
       status: string;
       submitted_at: string | null;
       reviewed_at: string | null;
@@ -598,6 +648,7 @@ export async function adminGetProfileBySlug(
     imageUrl: row.image_key ? `/api/profiles/image/${row.image_key}` : null,
     imagePosition: row.image_position,
     socials: parseStoredSocialLinks(row.social_links),
+    sponsors: parseStoredSponsors(row.sponsors),
     status: row.status,
     submittedAt: row.submitted_at,
     reviewedAt: row.reviewed_at,
@@ -621,8 +672,8 @@ export async function adminUpdateProfile(
     .prepare(
       `UPDATE profiles
        SET display_name = ?, bio = ?, image_key = ?, image_position = ?,
-           social_links = ?, status = 'approved', reviewed_at = ?, reviewed_by = ?,
-           review_note = NULL, updated_at = CURRENT_TIMESTAMP
+           social_links = ?, sponsors = ?, status = 'approved', reviewed_at = ?,
+           reviewed_by = ?, review_note = NULL, updated_at = CURRENT_TIMESTAMP
        WHERE user_id = ?`,
     )
     .bind(
@@ -631,6 +682,7 @@ export async function adminUpdateProfile(
       input.imageKey,
       input.imagePosition,
       JSON.stringify(input.socials),
+      JSON.stringify(input.sponsors),
       new Date().toISOString(),
       actorId,
       profileUserId,
@@ -643,9 +695,9 @@ export async function adminUpdateProfile(
     .prepare(
       `INSERT INTO published_profiles
          (user_id, slug, display_name, bio, image_key, image_position,
-          social_links, published_at)
+          social_links, sponsors, published_at)
        SELECT user_id, slug, display_name, bio, image_key, image_position,
-              social_links, ?
+              social_links, sponsors, ?
        FROM profiles
        WHERE user_id = ? AND status = 'approved'
        ON CONFLICT (user_id) DO UPDATE SET
@@ -655,6 +707,7 @@ export async function adminUpdateProfile(
          image_key = excluded.image_key,
          image_position = excluded.image_position,
          social_links = excluded.social_links,
+         sponsors = excluded.sponsors,
          published_at = excluded.published_at`,
     )
     .bind(reviewedAt, profileUserId)
@@ -685,11 +738,11 @@ export async function handlePutProfile(
     const userId = await requireAuthenticatedUser(db, request);
     const input = validateProfileInput(await readBoundedJson(request));
 
-    if (Object.keys(input.socials).length > 0) {
+    if (Object.keys(input.socials).length > 0 || input.sponsors.length > 0) {
       const personas = await getUserPersonas(db, userId);
       if (!personas.some((persona) => persona !== "member")) {
         throw new ProfileError(
-          "a non-member persona is required to add social links",
+          "a non-member persona is required to add social links or sponsors",
           403,
         );
       }

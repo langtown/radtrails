@@ -27,6 +27,7 @@ test("the review queue presents profile content, socials, feedback, and decision
       instagram: "https://instagram.com/trailcoach",
       website: "https://trailcoach.example",
     },
+    sponsors: ["Trail Snacks Co"],
     personas: ["coach", "member"],
     submittedAt: "2026-08-18 02:00:37",
   };
@@ -39,6 +40,8 @@ test("the review queue presents profile content, socials, feedback, and decision
   expect(html).toContain("A coach bio");
   expect(html).toContain("Coach");
   expect(html).toContain("instagram.com/trailcoach");
+  expect(html).toContain("Sponsors");
+  expect(html).toContain("Trail Snacks Co");
   expect(html).toContain("object-position:center 38%");
   expect(html).toContain("Approve");
   expect(html).toContain("Reject");

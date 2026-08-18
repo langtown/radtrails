@@ -7,11 +7,13 @@ type StaticRacer = {
 	bio: string | null;
 	imagePosition?: string | null;
 	socials?: SocialLinks;
+	sponsors?: string[];
 };
 
 export type RacingCard = StaticRacer & {
 	key: string;
 	socials: SocialLinks;
+	sponsors: string[];
 };
 
 function normalizedName(name: string): string {
@@ -30,6 +32,7 @@ export function buildRacingTeam(
 		...racer,
 		key: `content:${racer.name}`,
 		socials: racer.socials ?? {},
+		sponsors: racer.sponsors ?? [],
 	}));
 	const approvedTeam = approvedProfiles
 		.filter((profile) => !checkedInNames.has(normalizedName(profile.name)))
@@ -40,6 +43,7 @@ export function buildRacingTeam(
 			bio: profile.bio,
 			imagePosition: profile.imagePosition,
 			socials: profile.socials,
+			sponsors: profile.sponsors,
 		}));
 
 	return [...checkedInTeam, ...approvedTeam].sort((a, b) =>

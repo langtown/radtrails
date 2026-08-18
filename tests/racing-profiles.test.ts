@@ -34,6 +34,7 @@ test("approved team profiles append without replacing checked-in racers", () => 
         instagram: "https://instagram.com/newteamrider",
         strava: "https://strava.com/athletes/123",
       },
+      sponsors: ["Rad Bikes", "Trail Snacks Co"],
     },
     {
       slug: "bobby-duplicate",
@@ -42,6 +43,7 @@ test("approved team profiles append without replacing checked-in racers", () => 
       bio: "A duplicate of the checked-in featured racer",
       imagePosition: null,
       socials: {},
+      sponsors: [],
     },
   ];
 
@@ -59,10 +61,14 @@ test("approved team profiles append without replacing checked-in racers", () => 
       instagram: "https://instagram.com/newteamrider",
       strava: "https://strava.com/athletes/123",
     },
+    sponsors: ["Rad Bikes", "Trail Snacks Co"],
   });
 
   const html = renderToStaticMarkup(RacerGrid({ racers: team }));
   expect(html).toContain("New Team Rider");
+  expect(html).toContain("Sponsors");
+  expect(html).toContain("Rad Bikes");
+  expect(html).toContain("Trail Snacks Co");
   expect(html).toContain("Socials");
   expect(html).toContain('href="https://instagram.com/newteamrider"');
   expect(html).toContain('href="https://strava.com/athletes/123"');
