@@ -28,7 +28,7 @@ export default function AdminProfilesManager() {
       try {
         const res = await fetch(`/api/profiles?persona=${persona}`);
         if (!res.ok) throw new Error("Failed to load profiles");
-        const body = await res.json();
+        const body = (await res.json()) as { profiles?: PublicProfile[] };
         setProfiles(body.profiles ?? []);
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
