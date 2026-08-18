@@ -74,12 +74,15 @@ export default function ProfileEdit({ params }: { params: { slug: string } }) {
           <input name="imagePosition" defaultValue={profile.imagePosition ?? ''} className="mt-2 w-full rounded-lg border px-3 py-2" />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {Object.entries(profile.socials ?? {}).map(([k,v]) => (
-            <div key={k}>
-              <label className="block text-sm font-semibold">{k}</label>
-              <input name={k} defaultValue={v} className="mt-2 w-full rounded-lg border px-3 py-2" />
-            </div>
-          ))}
+          {Object.entries(profile.socials ?? {}).map(([k, v]) => {
+            const val = typeof v === 'string' ? v : '';
+            return (
+              <div key={k}>
+                <label className="block text-sm font-semibold">{k}</label>
+                <input name={k} defaultValue={val} className="mt-2 w-full rounded-lg border px-3 py-2" />
+              </div>
+            );
+          })}
         </div>
         <div>
           <button className="mt-4 rounded-[50px] bg-[#1a1a1a] px-6 py-3 text-sm font-semibold text-white">Save</button>
