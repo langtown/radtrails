@@ -152,7 +152,20 @@ export default function ReviewQueue({
                     </h3>
                     <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#56585e]">
                       {profile.sponsors.map((sponsor) => (
-                        <li key={sponsor}>{sponsor}</li>
+                        <li key={sponsor.name}>
+                          {sponsor.url ? (
+                            <a
+                              href={sponsor.url}
+                              target="_blank"
+                              rel="nofollow noopener noreferrer"
+                              className="font-semibold text-[#5025d1] underline"
+                            >
+                              {sponsor.name}
+                            </a>
+                          ) : (
+                            sponsor.name
+                          )}
+                        </li>
                       ))}
                     </ul>
                   </div>

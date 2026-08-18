@@ -27,6 +27,9 @@ export const SOCIAL_PLATFORMS = [
 export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
 export type SocialLinks = Partial<Record<SocialPlatform, string>>;
 
+/** A sponsor shout-out: plain name, optionally linking to the sponsor's site. */
+export type Sponsor = { name: string; url: string | null };
+
 export const SOCIAL_LABELS: Record<SocialPlatform, string> = {
   instagram: "Instagram",
   tiktok: "TikTok",

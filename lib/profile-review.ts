@@ -3,6 +3,7 @@ import {
   requireAdminUser,
 } from "./persona-admin";
 import { hasPersona, type PersonaKey } from "./personas";
+import type { Sponsor } from "./profile-constraints";
 import {
   parseStoredSocialLinks,
   parseStoredSponsors,
@@ -32,7 +33,7 @@ export type PendingProfile = {
   imageUrl: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
-  sponsors: string[];
+  sponsors: Sponsor[];
   personas: PersonaKey[];
   submittedAt: string | null;
 };

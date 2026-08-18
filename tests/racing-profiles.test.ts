@@ -34,7 +34,10 @@ test("approved team profiles append without replacing checked-in racers", () => 
         instagram: "https://instagram.com/newteamrider",
         strava: "https://strava.com/athletes/123",
       },
-      sponsors: ["Rad Bikes", "Trail Snacks Co"],
+      sponsors: [
+        { name: "Rad Bikes", url: "https://radbikes.example" },
+        { name: "Trail Snacks Co", url: null },
+      ],
     },
     {
       slug: "bobby-duplicate",
@@ -61,12 +64,16 @@ test("approved team profiles append without replacing checked-in racers", () => 
       instagram: "https://instagram.com/newteamrider",
       strava: "https://strava.com/athletes/123",
     },
-    sponsors: ["Rad Bikes", "Trail Snacks Co"],
+    sponsors: [
+      { name: "Rad Bikes", url: "https://radbikes.example" },
+      { name: "Trail Snacks Co", url: null },
+    ],
   });
 
   const html = renderToStaticMarkup(RacerGrid({ racers: team }));
   expect(html).toContain("New Team Rider");
   expect(html).toContain("Sponsors");
+  expect(html).toContain('href="https://radbikes.example"');
   expect(html).toContain("Rad Bikes");
   expect(html).toContain("Trail Snacks Co");
   expect(html).toContain("Socials");

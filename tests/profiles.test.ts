@@ -527,19 +527,49 @@ test("sponsors round-trip through save and read with validation", async () => {
   const userId = await createUser("sub-sponsors");
   await grantPersona(userId, "theteam");
 
+  // Plain strings stay accepted (name only); objects add an optional link.
   const saved = await putProfile(userId, {
     displayName: "Sponsored Rider",
-    sponsors: ["  Rad Bikes  ", "", "Trail Snacks Co"],
+    sponsors: [
+      "  Trail Snacks Co  ",
+      "",
+      { name: "Rad Bikes", url: "https://radbikes.example" },
+      { name: "Link-free", url: null },
+    ],
   });
   expect(saved.status).toBe(201);
   expect(await saved.json()).toMatchObject({
-    profile: { sponsors: ["Rad Bikes", "Trail Snacks Co"] },
+    profile: {
+      sponsors: [
+        { name: "Trail Snacks Co", url: null },
+        { name: "Rad Bikes", url: "https://radbikes.example/" },
+        { name: "Link-free", url: null },
+      ],
+    },
   });
 
   const read = await handleGetProfile(env.DB, await requestForUser(userId));
   expect(await read.json()).toMatchObject({
-    profile: { sponsors: ["Rad Bikes", "Trail Snacks Co"] },
+    profile: {
+      sponsors: [
+        { name: "Trail Snacks Co", url: null },
+        { name: "Rad Bikes", url: "https://radbikes.example/" },
+        { name: "Link-free", url: null },
+      ],
+    },
   });
+
+  const httpUrl = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: [{ name: "Rad Bikes", url: "http://radbikes.example" }],
+  });
+  expect(httpUrl.status).toBe(400);
+
+  const missingName = await putProfile(userId, {
+    displayName: "Sponsored Rider",
+    sponsors: [{ url: "https://radbikes.example" }],
+  });
+  expect(missingName.status).toBe(400);
 
   const tooMany = await putProfile(userId, {
     displayName: "Sponsored Rider",

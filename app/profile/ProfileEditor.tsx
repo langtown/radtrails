@@ -14,6 +14,7 @@ import {
   SOCIAL_PLATFORMS,
   parseImagePosition,
   type SocialLinks,
+  type Sponsor,
 } from "@/lib/profile-constraints";
 import type { OwnProfile } from "@/lib/profiles";
 
@@ -46,7 +47,7 @@ type ProfilePayload = {
   imageKey: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
-  sponsors: string[];
+  sponsors: Sponsor[];
 };
 
 type Feedback = { kind: "error" | "success"; message: string } | null;
@@ -95,12 +96,16 @@ export function buildProfilePayload(
   const cropX = parseCropValue(data, "cropX");
   const cropY = parseCropValue(data, "cropY");
 
-  // Sponsors are entered one per line in a plain textarea.
+  // Sponsors are entered one per line, `Name | https://url` for a link.
   const sponsors = allowSocials
     ? formString(data, "sponsors")
         .split("\n")
-        .map((name) => name.trim())
+        .map((line) => line.trim())
         .filter(Boolean)
+        .map((line): Sponsor => {
+          const [name, url] = line.split("|").map((part) => part.trim());
+          return { name, url: url || null };
+        })
     : [];
 
   return {
@@ -454,15 +459,23 @@ export function ProfileEditor({
         <section className="mt-10 border-t border-[#e3e3e3] pt-8">
           <h3 className="text-xl font-semibold">Sponsors</h3>
           <p className="mt-1 text-sm text-[#56585e]">
-            Optional sponsor names, one per line, shown on your approved
-            profile.
+            Optional sponsors, one per line, shown on your approved profile.
+            Add a link after a name like:{" "}
+            <code>Rad Bikes | https://radbikes.example</code>
           </p>
           <textarea
             id="sponsors"
             name="sponsors"
             rows={4}
-            maxLength={(MAX_PROFILE_SPONSORS + 1) * MAX_SPONSOR_NAME_CHARACTERS}
-            defaultValue={(profile?.sponsors ?? []).join("\n")}
+            maxLength={
+              (MAX_PROFILE_SPONSORS + 1) *
+              (MAX_SPONSOR_NAME_CHARACTERS + MAX_SOCIAL_URL_CHARACTERS)
+            }
+            defaultValue={(profile?.sponsors ?? [])
+              .map((sponsor) =>
+                sponsor.url ? `${sponsor.name} | ${sponsor.url}` : sponsor.name,
+              )
+              .join("\n")}
             className={inputClass}
           />
           <p className="mt-1 text-xs text-[#56585e]">

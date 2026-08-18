@@ -27,7 +27,7 @@ test("the review queue presents profile content, socials, feedback, and decision
       instagram: "https://instagram.com/trailcoach",
       website: "https://trailcoach.example",
     },
-    sponsors: ["Trail Snacks Co"],
+    sponsors: [{ name: "Trail Snacks Co", url: null }],
     personas: ["coach", "member"],
     submittedAt: "2026-08-18 02:00:37",
   };

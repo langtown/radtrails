@@ -399,16 +399,25 @@ export default function AdminProfileEditPage() {
             <div>
               <h2 className="text-xl font-semibold">Sponsors</h2>
               <p className="mt-1 text-sm text-[#56585e]">
-                One sponsor name per line, shown on the public profile.
+                One sponsor per line, shown on the public profile. Add a link
+                after a name like:{" "}
+                <code>Rad Bikes | https://radbikes.example</code>
               </p>
               <textarea
                 id="sponsors"
                 name="sponsors"
                 rows={4}
                 maxLength={
-                  (MAX_PROFILE_SPONSORS + 1) * MAX_SPONSOR_NAME_CHARACTERS
+                  (MAX_PROFILE_SPONSORS + 1) *
+                  (MAX_SPONSOR_NAME_CHARACTERS + MAX_SOCIAL_URL_CHARACTERS)
                 }
-                defaultValue={profile.sponsors.join("\n")}
+                defaultValue={profile.sponsors
+                  .map((sponsor) =>
+                    sponsor.url
+                      ? `${sponsor.name} | ${sponsor.url}`
+                      : sponsor.name,
+                  )
+                  .join("\n")}
                 className="mt-3 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
               />
             </div>

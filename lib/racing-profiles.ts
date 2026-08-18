@@ -1,4 +1,4 @@
-import type { SocialLinks } from "./profile-constraints";
+import type { SocialLinks, Sponsor } from "./profile-constraints";
 import type { PublicProfile } from "./public-profiles";
 
 type StaticRacer = {
@@ -7,13 +7,13 @@ type StaticRacer = {
 	bio: string | null;
 	imagePosition?: string | null;
 	socials?: SocialLinks;
-	sponsors?: string[];
+	sponsors?: Sponsor[];
 };
 
 export type RacingCard = StaticRacer & {
 	key: string;
 	socials: SocialLinks;
-	sponsors: string[];
+	sponsors: Sponsor[];
 };
 
 function normalizedName(name: string): string {

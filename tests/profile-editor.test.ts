@@ -41,7 +41,10 @@ const PROFILE: OwnProfile = {
     instagram: "https://www.instagram.com/trailrider/",
     twitter: "https://x.com/trailrider",
   },
-  sponsors: ["Rad Bikes", "Trail Snacks Co"],
+  sponsors: [
+    { name: "Rad Bikes", url: "https://radbikes.example" },
+    { name: "Trail Snacks Co", url: null },
+  ],
   status: "pending",
   submittedAt: "2026-08-18 02:00:37",
   reviewedAt: null,
@@ -74,7 +77,9 @@ test("the editor includes profile fields, the image limit, crop preview, and rev
 
   const withSocials = render(true);
   expect(withSocials).toContain('name="sponsors"');
-  expect(withSocials).toContain("Rad Bikes\nTrail Snacks Co");
+  expect(withSocials).toContain(
+    "Rad Bikes | https://radbikes.example\nTrail Snacks Co",
+  );
 });
 
 test("member-only accounts do not see editable social fields", () => {
@@ -136,7 +141,7 @@ test("profile payloads include social fields only for eligible accounts", () => 
   data.set("cropY", "42");
   data.set("social-instagram", "https://instagram.com/trailrider");
   data.set("social-tiktok", "");
-  data.set("sponsors", " Rad Bikes \n\nTrail Snacks Co\n");
+  data.set("sponsors", " Rad Bikes | https://radbikes.example \n\nTrail Snacks Co\n");
 
   expect(buildProfilePayload(data, null, false)).toEqual({
     displayName: "Trail Rider",
@@ -154,7 +159,10 @@ test("profile payloads include social fields only for eligible accounts", () => 
     socials: {
       instagram: "https://instagram.com/trailrider",
     },
-    sponsors: ["Rad Bikes", "Trail Snacks Co"],
+    sponsors: [
+      { name: "Rad Bikes", url: "https://radbikes.example" },
+      { name: "Trail Snacks Co", url: null },
+    ],
   });
 });
 

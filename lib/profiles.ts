@@ -12,6 +12,7 @@ import {
   SOCIAL_PLATFORMS,
   type SocialLinks,
   type SocialPlatform,
+  type Sponsor,
 } from "./profile-constraints";
 
 export {
@@ -22,6 +23,7 @@ export {
   MAX_SPONSOR_NAME_CHARACTERS,
   SOCIAL_PLATFORMS,
 } from "./profile-constraints";
+export type { Sponsor } from "./profile-constraints";
 export type { SocialLinks, SocialPlatform } from "./profile-constraints";
 
 export const MAX_PROFILE_REQUEST_BYTES = 16 * 1024;
@@ -61,7 +63,7 @@ type ProfileInput = {
   imageKey: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
-  sponsors: string[];
+  sponsors: Sponsor[];
 };
 
 export type OwnProfile = ProfileInput & {
@@ -303,37 +305,71 @@ export function parseStoredSocialLinks(value: string): SocialLinks {
   }
 }
 
-function normalizeSponsors(value: unknown): string[] {
+function normalizeSponsorName(value: unknown): string {
+  if (typeof value !== "string") {
+    throw new ProfileError("a sponsor name is required", 400);
+  }
+  const name = value.trim();
+  if (!name) {
+    throw new ProfileError("a sponsor name is required", 400);
+  }
+  if (Array.from(name).length > MAX_SPONSOR_NAME_CHARACTERS) {
+    throw new ProfileError("a sponsor name is too long", 400);
+  }
+  if (/[<>\u0000-\u001f\u007f]/.test(name)) {
+    throw new ProfileError(
+      "sponsor names may not contain markup or control characters",
+      400,
+    );
+  }
+  return name;
+}
+
+function normalizeSponsorUrl(value: unknown): string | null {
+  if (value === undefined || value === null || value === "") return null;
+  try {
+    // Sponsor sites follow the same rules as the "personal website" social.
+    return normalizeSocialUrl("website", value);
+  } catch {
+    throw new ProfileError("a sponsor URL must be a valid HTTPS URL", 400);
+  }
+}
+
+/**
+ * Sponsors are stored as `{ name, url }` objects. Plain strings are still
+ * accepted (name only, no link) so rows written before links existed keep
+ * working.
+ */
+function normalizeSponsors(value: unknown): Sponsor[] {
   if (value === undefined || value === null) return [];
   if (!Array.isArray(value)) {
-    throw new ProfileError("sponsors must be an array of names", 400);
+    throw new ProfileError("sponsors must be an array", 400);
   }
   if (value.length > MAX_PROFILE_SPONSORS) {
     throw new ProfileError("too many sponsors", 400);
   }
 
-  const sponsors: string[] = [];
+  const sponsors: Sponsor[] = [];
   for (const entry of value) {
-    if (typeof entry !== "string") {
-      throw new ProfileError("sponsors must be an array of names", 400);
+    if (typeof entry === "string") {
+      const name = entry.trim();
+      if (!name) continue;
+      sponsors.push({ name: normalizeSponsorName(name), url: null });
+      continue;
     }
-    const name = entry.trim();
-    if (!name) continue;
-    if (Array.from(name).length > MAX_SPONSOR_NAME_CHARACTERS) {
-      throw new ProfileError("a sponsor name is too long", 400);
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new ProfileError("sponsors must be names or { name, url }", 400);
     }
-    if (/[<>\u0000-\u001f\u007f]/.test(name)) {
-      throw new ProfileError(
-        "sponsor names may not contain markup or control characters",
-        400,
-      );
-    }
-    sponsors.push(name);
+    const record = entry as Record<string, unknown>;
+    sponsors.push({
+      name: normalizeSponsorName(record.name),
+      url: normalizeSponsorUrl(record.url),
+    });
   }
   return sponsors;
 }
 
-export function parseStoredSponsors(value: string): string[] {
+export function parseStoredSponsors(value: string): Sponsor[] {
   try {
     return normalizeSponsors(JSON.parse(value) as unknown);
   } catch {

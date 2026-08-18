@@ -1,4 +1,5 @@
 import { PUBLIC_PROFILES_CACHE_TAG } from "./profile-cache";
+import type { Sponsor } from "./profile-constraints";
 import {
   parseStoredSocialLinks,
   parseStoredSponsors,
@@ -23,7 +24,7 @@ export type PublicProfile = {
   bio: string | null;
   imagePosition: string | null;
   socials: SocialLinks;
-  sponsors: string[];
+  sponsors: Sponsor[];
 };
 
 type PublishedProfileRow = {
