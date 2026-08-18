@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import type { PublicProfile } from "@/lib/public-profiles";
 import { PUBLIC_PROFILE_PERSONAS } from "@/lib/public-profiles";
+import type { PublicPersona } from "@/lib/public-profiles";
 
-function PersonaSelector({ persona, setPersona }: { persona: string; setPersona: (p: string) => void }) {
+function PersonaSelector({ persona, setPersona }: { persona: PublicPersona; setPersona: (p: PublicPersona) => void }) {
   return (
     <div className="flex items-center gap-3">
       <label className="text-sm font-semibold">Persona</label>
@@ -18,7 +19,7 @@ function PersonaSelector({ persona, setPersona }: { persona: string; setPersona:
 }
 
 export default function AdminProfilesManager() {
-  const [persona, setPersona] = useState(PUBLIC_PROFILE_PERSONAS[0]);
+  const [persona, setPersona] = useState<PublicPersona>(PUBLIC_PROFILE_PERSONAS[0]);
   const [profiles, setProfiles] = useState<PublicProfile[]>([]);
   const [error, setError] = useState<string | null>(null);
 
