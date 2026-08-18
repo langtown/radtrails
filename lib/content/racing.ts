@@ -30,12 +30,6 @@ export const racers = [
     bio: "I started racing cyclocross in Ohio at 12 years old, inspired by my love of bicycles and my dad, who is an avid cyclist. In my senior year, I moved to California and rediscovered my love for racing bikes. Transitioning from the flat terrain of Ohio to the incredible mountain bike trails in California reignited my competitive fire. I joined the Newbury Park mountain bike team placing 1st in the JV1 category and earning consistent top-10 finishes in JV2. I also ventured into enduro racing with Team Big Bear, where I podiumed in the beginner class. After graduating, in the fall of 2023, I began working with Bobby Langin, who has helped take my skills and training to the next level. Now, I'm riding six days a week, constantly pushing myself to improve. My passion for cycling is stronger than ever, and I don't see myself slowing down anytime soon.",
   },
   {
-    name: "Beatrice Blackburn",
-    image: "/images/athletes/bebe-blackburn.jpg",
-    imagePosition: "center 32%",
-    bio: "I've been riding since I was 4 or 5 years old but started racing at 12. This will be my third year of racing. Until recently, I only competed in SoCal League XC races, but earlier this year, I began participating in other events. I placed on the podium in two of the three SoCal League races I entered and also earned podium finishes in both Rim Nordic XC races I competed in.",
-  },
-  {
     name: "Jeremy Rowell",
     image: "/images/athletes/jeremy-rowell.jpg",
     bio: "Jeremy is a 17-year-old high school senior at Newbury Park High School and a racer for Langtown Racing Academy and the NPHS team. He has been riding for seven years and has no plans of stopping. This is his second year competing in SoCal Varsity and his third year racing in the U.S. National Championships for XCO.",
