@@ -148,6 +148,30 @@ test("profile payloads include social fields only for eligible accounts", () => 
   });
 });
 
+test("profile payloads keep a 0% crop focus and only default when missing", () => {
+  const data = new FormData();
+  data.set("displayName", "Trail Rider");
+  data.set("cropY", "0");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("center 0%");
+
+  data.set("cropY", "not-a-number");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("center 50%");
+
+  data.delete("cropY");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("center 50%");
+
+  data.set("cropY", "140");
+  expect(
+    buildProfilePayload(data, "b".repeat(64), false).imagePosition,
+  ).toBe("center 100%");
+});
+
 test("image selection enforces the same type and size contract as the API", () => {
   expect(
     validateProfileImageFile({ size: 512_000, type: "image/webp" }),

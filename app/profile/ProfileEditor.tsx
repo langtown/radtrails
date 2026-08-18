@@ -86,10 +86,12 @@ export function buildProfilePayload(
     }
   }
 
-  const cropY = Math.max(
-    0,
-    Math.min(100, Number.parseInt(formString(data, "cropY"), 10) || 50),
-  );
+  // `|| 50` would be wrong here: it turns a deliberate 0% (top focus) into
+  // 50%. Only fall back when the field is missing or unparsable.
+  const parsedCropY = Number.parseInt(formString(data, "cropY"), 10);
+  const cropY = Number.isNaN(parsedCropY)
+    ? 50
+    : Math.max(0, Math.min(100, parsedCropY));
 
   return {
     displayName: formString(data, "displayName"),
@@ -157,6 +159,7 @@ export function ProfileEditor({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
   const [cropY, setCropY] = useState(initialCropY(initialProfile?.imagePosition));
+  const [isWidePreview, setIsWidePreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -301,6 +304,16 @@ export function ProfileEditor({
                 sizes="(min-width: 768px) 35vw, 100vw"
                 className="object-cover"
                 style={{ objectPosition: `center ${cropY}%` }}
+                onLoad={(event) => {
+                  const img = event.currentTarget;
+                  // The preview box is 4:3. A wider photo fills it exactly in
+                  // height, so object-cover has nothing to crop vertically
+                  // and the focus slider has no visible effect.
+                  setIsWidePreview(
+                    img.naturalHeight > 0 &&
+                      img.naturalWidth / img.naturalHeight > 4 / 3,
+                  );
+                }}
                 unoptimized
               />
             ) : (
@@ -343,6 +356,13 @@ export function ProfileEditor({
           <p className="mt-1 text-xs text-[#56585e]">
             Move the focus until the card preview crops your photo correctly.
           </p>
+          {isWidePreview && previewUrl && (
+            <p className="mt-1 text-xs text-amber-700">
+              This photo is wider than the profile card, so the vertical focus
+              has no visible effect. Crop the photo to a taller shape before
+              uploading for more control.
+            </p>
+          )}
         </section>
 
         <section className="space-y-5">
