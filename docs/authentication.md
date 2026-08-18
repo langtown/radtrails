@@ -195,7 +195,9 @@ images; treat the preview URL as production access and do not share it broadly.
 
 Before enabling the workflow, create the `preview.radtrails.org` Custom Domain on the
 `radtrails-preview` Worker in Cloudflare, set the repository variable
-`CLOUDFLARE_API_TOKEN_TEST`, and add the preview Worker secrets:
+the repository secret `CLOUDFLARE_API_TOKEN` (the legacy
+`CLOUDFLARE_API_TOKEN_TEST` repository variable is also accepted), and add the preview Worker
+secrets:
 
 ```bash
 npx wrangler secret put GOOGLE_CLIENT_SECRET --env preview
