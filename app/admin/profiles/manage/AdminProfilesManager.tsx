@@ -8,7 +8,7 @@ function PersonaSelector({ persona, setPersona }: { persona: string; setPersona:
   return (
     <div className="flex items-center gap-3">
       <label className="text-sm font-semibold">Persona</label>
-      <select value={persona} onChange={(e) => setPersona(e.target.value)} className="rounded-lg border px-2 py-1">
+      <select value={persona} onChange={(e) => setPersona(e.target.value as any)} className="rounded-lg border px-2 py-1">
         {PUBLIC_PROFILE_PERSONAS.map(p => (
           <option key={p} value={p}>{p}</option>
         ))}
