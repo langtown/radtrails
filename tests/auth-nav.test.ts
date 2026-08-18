@@ -39,7 +39,7 @@ test("signed-out navigation offers the Google sign-in entry point", () => {
   const html = render({ status: "signedOut" });
 
   expect(html).toContain('href="/api/auth/login"');
-  expect(html).toContain("Sign in with Google");
+  expect(html).toContain(">login<");
   expect(html).not.toContain("rad_session");
 });
 
@@ -58,23 +58,24 @@ test("signed-in navigation shows the display name, avatar, and profile link", ()
   expect(html).toContain("https://example.com/avatar.jpg");
 });
 
-test("signed-in navigation signs out through a POST form", () => {
+test("signed-in navigation links the profile and leaves sign-out to it", () => {
   const html = render({
     status: "signedIn",
     user: { displayName: null, pictureUrl: null, isAdmin: false },
   });
 
-  expect(html).toContain('action="/api/auth/logout"');
-  expect(html).toContain('method="post"');
-  expect(html).toContain("Sign out");
-  expect(html).toContain("Profile");
+  // Sign-out is a POST form on the profile page, not a nav GET link.
+  expect(html).toContain('href="/profile"');
+  expect(html).toContain('aria-label="Profile for Profile"');
+  expect(html).not.toContain('action="/api/auth/logout"');
+  expect(html).not.toContain("Sign out");
 });
 
 test("loading navigation renders neither a false login nor stale identity", () => {
   const html = render({ status: "loading" });
 
   expect(html).toContain('aria-label="Checking sign-in status"');
-  expect(html).not.toContain("Sign in with Google");
+  expect(html).not.toContain('href="/api/auth/login"');
   expect(html).not.toContain("Sign out");
 });
 

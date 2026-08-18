@@ -1,5 +1,20 @@
-import { expect, test } from "vitest";
+import { createElement } from "react";
+import { expect, test, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+
+vi.mock("next/image", () => ({
+  default: ({
+    fill: _fill,
+    unoptimized: _unoptimized,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => {
+    void _fill;
+    void _unoptimized;
+    void _priority;
+    return createElement("img", props);
+  },
+}));
 
 import RacerGrid from "@/components/RacerGrid";
 import { racers } from "@/lib/content/racing";

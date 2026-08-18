@@ -13,16 +13,14 @@ vi.mock("next/link", () => ({
 
 import { NavUtilityArea } from "@/components/NavBar";
 
-test("positions the signed-in identity above the social links", () => {
+test("positions the signed-in identity before the social links", () => {
   const html = renderToStaticMarkup(
     createElement(NavUtilityArea, {
       authControls: createElement("span", null, "David Blackburn"),
     }),
   );
 
-  expect(html).toContain(
-    'class="flex flex-col items-center gap-2 md:items-end"',
-  );
+  expect(html).toContain('class="flex items-center gap-4"');
   expect(html.indexOf("David Blackburn")).toBeLessThan(
     html.indexOf('aria-label="Facebook"'),
   );
