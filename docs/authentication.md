@@ -184,35 +184,44 @@ does not act on anyone's behalf after login — it only needs to know who they a
 
 ## Development and production data workflow
 
-### PR preview at `preview.radtrails.org`
+### Stable PR preview at `preview-radtrails.langtown.workers.dev`
 
-Pull requests from this repository deploy automatically to the dedicated `radtrails-preview` Worker
-through `.github/workflows/preview.yml`. The Worker is routed through the stable custom domain
-`https://preview.radtrails.org`, so Google OAuth does not need a new redirect URI for every branch.
-The preview environment intentionally uses the production D1 binding configured in `wrangler.jsonc`.
-That means preview requests can read and write production users, profiles, sessions, personas, and
-images; treat the preview URL as production access and do not share it broadly.
-
-Before enabling the workflow, create the `preview.radtrails.org` Custom Domain on the
-`radtrails-preview` Worker in Cloudflare, set the repository variable
-the repository secret `CLOUDFLARE_API_TOKEN` (the legacy
-`CLOUDFLARE_API_TOKEN_TEST` repository variable is also accepted), and add the preview Worker
-secrets:
+Cloudflare Workers Builds publishes previews through the existing `radtrails` Worker. The repository
+defines `npm run cf:preview:upload`, which runs:
 
 ```bash
-npx wrangler secret put GOOGLE_CLIENT_SECRET --env preview
-npx wrangler secret put ADMIN_BOOTSTRAP_TOKEN --env preview
+wrangler versions upload --preview-alias preview
 ```
+
+Configure **Workers & Pages → radtrails → Settings → Build** with these commands:
+
+| Setting | Command |
+|---|---|
+| Build command | `npm run build` |
+| Deploy command | `npm run cf:deploy` |
+| Non-production branch deploy command | `npm run cf:preview:upload` |
+
+A non-production build uploads a version without changing the production deployment, then assigns
+that version the stable alias `https://preview-radtrails.langtown.workers.dev`. Cloudflare also keeps
+the generated commit and branch preview URLs. The stable alias follows whichever build completes
+most recently. On `main`, `npm run cf:deploy` deploys production and then uploads the same built
+artifact with the alias; this intentionally makes the alias follow `main` after a merge.
+
+The alias is another URL for a version of the production `radtrails` Worker, so it uses the same
+Worker secrets and the production D1 binding in `wrangler.jsonc`. Preview requests can therefore
+read and write production users, profiles, sessions, personas, and images. Treat the preview URL as
+production access and do not share it broadly. No dedicated preview Worker, custom domain, GitHub
+Action, or GitHub Cloudflare token is required.
 
 Register this exact Google OAuth redirect URI:
 
 ```text
-https://preview.radtrails.org/api/auth/callback
+https://preview-radtrails.langtown.workers.dev/api/auth/callback
 ```
 
-The workflow skips forked pull requests because GitHub does not expose deployment credentials to
-untrusted forks. Cloudflare's generated version/branch preview URLs remain available for non-authenticated
-testing, but they are not suitable as a wildcard OAuth redirect.
+Google does not accept wildcard callback hosts. Always begin sign-in on the stable alias when testing
+OAuth; the generated commit and branch preview URLs remain useful for testing routes that do not
+require Google sign-in.
 
 Cloudflare D1 has separate local and remote databases. Local Wrangler state is under
 `.wrangler/state/v3/d1`; the deployed Worker uses the remote database identified by `database_id` in
@@ -274,6 +283,7 @@ Registered redirect URIs:
 
 ```
 https://radtrails.org/api/auth/callback      (production)
+https://preview-radtrails.langtown.workers.dev/api/auth/callback (stable preview)
 http://localhost:3000/api/auth/callback      (local development)
 ```
 

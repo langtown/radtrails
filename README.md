@@ -96,17 +96,27 @@ BASE_URL=http://localhost:3000 ./test_pages.sh
 
 Cloudflare must run the OpenNext build before Wrangler deploys the Worker. A plain `next build` only creates `.next`; Wrangler expects OpenNext artifacts such as `.open-next/.build/open-next.config.mjs` and `.open-next/worker.js`.
 
-In Cloudflare, use:
+In Cloudflare Workers Builds, use:
 
 ```bash
 npm run build
 ```
 
-as the build command, then deploy with:
+as the build command. Use the package deployment command for the production branch:
 
 ```bash
-npx wrangler deploy
+npm run cf:deploy
 ```
+
+For non-production branches, use:
+
+```bash
+npm run cf:preview:upload
+```
+
+The non-production command uploads a preview without changing production and moves
+`preview-radtrails.langtown.workers.dev` to that version. The production command deploys the
+application and then uploads the same build with the preview alias.
 
 For local deployment, use:
 
