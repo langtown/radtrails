@@ -18,6 +18,10 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 className="object-cover"
                 style={{ objectPosition: racer.imagePosition ?? "center top" }}
+                // The image optimizer cannot fetch the dynamic profile image
+                // API on the deployed worker (/_next/image 404s); static
+                // photos still go through it.
+                unoptimized={racer.image.startsWith("/api/")}
               />
             ) : (
               <div
@@ -40,7 +44,20 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
                 </h4>
                 <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#56585e]">
                   {racer.sponsors.map((sponsor) => (
-                    <li key={sponsor}>{sponsor}</li>
+                    <li key={sponsor.name}>
+                      {sponsor.url ? (
+                        <a
+                          href={sponsor.url}
+                          target="_blank"
+                          rel="nofollow noopener noreferrer"
+                          className="font-semibold text-[#5025d1] underline decoration-1 underline-offset-4"
+                        >
+                          {sponsor.name}
+                        </a>
+                      ) : (
+                        sponsor.name
+                      )}
+                    </li>
                   ))}
                 </ul>
               </div>
