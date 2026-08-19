@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getPlaylist } from "@/lib/athlete-playlist";
 import { getCurrentUser } from "@/lib/current-user";
 import { getDb } from "@/lib/db";
 import { hasAnyAdmin } from "@/lib/persona-admin";
 import { canEditSocialLinks } from "@/lib/profile-constraints";
 import { getOwnProfile } from "@/lib/profiles";
+import { listOccurrencesForRider } from "@/lib/session-occurrences";
+import MySessions from "./MySessions";
 import { ProfileEditor } from "./ProfileEditor";
+import PlaylistEditor from "./PlaylistEditor";
 
 export const metadata: Metadata = {
   title: "Your profile",
@@ -29,6 +33,8 @@ export default async function ProfilePage() {
 
   const db = await getDb();
   const profile = await getOwnProfile(db, user.id);
+  const playlist = await getPlaylist(db, user.id);
+  const sessions = await listOccurrencesForRider(db, user.id);
   const isAdmin = user.personas.includes("admin");
   const adminExists = isAdmin || (await hasAnyAdmin(db));
   const publicPersonas = user.personas.filter(
@@ -83,6 +89,9 @@ export default async function ProfilePage() {
         initialProfile={profile}
         canEditSocials={canEditSocialLinks(user.personas)}
       />
+
+      <MySessions sessions={sessions} />
+      <PlaylistEditor initialPlaylistUrl={playlist.playlistUrl} />
 
       {isAdmin && (
         <section className="mt-10">
