@@ -223,3 +223,21 @@ test("requireCoachOrAdmin allows the coach themselves and admins, refuses everyo
     requireCoachOrAdmin(env.DB, bystander, coach),
   ).rejects.toMatchObject({ status: 403 });
 });
+
+test("a member-only account cannot fabricate a coach calendar by passing itself as coachId", async () => {
+  const memberOnly = await createUser("sub-member-only");
+  await grantDefaultPersona(env.DB, memberOnly);
+  const rider = await createRider("sub-rider");
+
+  await expect(
+    createWeeklyAssignment(env.DB, {
+      actorId: memberOnly,
+      coachId: memberOnly,
+      riderId: rider,
+      sessionType: "intervals",
+      dayOfWeek: 2,
+      startTime: "17:00",
+      durationMinutes: 60,
+    }),
+  ).rejects.toMatchObject({ status: 403 });
+});

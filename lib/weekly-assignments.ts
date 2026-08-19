@@ -25,6 +25,12 @@ export async function requireCoachOrAdmin(
   actorId: number,
   coachId: number,
 ): Promise<void> {
+  if (!(await hasPersona(db, coachId, "coach"))) {
+    throw new ScheduleAssignmentError(
+      "that account does not have a coach calendar",
+      403,
+    );
+  }
   if (actorId === coachId) return;
   if (await hasPersona(db, actorId, "admin")) return;
   throw new ScheduleAssignmentError(
