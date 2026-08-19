@@ -10,6 +10,7 @@ import {
   rescheduleOccurrence,
   ScheduleOccurrenceError,
 } from "@/lib/session-occurrences";
+import { ScheduleAssignmentError } from "@/lib/weekly-assignments";
 
 export const dynamic = "force-dynamic";
 
@@ -85,7 +86,8 @@ async function patchOccurrence(
   } catch (error) {
     if (
       error instanceof AuthenticationError ||
-      error instanceof ScheduleOccurrenceError
+      error instanceof ScheduleOccurrenceError ||
+      error instanceof ScheduleAssignmentError
     ) {
       return Response.json({ error: error.message }, { status: error.status });
     }
