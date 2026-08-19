@@ -119,9 +119,27 @@ test("an invalid watt value is rejected", async () => {
 test("reading zones for a rider with none set yet returns nulls, not an error", async () => {
   const coach = await createCoach("sub-coach");
   const rider = await createRider("sub-rider");
+  await createWeeklyAssignment(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    riderId: rider,
+    sessionType: "intervals",
+    dayOfWeek: 2,
+    startTime: "17:00",
+    durationMinutes: 60,
+  });
 
   const zones = await getFtpZones(env.DB, coach, coach, rider, "intervals");
   expect(zones.z1Watts).toBeNull();
+});
+
+test("reading FTP zones without an active assignment is rejected", async () => {
+  const coach = await createCoach("sub-coach");
+  const rider = await createRider("sub-rider");
+
+  await expect(
+    getFtpZones(env.DB, coach, coach, rider, "intervals"),
+  ).rejects.toMatchObject({ status: 403 });
 });
 
 test("a different coach cannot set zones for a rider they do not coach", async () => {

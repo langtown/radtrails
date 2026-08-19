@@ -34,6 +34,21 @@ export async function getFtpZones(
     throw new FtpZoneError("unknown session type", 400);
   }
 
+  const activeAssignment = await db
+    .prepare(
+      `SELECT 1 FROM weekly_assignments
+       WHERE coach_id = ? AND rider_id = ? AND session_type = ? AND active = 1`,
+    )
+    .bind(coachId, riderId, sessionType)
+    .first();
+
+  if (!activeAssignment) {
+    throw new FtpZoneError(
+      "the rider has no active weekly assignment with this coach for this session type",
+      403,
+    );
+  }
+
   const row = await db
     .prepare(
       `SELECT user_id, session_type, z1_watts, z2_watts, z3_watts, z4_watts, z5_watts, updated_at
