@@ -11,6 +11,12 @@ import {
   rescheduleOccurrence,
 } from "@/lib/session-occurrences";
 
+function addDaysIso(isoDate: string, days: number): string {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 async function createUser(googleSub: string): Promise<number> {
   const row = await env.DB.prepare(
     "INSERT INTO users (google_sub, display_name) VALUES (?, ?) RETURNING id",
@@ -253,4 +259,100 @@ test("an actor who is neither the coach nor an admin cannot reschedule or cancel
   await expect(
     cancelOccurrence(env.DB, bystander, coach, occurrence.id),
   ).rejects.toMatchObject({ status: 403 });
+});
+
+test("rescheduling to a different date does not resurrect a duplicate on the original date", async () => {
+  const coach = await createCoach("sub-coach");
+  const rider = await createRider("sub-rider");
+  await createWeeklyAssignment(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    riderId: rider,
+    sessionType: "intervals",
+    dayOfWeek: new Date().getUTCDay(),
+    startTime: "17:00",
+    durationMinutes: 60,
+  });
+  const [occurrence] = await listOccurrencesForCoach(env.DB, coach, coach);
+  const originalDate = occurrence.occurrenceDate;
+  const originalStartTime = occurrence.startTime;
+  const newDate = addDaysIso(originalDate, 1);
+
+  await rescheduleOccurrence(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    occurrenceId: occurrence.id,
+    occurrenceDate: newDate,
+    startTime: originalStartTime,
+  });
+
+  // Simulate the UI's own refresh() right after a successful reschedule,
+  // which triggers ensureOccurrencesGenerated on every schedule read.
+  await ensureOccurrencesGenerated(env.DB);
+
+  const rows = await env.DB.prepare(
+    `SELECT status FROM session_occurrences
+     WHERE weekly_assignment_id = ? AND occurrence_date = ? AND start_time = ?`,
+  )
+    .bind(occurrence.weeklyAssignmentId, originalDate, originalStartTime)
+    .all<{ status: string }>();
+
+  const scheduledAtOriginal = rows.results.filter(
+    (row) => row.status === "scheduled",
+  );
+  expect(scheduledAtOriginal).toHaveLength(0);
+});
+
+test("rescheduling onto a date the same assignment previously occupied does not 500", async () => {
+  const coach = await createCoach("sub-coach");
+  const rider = await createRider("sub-rider");
+  await createWeeklyAssignment(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    riderId: rider,
+    sessionType: "intervals",
+    dayOfWeek: new Date().getUTCDay(),
+    startTime: "17:00",
+    durationMinutes: 60,
+  });
+  const [occurrence] = await listOccurrencesForCoach(env.DB, coach, coach);
+  const dateA = occurrence.occurrenceDate;
+  const dateB = addDaysIso(dateA, 1);
+
+  const afterFirst = await rescheduleOccurrence(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    occurrenceId: occurrence.id,
+    occurrenceDate: dateA,
+    startTime: "17:00",
+  });
+  const afterSecond = await rescheduleOccurrence(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    occurrenceId: afterFirst.id,
+    occurrenceDate: dateB,
+    startTime: "17:00",
+  });
+
+  const afterThird = await rescheduleOccurrence(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    occurrenceId: afterSecond.id,
+    occurrenceDate: dateA,
+    startTime: "17:00",
+  });
+
+  expect(afterThird.status).toBe("scheduled");
+
+  const rowsAtDateA = await env.DB.prepare(
+    `SELECT status FROM session_occurrences
+     WHERE weekly_assignment_id = ? AND occurrence_date = ?`,
+  )
+    .bind(occurrence.weeklyAssignmentId, dateA)
+    .all<{ status: string }>();
+
+  const scheduledAtDateA = rowsAtDateA.results.filter(
+    (row) => row.status === "scheduled",
+  );
+  expect(scheduledAtDateA).toHaveLength(1);
 });

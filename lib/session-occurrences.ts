@@ -216,11 +216,18 @@ export async function rescheduleOccurrence(
 
   const existing = await db
     .prepare(
-      `SELECT id, session_type FROM session_occurrences
+      `SELECT id, weekly_assignment_id, rider_id, session_type, duration_minutes
+       FROM session_occurrences
        WHERE id = ? AND coach_id = ? AND status = 'scheduled'`,
     )
     .bind(occurrenceId, coachId)
-    .first<{ id: number; session_type: string }>();
+    .first<{
+      id: number;
+      weekly_assignment_id: number;
+      rider_id: number;
+      session_type: string;
+      duration_minutes: number;
+    }>();
 
   if (!existing) {
     throw new ScheduleOccurrenceError("occurrence not found", 404);
@@ -244,16 +251,39 @@ export async function rescheduleOccurrence(
 
   await db
     .prepare(
-      `UPDATE session_occurrences
-       SET occurrence_date = ?, start_time = ?, updated_at = CURRENT_TIMESTAMP
+      `UPDATE session_occurrences SET status = 'cancelled', updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
     )
-    .bind(occurrenceDate, startTime, occurrenceId)
+    .bind(occurrenceId)
     .run();
+
+  const upserted = await db
+    .prepare(
+      `INSERT INTO session_occurrences
+         (weekly_assignment_id, coach_id, rider_id, session_type,
+          occurrence_date, start_time, duration_minutes, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'scheduled')
+       ON CONFLICT (weekly_assignment_id, occurrence_date) DO UPDATE SET
+         start_time = excluded.start_time,
+         duration_minutes = excluded.duration_minutes,
+         status = 'scheduled',
+         updated_at = CURRENT_TIMESTAMP
+       RETURNING id`,
+    )
+    .bind(
+      existing.weekly_assignment_id,
+      coachId,
+      existing.rider_id,
+      existing.session_type,
+      occurrenceDate,
+      startTime,
+      existing.duration_minutes,
+    )
+    .first<{ id: number }>();
 
   const updated = await db
     .prepare(`${OCCURRENCE_SELECT} WHERE so.id = ?`)
-    .bind(occurrenceId)
+    .bind(upserted!.id)
     .first<OccurrenceRow>();
 
   return rowToOccurrence(updated!);
