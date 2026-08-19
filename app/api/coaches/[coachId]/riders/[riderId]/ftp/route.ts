@@ -7,6 +7,7 @@ import { AuthenticationError, requireAuthenticatedUser } from "@/lib/auth";
 import { FtpZoneError, getFtpZones, setFtpZones } from "@/lib/athlete-ftp";
 import { SESSION_TYPES } from "@/lib/coaching-constraints";
 import { getAppRuntime, getDb } from "@/lib/db";
+import { ScheduleAssignmentError } from "@/lib/weekly-assignments";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,11 @@ function sessionTypeParam(request: Request): string {
 }
 
 function errorResponse(error: unknown): Response | null {
-  if (error instanceof AuthenticationError || error instanceof FtpZoneError) {
+  if (
+    error instanceof AuthenticationError ||
+    error instanceof FtpZoneError ||
+    error instanceof ScheduleAssignmentError
+  ) {
     return Response.json({ error: error.message }, { status: error.status });
   }
   return null;
