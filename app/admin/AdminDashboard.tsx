@@ -53,6 +53,15 @@ export default function AdminDashboard({
         ))}
       </div>
 
+      <div className="mt-8">
+        <Link
+          href="/admin/coaches"
+          className="inline-flex min-h-11 items-center rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+        >
+          Manage coach calendars
+        </Link>
+      </div>
+
       <p className="mt-8 text-sm text-[#56585e]">
         {stats.publishedProfiles} approved public{" "}
         {stats.publishedProfiles === 1 ? "profile is" : "profiles are"}{" "}

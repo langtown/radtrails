@@ -36,6 +36,7 @@ export default async function ProfilePage() {
   const playlist = await getPlaylist(db, user.id);
   const sessions = await listOccurrencesForRider(db, user.id);
   const isAdmin = user.personas.includes("admin");
+  const isCoach = user.personas.includes("coach");
   const adminExists = isAdmin || (await hasAnyAdmin(db));
   const publicPersonas = user.personas.filter(
     (persona) => persona !== "member" && persona !== "admin",
@@ -92,6 +93,22 @@ export default async function ProfilePage() {
 
       <MySessions sessions={sessions} />
       <PlaylistEditor initialPlaylistUrl={playlist.playlistUrl} />
+
+      {isCoach && (
+        <section className="mt-10">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+            Coaching
+          </h2>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Link
+              href="/coach"
+              className="inline-flex min-h-11 items-center rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+            >
+              Your calendar
+            </Link>
+          </div>
+        </section>
+      )}
 
       {isAdmin && (
         <section className="mt-10">
