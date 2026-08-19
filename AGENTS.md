@@ -113,6 +113,9 @@ Two rules that are easy to get wrong and expensive to fix:
 
 ## API Route Structure
 
+**`docs/api-design.md` is the canonical API blueprint** — architecture, validation, error-shape, and
+authorization conventions with runnable examples. Read it before adding or changing a route.
+
 Route handlers must stay thin adapters. Business rules and authorization live in `lib/`, as plain
 functions that take a `D1Database` as their first argument; the handler only translates between HTTP
 and those functions.
