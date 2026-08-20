@@ -4,11 +4,15 @@ import {
   secureApiResponse,
 } from "@/lib/api-security";
 import { AuthenticationError, requireAuthenticatedUser } from "@/lib/auth";
+import { BookingWindowError } from "@/lib/booking-windows";
 import { getAppRuntime } from "@/lib/db";
 import {
   cancelOccurrence,
+  rescheduleAssignmentSeries,
   rescheduleOccurrence,
+  restoreOccurrence,
   ScheduleOccurrenceError,
+  setOccurrenceResponse,
 } from "@/lib/session-occurrences";
 import { ScheduleAssignmentError } from "@/lib/weekly-assignments";
 
@@ -59,6 +63,21 @@ async function patchOccurrence(
       return Response.json({ ok: true });
     }
 
+    if (body.action === "restore") {
+      await restoreOccurrence(db, actorId, coach, occurrence);
+      return Response.json({ ok: true });
+    }
+
+    if (body.action === "unsure") {
+      await setOccurrenceResponse(db, actorId, coach, occurrence, "unsure");
+      return Response.json({ ok: true });
+    }
+
+    if (body.action === "confirm") {
+      await setOccurrenceResponse(db, actorId, coach, occurrence, null);
+      return Response.json({ ok: true });
+    }
+
     if (body.action === "reschedule") {
       if (
         typeof body.occurrenceDate !== "string" ||
@@ -79,15 +98,36 @@ async function patchOccurrence(
       return Response.json(updated);
     }
 
+    if (body.action === "reschedule-series") {
+      if (
+        typeof body.occurrenceDate !== "string" ||
+        typeof body.startTime !== "string"
+      ) {
+        throw new ScheduleOccurrenceError(
+          "occurrenceDate and startTime are required to reschedule",
+          400,
+        );
+      }
+      await rescheduleAssignmentSeries(db, {
+        actorId,
+        coachId: coach,
+        occurrenceId: occurrence,
+        occurrenceDate: body.occurrenceDate,
+        startTime: body.startTime,
+      });
+      return Response.json({ ok: true });
+    }
+
     throw new ScheduleOccurrenceError(
-      "action must be cancel or reschedule",
+      "action must be cancel, restore, unsure, confirm, reschedule, or reschedule-series",
       400,
     );
   } catch (error) {
     if (
       error instanceof AuthenticationError ||
       error instanceof ScheduleOccurrenceError ||
-      error instanceof ScheduleAssignmentError
+      error instanceof ScheduleAssignmentError ||
+      error instanceof BookingWindowError
     ) {
       return Response.json({ error: error.message }, { status: error.status });
     }

@@ -1,4 +1,5 @@
 import { AuthenticationError, requireAuthenticatedUser } from "./auth";
+import { PersonaChangeError, requireAdminUser } from "./persona-admin";
 
 export class PlaylistError extends Error {
   readonly status: number;
@@ -79,7 +80,11 @@ function privateJson(body: unknown, status = 200): Response {
 }
 
 function errorResponse(error: unknown): Response | null {
-  if (error instanceof AuthenticationError || error instanceof PlaylistError) {
+  if (
+    error instanceof AuthenticationError ||
+    error instanceof PlaylistError ||
+    error instanceof PersonaChangeError
+  ) {
     return privateJson({ error: error.message }, error.status);
   }
   return null;
@@ -93,6 +98,46 @@ export async function handleGetPlaylist(
   try {
     const userId = await requireAuthenticatedUser(db, request);
     return privateJson(await getPlaylist(db, userId));
+  } catch (error) {
+    const response = errorResponse(error);
+    if (response) return response;
+    throw error;
+  }
+}
+
+/** HTTP behavior for GET /api/admin/users/[id]/playlist: admin reads a rider's playlist. */
+export async function handleAdminGetPlaylist(
+  db: D1Database,
+  request: Request,
+  userId: number,
+): Promise<Response> {
+  try {
+    await requireAdminUser(db, request);
+    return privateJson(await getPlaylist(db, userId));
+  } catch (error) {
+    const response = errorResponse(error);
+    if (response) return response;
+    throw error;
+  }
+}
+
+/** HTTP behavior for PUT /api/admin/users/[id]/playlist: admin sets a rider's playlist. */
+export async function handleAdminPutPlaylist(
+  db: D1Database,
+  request: Request,
+  userId: number,
+): Promise<Response> {
+  try {
+    await requireAdminUser(db, request);
+
+    let body: { playlistUrl?: unknown };
+    try {
+      body = (await request.json()) as { playlistUrl?: unknown };
+    } catch {
+      throw new PlaylistError("request body must be valid JSON", 400);
+    }
+
+    return privateJson(await setPlaylist(db, userId, body.playlistUrl ?? null));
   } catch (error) {
     const response = errorResponse(error);
     if (response) return response;

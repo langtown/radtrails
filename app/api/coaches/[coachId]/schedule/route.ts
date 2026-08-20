@@ -4,14 +4,16 @@ import {
   secureApiResponse,
 } from "@/lib/api-security";
 import { AuthenticationError, requireAuthenticatedUser } from "@/lib/auth";
+import { BookingWindowError, getAllCoachBookingWindows } from "@/lib/booking-windows";
 import { getAppRuntime, getDb } from "@/lib/db";
 import {
-  ensureOccurrencesGenerated,
   listOccurrencesForCoach,
   ScheduleOccurrenceError,
 } from "@/lib/session-occurrences";
+import { listTeamEvents } from "@/lib/team-events";
 import {
   createWeeklyAssignment,
+  getCoachDisplayName,
   listSchedulableRiders,
   listWeeklyAssignmentsForCoach,
   ScheduleAssignmentError,
@@ -31,7 +33,8 @@ function errorResponse(error: unknown): Response | null {
   if (
     error instanceof AuthenticationError ||
     error instanceof ScheduleAssignmentError ||
-    error instanceof ScheduleOccurrenceError
+    error instanceof ScheduleOccurrenceError ||
+    error instanceof BookingWindowError
   ) {
     return Response.json({ error: error.message }, { status: error.status });
   }
@@ -49,12 +52,22 @@ async function getSchedule(
     const id = parseCoachId(coachId);
 
     const assignments = await listWeeklyAssignmentsForCoach(db, actorId, id);
-    await ensureOccurrencesGenerated(db);
+    // listOccurrencesForCoach already calls ensureOccurrencesGenerated.
     const occurrences = await listOccurrencesForCoach(db, actorId, id);
     const eligibleRiders = await listSchedulableRiders(db);
+    const coachDisplayName = await getCoachDisplayName(db, actorId, id);
+    const teamEvents = await listTeamEvents(db);
+    const bookingWindows = await getAllCoachBookingWindows(db, id);
 
     return Response.json(
-      { assignments, occurrences, eligibleRiders },
+      {
+        assignments,
+        occurrences,
+        eligibleRiders,
+        coachDisplayName,
+        teamEvents,
+        bookingWindows,
+      },
       { headers: { "Cache-Control": "private, no-store" } },
     );
   } catch (error) {
@@ -70,6 +83,7 @@ type CreateAssignmentBody = {
   dayOfWeek?: unknown;
   startTime?: unknown;
   durationMinutes?: unknown;
+  occurrenceDate?: unknown;
 };
 
 async function postSchedule(
@@ -103,8 +117,15 @@ async function postSchedule(
     if (typeof body.sessionType !== "string") {
       throw new ScheduleAssignmentError("sessionType is required", 400);
     }
-    if (typeof body.dayOfWeek !== "number") {
+    // Lessons derive their weekday from occurrenceDate; intervals need dayOfWeek.
+    if (body.sessionType !== "lesson" && typeof body.dayOfWeek !== "number") {
       throw new ScheduleAssignmentError("dayOfWeek is required", 400);
+    }
+    if (
+      body.occurrenceDate !== undefined &&
+      typeof body.occurrenceDate !== "string"
+    ) {
+      throw new ScheduleAssignmentError("occurrenceDate must be a string", 400);
     }
     if (typeof body.startTime !== "string") {
       throw new ScheduleAssignmentError("startTime is required", 400);
@@ -117,9 +138,11 @@ async function postSchedule(
       coachId: id,
       riderId: body.riderId,
       sessionType: body.sessionType,
-      dayOfWeek: body.dayOfWeek,
+      dayOfWeek: typeof body.dayOfWeek === "number" ? body.dayOfWeek : 0,
       startTime: body.startTime,
       durationMinutes,
+      occurrenceDate:
+        typeof body.occurrenceDate === "string" ? body.occurrenceDate : undefined,
     });
 
     return Response.json(assignment, { status: 201 });

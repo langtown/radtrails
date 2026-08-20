@@ -8,6 +8,7 @@ import {
   buildProfilePayload,
   validateProfileImageFile,
 } from "@/app/profile/ProfileEditor";
+import AdminRiderTools from "./AdminRiderTools";
 import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
 import {
   MAX_PROFILE_BIO_CHARACTERS,
@@ -28,6 +29,8 @@ const PERSONA_LABELS: Record<PersonaKey, string> = {
   coach: "Coach",
   alumni: "Alumni",
   admin: "Admin",
+  radfriends: "RadFriends",
+  private: "Private",
 };
 
 type Feedback = { kind: "error" | "success"; message: string } | null;
@@ -574,6 +577,8 @@ export default function AdminProfileEditPage() {
               </p>
             </div>
           </form>
+
+          <AdminRiderTools userId={profile.userId} />
         </>
       )}
     </div>

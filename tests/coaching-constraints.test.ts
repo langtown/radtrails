@@ -11,9 +11,11 @@ import {
   isValidTimeOfDay,
 } from "@/lib/coaching-constraints";
 
-test("session types include intervals and nothing else yet", () => {
-  expect(SESSION_TYPES).toEqual(["intervals"]);
+test("session types are intervals, lesson, and practiceride", () => {
+  expect(SESSION_TYPES).toEqual(["intervals", "lesson", "practiceride"]);
   expect(isValidSessionType("intervals")).toBe(true);
+  expect(isValidSessionType("lesson")).toBe(true);
+  expect(isValidSessionType("practiceride")).toBe(true);
   expect(isValidSessionType("private_lessons")).toBe(false);
   expect(isValidSessionType(42)).toBe(false);
 });

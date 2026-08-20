@@ -1,6 +1,12 @@
 import { env } from "cloudflare:test";
 import { beforeEach, expect, test } from "vitest";
-import { FtpZoneError, getFtpZones, setFtpZones } from "@/lib/athlete-ftp";
+import {
+  deriveZonesFromZone5,
+  FtpError,
+  getPowerForCoach,
+  getRiderPower,
+  setPower,
+} from "@/lib/athlete-ftp";
 import { grantDefaultPersona, grantPersona } from "@/lib/personas";
 import { createWeeklyAssignment } from "@/lib/weekly-assignments";
 
@@ -45,153 +51,112 @@ async function createRider(googleSub: string): Promise<number> {
   return id;
 }
 
-const ZONES = { z1Watts: 100, z2Watts: 140, z3Watts: 170, z4Watts: 200, z5Watts: 240 };
+async function assign(coach: number, rider: number) {
+  await createWeeklyAssignment(env.DB, {
+    actorId: coach,
+    coachId: coach,
+    riderId: rider,
+    sessionType: "intervals",
+    dayOfWeek: 2,
+    startTime: "17:00",
+    durationMinutes: 60,
+  });
+}
 
 beforeEach(async () => {
   await env.DB.prepare("DELETE FROM users").run();
 });
 
-test("a coach can set and read FTP zones for a rider they actively coach", async () => {
-  const coach = await createCoach("sub-coach");
-  const rider = await createRider("sub-rider");
-  await createWeeklyAssignment(env.DB, {
-    actorId: coach,
-    coachId: coach,
-    riderId: rider,
-    sessionType: "intervals",
-    dayOfWeek: 2,
-    startTime: "17:00",
-    durationMinutes: 60,
-  });
-
-  await setFtpZones(env.DB, {
-    actorId: coach,
-    coachId: coach,
-    riderId: rider,
-    sessionType: "intervals",
-    ...ZONES,
-  });
-
-  const zones = await getFtpZones(env.DB, coach, coach, rider, "intervals");
-  expect(zones).toMatchObject({ z1Watts: 100, z5Watts: 240 });
+test("deriveZonesFromZone5 reverse-engineers FTP and all seven Coggan zones", () => {
+  // The reference example: Zone 5 = 226W -> FTP = 200W.
+  const { ftpWatts, zones } = deriveZonesFromZone5(226);
+  expect(ftpWatts).toBe(200);
+  expect(zones).toEqual([
+    { zone: "Z1", label: "Active Recovery", minWatts: null, maxWatts: 110 },
+    { zone: "Z2", label: "Endurance", minWatts: 112, maxWatts: 150 },
+    { zone: "Z3", label: "Tempo", minWatts: 152, maxWatts: 180 },
+    { zone: "Z4", label: "Lactate Threshold", minWatts: 182, maxWatts: 210 },
+    { zone: "Z5", label: "VO2 Max", minWatts: 212, maxWatts: 240 },
+    { zone: "Z6", label: "Anaerobic Capacity", minWatts: 242, maxWatts: 300 },
+    { zone: "Z7", label: "Neuromuscular Power", minWatts: 302, maxWatts: null },
+  ]);
 });
 
-test("setting FTP zones without an active assignment is rejected", async () => {
+test("a coach can set and read a rider's Zone 5 power", async () => {
+  const coach = await createCoach("sub-coach");
+  const rider = await createRider("sub-rider");
+  await assign(coach, rider);
+
+  await setPower(env.DB, { actorId: coach, coachId: coach, riderId: rider, zone5Watts: 226 });
+
+  const power = await getPowerForCoach(env.DB, coach, coach, rider);
+  expect(power.zone5Watts).toBe(226);
+  expect(power.updatedAt).not.toBeNull();
+
+  // The rider sees the same value on their own profile read.
+  expect((await getRiderPower(env.DB, rider)).zone5Watts).toBe(226);
+});
+
+test("setting power again replaces the value, not adds a row", async () => {
+  const coach = await createCoach("sub-coach");
+  const rider = await createRider("sub-rider");
+  await assign(coach, rider);
+
+  await setPower(env.DB, { actorId: coach, coachId: coach, riderId: rider, zone5Watts: 220 });
+  await setPower(env.DB, { actorId: coach, coachId: coach, riderId: rider, zone5Watts: 230 });
+
+  expect((await getRiderPower(env.DB, rider)).zone5Watts).toBe(230);
+  const count = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM athlete_ftp WHERE user_id = ?",
+  )
+    .bind(rider)
+    .first<{ n: number }>();
+  expect(count?.n).toBe(1);
+});
+
+test("a rider with no power row reads null watts", async () => {
+  const rider = await createRider("sub-rider");
+  const power = await getRiderPower(env.DB, rider);
+  expect(power.zone5Watts).toBeNull();
+  expect(power.updatedAt).toBeNull();
+});
+
+test("setting power without an active assignment is rejected", async () => {
   const coach = await createCoach("sub-coach");
   const rider = await createRider("sub-rider");
 
   await expect(
-    setFtpZones(env.DB, {
-      actorId: coach,
-      coachId: coach,
+    setPower(env.DB, { actorId: coach, coachId: coach, riderId: rider, zone5Watts: 226 }),
+  ).rejects.toBeInstanceOf(FtpError);
+});
+
+test("an unrelated coach cannot read or set the rider's power", async () => {
+  const coach = await createCoach("sub-coach");
+  const otherCoach = await createCoach("sub-other-coach");
+  const rider = await createRider("sub-rider");
+  await assign(coach, rider);
+
+  await expect(getPowerForCoach(env.DB, otherCoach, otherCoach, rider)).rejects.toBeInstanceOf(
+    FtpError,
+  );
+  await expect(
+    setPower(env.DB, {
+      actorId: otherCoach,
+      coachId: otherCoach,
       riderId: rider,
-      sessionType: "intervals",
-      ...ZONES,
+      zone5Watts: 226,
     }),
-  ).rejects.toMatchObject({ status: 409 });
+  ).rejects.toBeInstanceOf(FtpError);
 });
 
-test("an invalid watt value is rejected", async () => {
+test("Zone 5 power must be a whole watt value in range", async () => {
   const coach = await createCoach("sub-coach");
   const rider = await createRider("sub-rider");
-  await createWeeklyAssignment(env.DB, {
-    actorId: coach,
-    coachId: coach,
-    riderId: rider,
-    sessionType: "intervals",
-    dayOfWeek: 2,
-    startTime: "17:00",
-    durationMinutes: 60,
-  });
+  await assign(coach, rider);
 
-  await expect(
-    setFtpZones(env.DB, {
-      actorId: coach,
-      coachId: coach,
-      riderId: rider,
-      sessionType: "intervals",
-      ...ZONES,
-      z1Watts: 0,
-    }),
-  ).rejects.toBeInstanceOf(FtpZoneError);
-});
-
-test("reading zones for a rider with none set yet returns nulls, not an error", async () => {
-  const coach = await createCoach("sub-coach");
-  const rider = await createRider("sub-rider");
-  await createWeeklyAssignment(env.DB, {
-    actorId: coach,
-    coachId: coach,
-    riderId: rider,
-    sessionType: "intervals",
-    dayOfWeek: 2,
-    startTime: "17:00",
-    durationMinutes: 60,
-  });
-
-  const zones = await getFtpZones(env.DB, coach, coach, rider, "intervals");
-  expect(zones.z1Watts).toBeNull();
-});
-
-test("reading FTP zones without an active assignment is rejected", async () => {
-  const coach = await createCoach("sub-coach");
-  const rider = await createRider("sub-rider");
-
-  await expect(
-    getFtpZones(env.DB, coach, coach, rider, "intervals"),
-  ).rejects.toMatchObject({ status: 403 });
-});
-
-test("a different coach cannot set zones for a rider they do not coach", async () => {
-  const coachA = await createCoach("sub-coach-a");
-  const coachB = await createCoach("sub-coach-b");
-  const rider = await createRider("sub-rider");
-  await createWeeklyAssignment(env.DB, {
-    actorId: coachA,
-    coachId: coachA,
-    riderId: rider,
-    sessionType: "intervals",
-    dayOfWeek: 2,
-    startTime: "17:00",
-    durationMinutes: 60,
-  });
-
-  await expect(
-    setFtpZones(env.DB, {
-      actorId: coachB,
-      coachId: coachB,
-      riderId: rider,
-      sessionType: "intervals",
-      ...ZONES,
-    }),
-  ).rejects.toMatchObject({ status: 409 });
-});
-
-test("an actor who is neither the coach nor an admin cannot read or set FTP zones", async () => {
-  const coach = await createCoach("sub-coach");
-  const bystander = await createUser("sub-bystander");
-  const rider = await createRider("sub-rider");
-  await createWeeklyAssignment(env.DB, {
-    actorId: coach,
-    coachId: coach,
-    riderId: rider,
-    sessionType: "intervals",
-    dayOfWeek: 2,
-    startTime: "17:00",
-    durationMinutes: 60,
-  });
-
-  await expect(
-    getFtpZones(env.DB, bystander, coach, rider, "intervals"),
-  ).rejects.toMatchObject({ status: 403 });
-
-  await expect(
-    setFtpZones(env.DB, {
-      actorId: bystander,
-      coachId: coach,
-      riderId: rider,
-      sessionType: "intervals",
-      ...ZONES,
-    }),
-  ).rejects.toMatchObject({ status: 403 });
+  for (const bad of [0, -5, 3001, 199.5]) {
+    await expect(
+      setPower(env.DB, { actorId: coach, coachId: coach, riderId: rider, zone5Watts: bad }),
+    ).rejects.toMatchObject({ status: 400 });
+  }
 });

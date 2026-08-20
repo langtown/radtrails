@@ -51,12 +51,17 @@ const PROFILE: OwnProfile = {
   reviewNote: null,
 };
 
-function render(canEditSocials: boolean, profile: OwnProfile | null = PROFILE) {
+function render(
+  canEditSocials: boolean,
+  profile: OwnProfile | null = PROFILE,
+  initialPlaylistUrl: string | null = null,
+) {
   return renderToStaticMarkup(
     createElement(ProfileEditor, {
       initialDisplayName: "Google Name",
       initialProfile: profile,
       canEditSocials,
+      initialPlaylistUrl,
     }),
   );
 }
@@ -120,6 +125,16 @@ test("new profiles start with the Google display name and no published status", 
 
   expect(html).toContain('value="Google Name"');
   expect(html).toContain("Not submitted");
+});
+
+test("the session playlist field lives inside the profile editor with the saved link", () => {
+  const html = render(false, PROFILE, "https://open.spotify.com/playlist/abc");
+
+  expect(html).toContain("Session playlist");
+  expect(html).toContain('value="https://open.spotify.com/playlist/abc"');
+  // One form, one submit button — the playlist saves with the profile.
+  expect(html).toContain("Submit for review");
+  expect((html.match(/<form/g) ?? []).length).toBe(1);
 });
 
 test("a rejected profile shows the admin feedback to its owner", () => {

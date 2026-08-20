@@ -3,7 +3,9 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import CoachScheduleManager from "@/app/coach/CoachScheduleManager";
+import type { BookableSessionType, BookingWindows } from "@/lib/booking-windows";
 import type { SessionOccurrence } from "@/lib/session-occurrences";
+import type { TeamEvent } from "@/lib/team-events";
 import type { WeeklyAssignment } from "@/lib/weekly-assignments";
 
 type Rider = { id: number; displayName: string | null };
@@ -12,6 +14,9 @@ type ScheduleResponse = {
   assignments: WeeklyAssignment[];
   occurrences: SessionOccurrence[];
   eligibleRiders: Rider[];
+  coachDisplayName: string | null;
+  teamEvents: TeamEvent[];
+  bookingWindows: Record<BookableSessionType, BookingWindows | null>;
 };
 
 export default function AdminCoachSchedulePage() {
@@ -62,12 +67,19 @@ export default function AdminCoachSchedulePage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 md:px-8">
-      <h1 className="text-3xl font-semibold md:text-4xl">Coach calendar</h1>
+      <h1 className="text-3xl font-semibold md:text-4xl">
+        {data.coachDisplayName
+          ? `${data.coachDisplayName} — Coach calendar`
+          : "Coach calendar"}
+      </h1>
       <CoachScheduleManager
         coachId={Number(id)}
         initialAssignments={data.assignments}
         initialOccurrences={data.occurrences}
+        initialTeamEvents={data.teamEvents}
+        initialBookingWindows={data.bookingWindows}
         eligibleRiders={data.eligibleRiders}
+        isAdmin
       />
     </div>
   );

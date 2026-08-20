@@ -1,6 +1,22 @@
-/** The only session category today. Adding a second is a code change here, not a schema migration. */
-export const SESSION_TYPES = ["intervals"] as const;
+/** Types a coach schedules per rider via the weekly-assignment form. */
+export const ASSIGNMENT_TYPES = ["intervals", "lesson"] as const;
+
+/** Team-wide event types: one shared occurrence for every team rider. */
+export const TEAM_EVENT_TYPES = ["practiceride"] as const;
+
+/** Session categories a coach can put on the calendar. */
+export const SESSION_TYPES = [
+  ...ASSIGNMENT_TYPES,
+  ...TEAM_EVENT_TYPES,
+] as const;
 export type SessionType = (typeof SESSION_TYPES)[number];
+
+/** Display label per session type, for calendar titles and lists. */
+export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
+  intervals: "Intervals",
+  lesson: "Lesson",
+  practiceride: "Practice Ride",
+};
 
 /** Which personas may be scheduled as a rider. Extending this list is the whole change. */
 export const SCHEDULABLE_RIDER_PERSONAS = ["theteam"] as const;
@@ -70,4 +86,9 @@ export function isValidFtpWatts(value: unknown): value is number {
     value > 0 &&
     value <= 3000
   );
+}
+
+/** Today's date in site-local terms, as used throughout scheduling. */
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
 }

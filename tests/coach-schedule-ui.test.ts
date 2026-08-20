@@ -14,6 +14,10 @@ const ASSIGNMENT: WeeklyAssignment = {
   dayOfWeek: 2,
   startTime: "17:00",
   durationMinutes: 60,
+  oneOff: false,
+  occurrenceDate: null,
+  riderZone5Watts: null,
+  riderSlug: null,
 };
 
 const OCCURRENCE: SessionOccurrence = {
@@ -21,6 +25,7 @@ const OCCURRENCE: SessionOccurrence = {
   weeklyAssignmentId: 1,
   coachId: 10,
   riderId: 20,
+  coachDisplayName: "Coach Carol",
   riderDisplayName: "Alice Rider",
   riderPlaylistUrl: "https://open.spotify.com/playlist/abc",
   sessionType: "intervals",
@@ -28,6 +33,7 @@ const OCCURRENCE: SessionOccurrence = {
   startTime: "17:00",
   durationMinutes: 60,
   status: "scheduled",
+  riderResponse: null,
   notes: null,
 };
 
@@ -37,6 +43,8 @@ test("shows the weekly assignment, the add-rider form, and upcoming sessions wit
       coachId: 10,
       initialAssignments: [ASSIGNMENT],
       initialOccurrences: [OCCURRENCE],
+      initialTeamEvents: [],
+      initialBookingWindows: { intervals: null, lesson: null },
       eligibleRiders: [{ id: 20, displayName: "Alice Rider" }],
     }),
   );
@@ -48,6 +56,26 @@ test("shows the weekly assignment, the add-rider form, and upcoming sessions wit
   expect(html).toContain('href="https://open.spotify.com/playlist/abc"');
   expect(html).toContain("Cancel this date");
   expect(html).toContain("Reschedule");
+  expect(html).toContain("Booking rules");
+  expect(html).toContain("Save intervals booking rules");
+  expect(html).toContain("Save lessons booking rules");
+  expect(html).toContain("Blackout window 1");
+  expect(html).toContain("Blackout window 2");
+});
+
+test("flags an occurrence the rider marked unsure so the coach notices", () => {
+  const html = renderToStaticMarkup(
+    createElement(CoachScheduleManager, {
+      coachId: 10,
+      initialAssignments: [ASSIGNMENT],
+      initialOccurrences: [{ ...OCCURRENCE, riderResponse: "unsure" }],
+      initialTeamEvents: [],
+      initialBookingWindows: { intervals: null, lesson: null },
+      eligibleRiders: [{ id: 20, displayName: "Alice Rider" }],
+    }),
+  );
+
+  expect(html).toContain("🤔");
 });
 
 test("shows an empty state when there is nothing scheduled yet", () => {
@@ -56,6 +84,8 @@ test("shows an empty state when there is nothing scheduled yet", () => {
       coachId: 10,
       initialAssignments: [],
       initialOccurrences: [],
+      initialTeamEvents: [],
+      initialBookingWindows: { intervals: null, lesson: null },
       eligibleRiders: [],
     }),
   );
