@@ -6,7 +6,9 @@ import { getDb } from "@/lib/db";
 import {
   getAdminDashboardStats,
   hasAnyAdmin,
+  listUsersWithPersonas,
 } from "@/lib/persona-admin";
+import { adminListProfilesByPersona } from "@/lib/profiles";
 
 export const metadata: Metadata = {
   title: "Admin dashboard",
@@ -73,7 +75,29 @@ export default async function AdminPage() {
     );
   }
 
+  const users = await listUsersWithPersonas(db);
+  const coaches = users
+    .filter((coachUser) => coachUser.personas.includes("coach"))
+    .map((coach) => ({
+      id: coach.id,
+      displayName: coach.displayName ?? coach.email ?? `Coach #${coach.id}`,
+    }));
+
+  // Show representative profiles for common personas on the dashboard.
+  const personaKeys = ["theteam", "coach", "alumni", "member", "admin"] as const;
+  const personaProfilesArray = await Promise.all(
+    personaKeys.map((p) => adminListProfilesByPersona(db, p)),
+  );
+  const profilesByPersona: Record<string, import("@/lib/profiles").AdminProfileListItem[]> = {};
+  personaKeys.forEach((k, i) => {
+    profilesByPersona[k] = personaProfilesArray[i];
+  });
+
   return (
-    <AdminDashboard stats={await getAdminDashboardStats(db, user.id)} />
+    <AdminDashboard
+      stats={await getAdminDashboardStats(db, user.id)}
+      coaches={coaches}
+      profilesByPersona={profilesByPersona}
+    />
   );
 }

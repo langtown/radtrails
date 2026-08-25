@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { navItems, site } from "@/lib/content/site";
 import AuthNav from "./AuthNav";
+import NextRideNav from "./NextRideNav";
 import SocialIcon from "./SocialIcon";
 
 export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
@@ -36,9 +37,12 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 z-30 border-b border-[#dadce0] bg-white">
       <nav className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-5 md:flex-row md:justify-between md:px-8">
-        <Link href="/" className="flex items-center" aria-label="Ride and Develop home">
-          <Image src="/images/logo.png" alt="Ride and Develop logo" width={176} height={151} className="h-24 w-auto md:h-28" priority />
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center" aria-label="Ride and Develop home">
+            <Image src="/images/logo.png" alt="Ride and Develop logo" width={176} height={151} className="h-24 w-auto md:h-28" priority />
+          </Link>
+          <NextRideNav />
+        </div>
 
         <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-[15px] font-medium text-[#0d141a]">
           {navItems.map((item) => (

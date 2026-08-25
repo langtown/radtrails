@@ -86,11 +86,5 @@ export const racers = [
     image: "/images/athletes/sullivan-hartman.jpg",
     imagePosition: "center 44%",
     bio: "Sullivan is a 15-year-old from Thousand Oaks, California, who has been riding bikes for most of his life. What started as a fun way to explore the outdoors with friends turned into a passion for mountain biking, especially during the COVID-19 pandemic. What was once just an escape into nature soon became a lifestyle, with daily rides after online school helping to sharpen his skills. His racing journey began at age 11, though at the time, he was more focused on tackling the most challenging terrain in his area. In his first race, he crashed on the final stage and injured his arm but still managed to reach the podium. That experience ignited a love for racing - pushing his limits, charging downhill as fast as possible, and striving to be the fastest on the course.",
-  },
-  {
-    name: "Tyler Lawson",
-    image: "/images/athletes/tyler.jpeg",
-    imagePosition: "center 22%",
-    bio: "Tyler is a 15-year-old mountain bike racer who began his cycling journey in BMX, competing for about four years before transitioning to mountain biking in November of last year. He joined the Newbury Park Mountain Bike Team and quickly found success in cross-country racing, earning a podium finish in every race during the season. More recently, he developed an interest in enduro racing and now aims to compete in both cross-country and enduro events throughout the season.",
-  },
+  }
 ];
