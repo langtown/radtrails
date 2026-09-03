@@ -3,15 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
+import { PERSONA_KEYS, PERSONA_DESCRIPTIONS, type PersonaKey } from "@/lib/personas";
 import type { AdminProfileListItem } from "@/lib/profiles";
 
 const PERSONA_LABELS: Record<string, string> = {
   member: "Member",
-  theteam: "TheTeam",
+  theteam: "Team members",
   coach: "Coach",
   alumni: "Alumni",
   admin: "Admin",
+  radfriends: "RadFriends",
+  private: "Private",
 };
 
 function statusLabel(status: string | null): string {
@@ -123,6 +125,21 @@ export default function AdminProfilesManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize persona from the query string when present, so links like
+  // /admin/profiles/manage?persona=theteam land on the expected filter.
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get("persona");
+      if (p && (PERSONA_KEYS as readonly string[]).includes(p)) {
+        setPersona(p as PersonaKey);
+      }
+    } catch {
+      // ignore URL parsing errors
+    }
+    // run only once
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -168,6 +185,10 @@ export default function AdminProfilesManager() {
   return (
     <div className="mt-8">
       <PersonaSelector persona={persona} setPersona={setPersona} />
+
+      <p className="mt-3 text-sm text-[#56585e]">
+        {PERSONA_DESCRIPTIONS[persona] ?? "No description available."}
+      </p>
 
       {error && (
         <p

@@ -80,6 +80,25 @@ test("an admin can grant a persona", async () => {
   expect(await hasPersona(env.DB, userId, "theteam")).toBe(true);
 });
 
+test("an admin can grant the radfriends and private personas", async () => {
+  const admin = await createAdmin();
+  const userId = await createUser("sub-newpersonas");
+
+  await grantPersona(env.DB, {
+    userId,
+    persona: "radfriends",
+    grantedBy: admin,
+  });
+  await grantPersona(env.DB, {
+    userId,
+    persona: "private",
+    grantedBy: admin,
+  });
+
+  expect(await hasPersona(env.DB, userId, "radfriends")).toBe(true);
+  expect(await hasPersona(env.DB, userId, "private")).toBe(true);
+});
+
 test("a user cannot grant themselves a persona", async () => {
   const userId = await createUser("sub-selfpromote");
   await grantDefaultPersona(env.DB, userId);

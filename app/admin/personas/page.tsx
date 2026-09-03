@@ -48,7 +48,7 @@ export default async function PersonaAdminPage() {
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <h1 className="text-3xl font-semibold md:text-4xl">
-            Manage people
+            Manage Personas
           </h1>
           <p className="mt-4 max-w-2xl text-[#56585e]">
             Personas decide whether and where someone appears on the site.

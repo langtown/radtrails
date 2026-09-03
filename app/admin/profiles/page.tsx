@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { headers } from "next/headers";
 import { getDb } from "@/lib/db";
 import { requireAdminUser } from "@/lib/persona-admin";
@@ -47,10 +46,6 @@ export default async function ProfileReviewPage() {
             Check the name, photo, bio, and social links exactly as they will
             appear. Rejections require feedback the profile owner can act on.
           </p>
-        </div>
-        <div className="flex gap-4 text-sm font-semibold text-[#5025d1] underline">
-          <Link href="/admin">Admin dashboard</Link>
-          <Link href="/admin/personas">Manage people</Link>
         </div>
       </div>
 

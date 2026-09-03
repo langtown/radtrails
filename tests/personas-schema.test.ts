@@ -16,7 +16,7 @@ beforeEach(async () => {
   await env.DB.prepare("DELETE FROM users").run();
 });
 
-test("seeds exactly the five personas the site uses", async () => {
+test("seeds exactly the seven personas the site uses", async () => {
   const rows = await env.DB.prepare(
     "SELECT key FROM personas ORDER BY sort_order",
   ).all<{ key: string }>();
@@ -27,18 +27,20 @@ test("seeds exactly the five personas the site uses", async () => {
     "coach",
     "alumni",
     "admin",
+    "radfriends",
+    "private",
   ]);
 });
 
-test("member and admin are not public personas", async () => {
+test("member, admin, and private are not public personas", async () => {
   const rows = await env.DB.prepare(
     "SELECT key FROM personas WHERE is_public = 0 ORDER BY sort_order",
   ).all<{ key: string }>();
 
-  expect(rows.results.map((r) => r.key)).toEqual(["member", "admin"]);
+  expect(rows.results.map((r) => r.key)).toEqual(["member", "admin", "private"]);
 });
 
-test("theteam, coach, and alumni are the personas that appear publicly", async () => {
+test("theteam, coach, alumni, and radfriends are the personas that appear publicly", async () => {
   const rows = await env.DB.prepare(
     "SELECT key FROM personas WHERE is_public = 1 ORDER BY sort_order",
   ).all<{ key: string }>();
@@ -47,6 +49,7 @@ test("theteam, coach, and alumni are the personas that appear publicly", async (
     "theteam",
     "coach",
     "alumni",
+    "radfriends",
   ]);
 });
 

@@ -164,12 +164,15 @@ export function ProfileEditor({
   initialDisplayName,
   initialProfile,
   canEditSocials,
+  initialPlaylistUrl,
 }: {
   initialDisplayName: string | null;
   initialProfile: OwnProfile | null;
   canEditSocials: boolean;
+  initialPlaylistUrl: string | null;
 }) {
   const [profile, setProfile] = useState(initialProfile);
+  const [playlistUrl, setPlaylistUrl] = useState(initialPlaylistUrl ?? "");
   const [imageKey, setImageKey] = useState(initialProfile?.imageKey ?? null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewObjectUrl, setPreviewObjectUrl] = useState<string | null>(null);
@@ -268,13 +271,32 @@ export function ProfileEditor({
         throw new Error("The profile save returned an invalid response.");
       }
 
+      // The profile is committed server-side now. Reflect it locally right
+      // away so a playlist-only failure below doesn't make an already-saved
+      // profile edit look lost.
       setProfile(body.profile);
       setImageKey(body.profile.imageKey);
       selectImage(null);
       if (imageInputRef.current) imageInputRef.current.value = "";
+
+      const playlistResponse = await fetch("/api/me/playlist", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playlistUrl: playlistUrl.trim() || null }),
+      });
+      if (!playlistResponse.ok) {
+        throw new Error(
+          `Profile saved, but the playlist could not be saved: ${await errorMessage(playlistResponse)}`,
+        );
+      }
+      const playlistBody = (await playlistResponse.json()) as {
+        playlistUrl: string | null;
+      };
+      setPlaylistUrl(playlistBody.playlistUrl ?? "");
+
       setFeedback({
         kind: "success",
-        message: "Profile submitted for review.",
+        message: "Profile submitted for review. Session playlist saved.",
       });
     } catch (error) {
       setFeedback({
@@ -453,6 +475,22 @@ export function ProfileEditor({
           </div>
         </section>
       </div>
+
+      <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+        <h3 className="text-xl font-semibold">Session playlist</h3>
+        <p className="mt-1 text-sm text-[#56585e]">
+          Leave a link for your coach to play during your Intervals session.
+          Saved along with your profile above.
+        </p>
+        <input
+          type="url"
+          value={playlistUrl}
+          onChange={(event) => setPlaylistUrl(event.target.value)}
+          placeholder="https://open.spotify.com/playlist/..."
+          maxLength={300}
+          className={`${inputClass} max-w-md`}
+        />
+      </section>
 
       {canEditSocials ? (
         <>

@@ -12,9 +12,24 @@ export const PERSONA_KEYS = [
   "coach",
   "alumni",
   "admin",
+  "radfriends",
+  "private",
 ] as const;
 
 export type PersonaKey = (typeof PERSONA_KEYS)[number];
+
+// Human-readable descriptions for each persona. Kept here as the canonical
+// in-repo source; migrations also seed a description column for use at runtime
+// in Cloudflare D1. Keep these in sync with DB seeds.
+export const PERSONA_DESCRIPTIONS: Record<string, string> = {
+  member: "A registered account; no public presence by default.",
+  theteam: "Featured team members who appear on the racing/team pages.",
+  coach: "Coaches who offer paid or free coaching services and appear on the services page.",
+  alumni: "Former team members who are kept as alumni on the site.",
+  admin: "Administrative accounts with the ability to grant and revoke personas and review content.",
+  radfriends: "Friends of the project with lightweight public presence (rad friends).",
+  private: "Private accounts used for internal or non-public purposes.",
+};
 
 /** Granted automatically on first login: an account, and no public presence. */
 export const DEFAULT_PERSONA: PersonaKey = "member";
