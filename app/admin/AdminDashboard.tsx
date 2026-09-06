@@ -51,25 +51,25 @@ export default function AdminDashboard({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 md:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-5">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#673de6]">
-            Administration
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold md:text-4xl">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-wide text-[#673de6]">
+          Administration
+        </p>
+        <div className="mt-2 flex flex-wrap items-baseline justify-between gap-5">
+          <h1 className="text-3xl font-semibold md:text-4xl">
             Admin dashboard
           </h1>
-          <p className="mt-4 max-w-2xl text-[#56585e]">
-            Manage member profiles and control where each person appears on
-            the site.
-          </p>
+          <Link
+            href="/admin/docs"
+            className="text-sm font-semibold text-[#5025d1] underline"
+          >
+            📒 Admin guide
+          </Link>
         </div>
-        <Link
-          href="/admin/docs"
-          className="text-sm font-semibold text-[#5025d1] underline"
-        >
-          Admin guide
-        </Link>
+        <p className="mt-4 max-w-2xl text-[#56585e]">
+          Manage member profiles and control where each person appears on the
+          site.
+        </p>
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
