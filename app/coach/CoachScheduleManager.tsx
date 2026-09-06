@@ -692,7 +692,7 @@ export default function CoachScheduleManager({
         <p className="mt-1 text-sm text-[#56585e]">
           Choose which days can be booked and up to two blackout windows that
           apply on every allowed day, set separately for Intervals and
-          Lessons. Practice rides are never restricted by these rules. Leave
+          Lessons. Group Rides are never restricted by these rules. Leave
           every day on and both windows off to allow anything.
         </p>
         <div className="mt-4 grid gap-8 md:grid-cols-2">
@@ -714,7 +714,7 @@ export default function CoachScheduleManager({
       </section>
 
       <section className="mt-10">
-        <h2 className="text-xl font-semibold">Team rides</h2>
+        <h2 className="text-xl font-semibold">Group Rides</h2>
         <p className="mt-1 text-sm text-[#56585e]">
           One event on every team rider&apos;s calendar. Riders mark
           themselves not available from their profile; everyone else is
@@ -766,11 +766,13 @@ export default function CoachScheduleManager({
         >
           <div
             role="dialog"
-            aria-label="Team ride attendees"
+            aria-label="Group Ride attendees"
             className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
             onClick={(event) => event.stopPropagation()}
           >
-            <h3 className="text-xl font-semibold">Practice Ride</h3>
+            <h3 className="text-xl font-semibold">
+              {SESSION_TYPE_LABELS.practiceride}
+            </h3>
             <p className="mt-1 text-sm text-[#56585e]">
               {viewingTeamEvent.eventDate} {viewingTeamEvent.startTime}–
               {viewingTeamEvent.finishTime} —{" "}

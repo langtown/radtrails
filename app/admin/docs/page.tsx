@@ -77,11 +77,13 @@ export default async function AdminDocsPage() {
 
       <Section title="Personas: who appears where">
         <p>
-          A <strong>persona</strong> decides whether, and where, someone
-          appears on the public site. Most people hold <code>member</code>{" "}
-          plus zero or more others — personas are additive, not a single
-          role, so the same person can be a featured racer and a coach at
-          once.
+          A <strong>persona</strong> describes what kind of person someone is
+          within the Rad organization — a team rider, a coach, a friend of
+          the project, and so on — and the app uses it to decide whether, and
+          where, that person appears on the public site. Every signed-in
+          user is automatically given the <code>member</code> persona, plus
+          zero or more others — personas are additive, not a single role, so
+          the same person can be a featured racer and a coach at once.
         </p>
         <ul className="list-disc space-y-2 pl-5">
           <li>
@@ -90,9 +92,10 @@ export default async function AdminDocsPage() {
             member-only account cannot add social links to their profile.
           </li>
           <li>
-            <strong>TheTeam</strong> — appears on the racing page. This is
-            also the only persona that can be scheduled into a coach&apos;s
-            calendar or added to a team ride — see below.
+            <strong>TheTeam</strong> — appears on the racing page, and is
+            expected at the weekend Group Ride. This is also the only
+            persona that can be scheduled into a coach&apos;s Intervals or
+            Lessons calendar — see below.
           </li>
           <li>
             <strong>Coach</strong> — appears on the services page, and is the
@@ -110,10 +113,14 @@ export default async function AdminDocsPage() {
             removed, so the site can never be left without one.
           </li>
           <li>
-            <strong>RadFriends</strong> — friends of the project with a
-            lightweight public presence. Flagged public in the data model,
-            but no page on the site currently lists them — granting it won&apos;t
-            make anyone visible anywhere yet.
+            <strong>RadFriends</strong> — friends of the project. Welcome to
+            join TheTeam&apos;s weekend Group Ride and to help out on trail
+            days and other excursions, but not part of Intervals or Lessons.
+            Flagged public in the data model, but the app doesn&apos;t yet
+            act on any of this: no page on the site currently lists
+            RadFriends, and today&apos;s Group Ride attendee list only
+            covers TheTeam holders — granting RadFriends won&apos;t make
+            anyone visible, or automatically attending, anywhere yet.
           </li>
           <li>
             <strong>Private</strong> — internal or non-public use. Never
@@ -191,18 +198,27 @@ export default async function AdminDocsPage() {
             (Z1–Z5 watts) and a playlist link the rider sets themselves.
           </li>
           <li>
-            <strong>Lessons</strong> — the same idea as Intervals (one rider
-            per booking, same capacity and eligibility rules), but scheduled
-            as a specific one-off date instead of a recurring weekly slot.
+            <strong>Lessons</strong> (a.k.a. Skills) — hourly, usually 1-on-1
+            coaching sold to the public, not just TheTeam; a team rider can
+            book one too. In the app today it works like Intervals (one
+            rider per booking, same eligibility rules), but scheduled as a
+            specific one-off date instead of a recurring weekly slot. Note
+            the gap: the in-app booking tool currently only lets a coach or
+            admin assign a <code>theteam</code> holder as the rider, so a
+            member of the public without that persona can&apos;t yet be
+            booked through this calendar.
           </li>
           <li>
-            <strong>Team rides</strong> (labelled &quot;Practice Ride&quot;)
-            — one shared, team-wide event: a date, start and finish time, a
-            required Google Maps meetup link, and optional free-text notes
-            (route, pace, what to bring). Every <code>theteam</code> holder
-            is attending by default — nobody has to be added individually. A
+            <strong>Group Ride</strong> (the weekend team ride) — one shared,
+            team-wide event: a date, start and finish time, a required
+            Google Maps meetup link, and optional free-text notes (route,
+            pace, what to bring). Every <code>theteam</code> holder is
+            attending by default — nobody has to be added individually. A
             rider opts out by marking themselves &quot;not available&quot;
-            from their own profile page.
+            from their own profile page. RadFriends are organizationally
+            welcome to join too, but the app doesn&apos;t reflect that yet —
+            today&apos;s attendee list and opt-out only cover TheTeam
+            holders.
           </li>
         </ul>
       </Section>
@@ -210,9 +226,9 @@ export default async function AdminDocsPage() {
       <Section title="Booking rules and blackout windows">
         <p>
           A coach can restrict when Intervals and Lessons may be booked, set
-          separately for each of the two. <strong>Team rides are never
-          affected by these rules</strong> — they&apos;re team-wide events,
-          not per-rider bookings.
+          separately for each of the two. <strong>The Group Ride is never
+          affected by these rules</strong> — it&apos;s a team-wide event,
+          not a per-rider booking.
         </p>
         <ul className="list-disc space-y-2 pl-5">
           <li>
@@ -239,7 +255,7 @@ export default async function AdminDocsPage() {
           Every coach and rider has their own private calendar link — a
           coach sees it on <code>/coach</code>, a rider sees it on their
           profile. It lists that person&apos;s own upcoming Intervals and
-          Lessons, plus every team ride, so it can be subscribed to in
+          Lessons, plus every Group Ride, so it can be subscribed to in
           Google Calendar, Apple Calendar, or similar.
         </p>
         <ul className="list-disc space-y-2 pl-5">

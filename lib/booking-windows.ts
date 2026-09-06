@@ -14,7 +14,7 @@ export class BookingWindowError extends Error {
 /** Bit i (0=Sun..6=Sat) set = bookable. Default: every day allowed. */
 export const ALL_DAYS_MASK = 0b1111111;
 
-/** Booking rules only ever apply to these session types; practice rides never are. */
+/** Booking rules only ever apply to these session types; the Group Ride is never subject to them. */
 export const BOOKABLE_SESSION_TYPES = ["intervals", "lesson"] as const;
 export type BookableSessionType = (typeof BOOKABLE_SESSION_TYPES)[number];
 
@@ -204,7 +204,7 @@ function overlaps(
 /**
  * Throws when the coach has configured rules that forbid this day/time.
  * No-op when the coach has no configuration, or when sessionType isn't
- * Intervals or Lesson — booking rules never apply to practice rides.
+ * Intervals or Lesson — booking rules never apply to the Group Ride.
  */
 export async function assertBookable(
   db: D1Database,
