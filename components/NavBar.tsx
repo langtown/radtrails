@@ -39,7 +39,7 @@ export default function NavBar() {
       <nav className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-5 md:flex-row md:justify-between md:px-8">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center" aria-label="Ride and Develop home">
-            <Image src="/images/logo.png" alt="Ride and Develop logo" width={176} height={151} className="h-24 w-auto md:h-28" priority />
+            <Image src="/images/logo.png" alt="Ride and Develop logo" width={900} height={449} className="h-24 w-auto md:h-28" priority />
           </Link>
           <NextRideNav />
         </div>
