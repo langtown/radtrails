@@ -333,4 +333,4 @@ bd prime                # Refresh Beads context
 
 ## Site Manager Skill
 
-For step-by-step guidance on content changes, image sizing, section additions, and Playwright testing, see `.claude/skills/radtrails.md`.
+For step-by-step guidance on content changes, image sizing, section additions, and Playwright testing, see `.agents/skills/radtrails/SKILL.md`.
