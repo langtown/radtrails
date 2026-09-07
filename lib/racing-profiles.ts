@@ -20,6 +20,20 @@ function normalizedName(name: string): string {
 	return name.trim().toLocaleLowerCase("en-US").replace(/\s+/g, " ");
 }
 
+/**
+ * Turns a checked-in content entry into a card RacerGrid can render — the
+ * same manual, no-database path racers all used before dynamic team-member
+ * additions existed.
+ */
+export function toRacingCards(entries: readonly StaticRacer[]): RacingCard[] {
+	return entries.map((entry) => ({
+		...entry,
+		key: `content:${entry.name}`,
+		socials: entry.socials ?? {},
+		sponsors: entry.sponsors ?? [],
+	}));
+}
+
 /** Keeps every checked-in racer and appends only newly approved team members. */
 export function buildRacingTeam(
 	checkedInRacers: readonly StaticRacer[],
@@ -28,12 +42,7 @@ export function buildRacingTeam(
 	const checkedInNames = new Set(
 		checkedInRacers.map((racer) => normalizedName(racer.name)),
 	);
-	const checkedInTeam = checkedInRacers.slice(1).map((racer) => ({
-		...racer,
-		key: `content:${racer.name}`,
-		socials: racer.socials ?? {},
-		sponsors: racer.sponsors ?? [],
-	}));
+	const checkedInTeam = toRacingCards(checkedInRacers.slice(1));
 	const approvedTeam = approvedProfiles
 		.filter((profile) => !checkedInNames.has(normalizedName(profile.name)))
 		.map((profile) => ({

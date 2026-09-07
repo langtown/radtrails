@@ -45,11 +45,33 @@ export default function NavBar() {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-[15px] font-medium text-[#0d141a]">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="transition-colors hover:text-[#673de6]">
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) =>
+            "children" in item && item.children ? (
+              <details key={item.href} className="group relative">
+                <summary className="flex cursor-pointer list-none items-center gap-1 transition-colors hover:text-[#673de6] [&::-webkit-details-marker]:hidden">
+                  {item.label}
+                  <span aria-hidden="true" className="text-xs transition-transform group-open:rotate-180">
+                    ▾
+                  </span>
+                </summary>
+                <div className="absolute left-0 top-full z-20 mt-2 min-w-[10rem] rounded-lg border border-[#dadce0] bg-white py-2 shadow-md">
+                  {item.children.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      className="block px-4 py-2 text-sm transition-colors hover:bg-[#f7f7f7] hover:text-[#673de6]"
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </details>
+            ) : (
+              <Link key={item.href} href={item.href} className="transition-colors hover:text-[#673de6]">
+                {item.label}
+              </Link>
+            ),
+          )}
           <NavUtilityArea authControls={<AuthNav />} />
         </div>
       </nav>
