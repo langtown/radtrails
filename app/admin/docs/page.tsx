@@ -77,7 +77,7 @@ export default async function AdminDocsPage() {
 
       <Section title="Personas: who appears where">
         <p>
-          A <strong>persona</strong> describes what kind of person someone is
+          A <strong>persona</strong>{" "}describes what kind of person someone is
           within the Rad organization — a team rider, a coach, a friend of
           the project, and so on — and the app uses it to decide whether, and
           where, that person appears on the public site. Every signed-in
@@ -87,34 +87,34 @@ export default async function AdminDocsPage() {
         </p>
         <ul className="list-disc space-y-2 pl-5">
           <li>
-            <strong>Member</strong> — every account gets this automatically
+            <strong>Member</strong>{" "}— every account gets this automatically
             on first sign-in. No public presence by default, and a
             member-only account cannot add social links to their profile.
           </li>
           <li>
-            <strong>TheTeam</strong> — appears on the racing page, and is
+            <strong>TheTeam</strong>{" "}— appears on the racing page, and is
             expected at the weekend Group Ride. This is also the only
             persona that can be scheduled into a coach&apos;s Intervals
             calendar — see below. Lessons are open to the public, not just
             TheTeam.
           </li>
           <li>
-            <strong>Coach</strong> — appears on the services page, and is the
+            <strong>Coach</strong>{" "}— appears on the services page, and is the
             only persona that gets a coach calendar (a &quot;Coach
             calendars&quot; card links to it from the dashboard).
           </li>
           <li>
-            <strong>Alumni</strong> — former team members, kept off the
+            <strong>Alumni</strong>{" "}— former team members, kept off the
             active racing page.
           </li>
           <li>
-            <strong>Admin</strong> — can grant and revoke personas, review
+            <strong>Admin</strong>{" "}— can grant and revoke personas, review
             pending profile edits, and manage any coach&apos;s calendar on
             their behalf. The system will not let the last admin account be
             removed, so the site can never be left without one.
           </li>
           <li>
-            <strong>RadFriends</strong> — friends of the project. Welcome to
+            <strong>RadFriends</strong>{" "}— friends of the project. Welcome to
             join TheTeam&apos;s weekend Group Ride and to help out on trail
             days and other excursions, but not part of Intervals, Lessons, or
             Skills. Flagged public in the data model, but the app doesn&apos;t yet
@@ -124,8 +124,11 @@ export default async function AdminDocsPage() {
             anyone visible, or automatically attending, anywhere yet.
           </li>
           <li>
-            <strong>Private</strong> — internal or non-public use. Never
-            shown anywhere on the public site.
+            <strong>Private</strong>{" "}— an individual who takes private
+            Lessons but is not a member of the team. Never shown anywhere on
+            the public site. The in-app booking tool doesn&apos;t yet let a
+            coach assign a Private persona holder to a Lesson — see below
+            (tracked as radtrails-rw8).
           </li>
         </ul>
         <p>
@@ -146,12 +149,12 @@ export default async function AdminDocsPage() {
         <p>
           Holding a persona is not the same as having your current photo,
           bio, or social links live on the site. That is a second, separate
-          gate: a profile&apos;s <strong>status</strong> (draft, pending,
+          gate: a profile&apos;s <strong>status</strong>{" "}(draft, pending,
           approved, or rejected).
         </p>
         <p>
           The public racing and services pages only ever show a
-          person&apos;s <strong>last-approved</strong> version of their
+          person&apos;s <strong>last-approved</strong>{" "}version of their
           profile. When someone edits their name, photo, bio, or socials,
           that edit sits as <em>pending</em> — invisible to the public — until
           an admin approves or rejects it at{" "}
@@ -188,7 +191,7 @@ export default async function AdminDocsPage() {
         </p>
         <ul className="list-disc space-y-3 pl-5">
           <li>
-            <strong>Intervals</strong> — a standing weekly slot: the same
+            <strong>Intervals</strong>{" "}— a standing weekly slot: the same
             rider, same day of week, same time, every week until changed.
             Only <code>theteam</code> persona holders can be assigned as a
             rider, and a slot holds at most two riders (one per bike). Each
@@ -199,18 +202,22 @@ export default async function AdminDocsPage() {
             (Z1–Z5 watts) and a playlist link the rider sets themselves.
           </li>
           <li>
-            <strong>Lessons</strong> — hourly, 1-on-1 coaching sold to the
-            public, not just TheTeam; a team rider can book one too. In the
-            app today it works like Intervals (one rider per booking, same
-            eligibility rules), but scheduled as a specific one-off date
-            instead of a recurring weekly slot. Note the gap: the in-app
-            booking tool currently only lets a coach or
-            admin assign a <code>theteam</code> holder as the rider, so a
-            member of the public without that persona can&apos;t yet be
-            booked through this calendar.
+            <strong>Lessons</strong>{" "}— hourly, 1-on-1 coaching sold to the
+            public, not just TheTeam; a team rider can book one too. The{" "}
+            <code>private</code>{" "}
+            persona is meant for exactly this: someone
+            taking Lessons who isn&apos;t on the team. In the app today it
+            works like Intervals (one rider per booking, same eligibility
+            rules), but scheduled as a specific one-off date instead of a
+            recurring weekly slot. Note the gap: the in-app booking tool
+            currently only lets a coach or admin assign a{" "}
+            <code>theteam</code> holder as the rider, so a{" "}
+            <code>private</code>{" "}
+            persona holder can&apos;t yet be booked
+            through this calendar (tracked as radtrails-rw8).
           </li>
           <li>
-            <strong>Group Ride</strong> (the weekend team ride) — one shared,
+            <strong>Group Ride</strong>{" "}(the weekend team ride) — one shared,
             team-wide event: a date, start and finish time, a required
             Google Maps meetup link, and optional free-text notes (route,
             pace, what to bring). Every <code>theteam</code> holder is
@@ -223,7 +230,7 @@ export default async function AdminDocsPage() {
           </li>
         </ul>
         <p className="mt-4">
-          The team also runs weekly <strong>Skills</strong> sessions — a
+          The team also runs weekly <strong>Skills</strong>{" "}sessions — a
           team-wide activity where TheTeam practices skills together, distinct
           from both the individual, 1-on-1 Lessons and the longer weekend
           Group Ride. The app has no Skills entry today; it isn&apos;t one of
@@ -235,17 +242,17 @@ export default async function AdminDocsPage() {
         <p>
           A coach can restrict when Intervals and Lessons may be booked, set
           separately for each of the two. <strong>The Group Ride is never
-          affected by these rules</strong> — it&apos;s a team-wide event,
+          affected by these rules</strong>{" "}— it&apos;s a team-wide event,
           not a per-rider booking.
         </p>
         <ul className="list-disc space-y-2 pl-5">
           <li>
-            <strong>Allowed days</strong> — a weekly on/off toggle per day of
+            <strong>Allowed days</strong>{" "}— a weekly on/off toggle per day of
             the week. A day left off can never be booked for that session
             type.
           </li>
           <li>
-            <strong>Blackout windows</strong> — up to two time-of-day ranges
+            <strong>Blackout windows</strong>{" "}— up to two time-of-day ranges
             (e.g. 12:00–13:00) that apply on every allowed day. These are not
             tied to a specific date — they repeat every week until changed.
           </li>
@@ -268,15 +275,15 @@ export default async function AdminDocsPage() {
         </p>
         <ul className="list-disc space-y-2 pl-5">
           <li>
-            <strong>Copy link</strong> copies the feed URL to share manually.
+            <strong>Copy link</strong>{" "}copies the feed URL to share manually.
           </li>
           <li>
-            <strong>Open in calendar app</strong> hands the link to the
+            <strong>Open in calendar app</strong>{" "}hands the link to the
             device&apos;s calendar app directly (via a <code>webcal:</code>{" "}
             link).
           </li>
           <li>
-            <strong>Regenerate link</strong> issues a new secret token and
+            <strong>Regenerate link</strong>{" "}issues a new secret token and
             immediately invalidates the old URL — use this if a link was
             shared by mistake.
           </li>
