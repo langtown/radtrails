@@ -115,8 +115,8 @@ export default async function AdminDocsPage() {
           <li>
             <strong>RadFriends</strong> — friends of the project. Welcome to
             join TheTeam&apos;s weekend Group Ride and to help out on trail
-            days and other excursions, but not part of Intervals or Lessons.
-            Flagged public in the data model, but the app doesn&apos;t yet
+            days and other excursions, but not part of Intervals, Lessons, or
+            Skills. Flagged public in the data model, but the app doesn&apos;t yet
             act on any of this: no page on the site currently lists
             RadFriends, and today&apos;s Group Ride attendee list only
             covers TheTeam holders — granting RadFriends won&apos;t make
@@ -198,12 +198,12 @@ export default async function AdminDocsPage() {
             (Z1–Z5 watts) and a playlist link the rider sets themselves.
           </li>
           <li>
-            <strong>Lessons</strong> (a.k.a. Skills) — hourly, usually 1-on-1
-            coaching sold to the public, not just TheTeam; a team rider can
-            book one too. In the app today it works like Intervals (one
-            rider per booking, same eligibility rules), but scheduled as a
-            specific one-off date instead of a recurring weekly slot. Note
-            the gap: the in-app booking tool currently only lets a coach or
+            <strong>Lessons</strong> — hourly, 1-on-1 coaching sold to the
+            public, not just TheTeam; a team rider can book one too. In the
+            app today it works like Intervals (one rider per booking, same
+            eligibility rules), but scheduled as a specific one-off date
+            instead of a recurring weekly slot. Note the gap: the in-app
+            booking tool currently only lets a coach or
             admin assign a <code>theteam</code> holder as the rider, so a
             member of the public without that persona can&apos;t yet be
             booked through this calendar.
@@ -221,6 +221,13 @@ export default async function AdminDocsPage() {
             holders.
           </li>
         </ul>
+        <p className="mt-4">
+          The team also runs weekly <strong>Skills</strong> sessions — a
+          team-wide activity where TheTeam practices skills together, distinct
+          from both the individual, 1-on-1 Lessons and the longer weekend
+          Group Ride. The app has no Skills entry today; it isn&apos;t one of
+          the three calendar types above (tracked as radtrails-8qj).
+        </p>
       </Section>
 
       <Section title="Booking rules and blackout windows">
