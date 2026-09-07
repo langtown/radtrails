@@ -61,7 +61,7 @@ export default function AdminDashboard({
           </h1>
           <Link
             href="/admin/docs"
-            className="text-sm font-semibold text-[#5025d1] underline"
+            className="text-sm font-semibold text-[#5025d1]"
           >
             📒 Admin guide
           </Link>
