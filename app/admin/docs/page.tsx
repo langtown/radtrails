@@ -94,8 +94,9 @@ export default async function AdminDocsPage() {
           <li>
             <strong>TheTeam</strong> — appears on the racing page, and is
             expected at the weekend Group Ride. This is also the only
-            persona that can be scheduled into a coach&apos;s Intervals or
-            Lessons calendar — see below.
+            persona that can be scheduled into a coach&apos;s Intervals
+            calendar — see below. Lessons are open to the public, not just
+            TheTeam.
           </li>
           <li>
             <strong>Coach</strong> — appears on the services page, and is the
