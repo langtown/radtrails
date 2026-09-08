@@ -15,7 +15,7 @@ export type SessionType = (typeof SESSION_TYPES)[number];
 export const SESSION_TYPE_LABELS: Record<SessionType, string> = {
   intervals: "Intervals",
   lesson: "Lesson",
-  practiceride: "Practice Ride",
+  practiceride: "Group Ride",
 };
 
 /** Which personas may be scheduled as a rider. Extending this list is the whole change. */

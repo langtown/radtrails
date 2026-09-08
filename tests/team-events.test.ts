@@ -255,7 +255,7 @@ test("getNextRideForUser returns the earliest of own sessions and team rides", a
     locationUrl: MAPS,
   });
   expect(await getNextRideForUser(env.DB, rider)).toEqual({
-    label: "Practice Ride",
+    label: "Group Ride",
     eventDate: futureIso(6),
     startTime: "09:00",
   });
@@ -280,7 +280,7 @@ test("getNextRideForUser returns the earliest of own sessions and team rides", a
   // Another rider with no sessions still sees the team ride as next.
   const other = await createRider("sub-r2", "Rider Two");
   expect((await getNextRideForUser(env.DB, other))?.label).toBe(
-    "Practice Ride",
+    "Group Ride",
   );
 });
 
@@ -319,7 +319,7 @@ test("getNextRidesForUser merges up to three items, earliest first", async () =>
   const keys = rides.map((ride) => `${ride.eventDate}T${ride.startTime}`);
   expect([...keys].sort()).toEqual(keys);
   expect(rides[0].label).toBe("Intervals");
-  expect(rides.some((ride) => ride.label === "Practice Ride")).toBe(true);
+  expect(rides.some((ride) => ride.label === "Group Ride")).toBe(true);
 
   expect(await getNextRidesForUser(env.DB, await createRider("sub-r2", "Rider Two"))).toHaveLength(2);
 });

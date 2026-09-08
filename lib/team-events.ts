@@ -133,7 +133,7 @@ export async function createTeamEvent(
   if (durationMinutes > MAX_TEAM_EVENT_MINUTES) {
     throw new TeamEventError("a team ride cannot exceed 12 hours", 400);
   }
-  // Practice rides are team-wide events, not per-rider bookings, so a
+  // Group Rides are team-wide events, not per-rider bookings, so a
   // coach's Intervals/Lesson booking rules never constrain them.
   const validatedLocation = validateLocationUrl(locationUrl);
   const validatedInfo = validateInfo(input.info);

@@ -18,7 +18,14 @@ export const site = {
 export const navItems = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "/racing", label: "Racing" },
+  {
+    href: "/racing",
+    label: "Racing",
+    children: [
+      { href: "/racing", label: "Team" },
+      { href: "/racing/alumni", label: "Alumni" },
+    ],
+  },
   { href: "/community", label: "Community" },
   { href: "/support", label: "Support" },
 ];

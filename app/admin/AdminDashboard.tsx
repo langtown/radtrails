@@ -55,9 +55,17 @@ export default function AdminDashboard({
         <p className="text-sm font-semibold uppercase tracking-wide text-[#673de6]">
           Administration
         </p>
-        <h1 className="mt-2 text-3xl font-semibold md:text-4xl">
-          Admin dashboard
-        </h1>
+        <div className="mt-2 flex flex-wrap items-baseline justify-between gap-5">
+          <h1 className="text-3xl font-semibold md:text-4xl">
+            Admin dashboard
+          </h1>
+          <Link
+            href="/admin/docs"
+            className="text-sm font-semibold text-[#5025d1]"
+          >
+            📒 Admin guide
+          </Link>
+        </div>
         <p className="mt-4 max-w-2xl text-[#56585e]">
           Manage member profiles and control where each person appears on the
           site.

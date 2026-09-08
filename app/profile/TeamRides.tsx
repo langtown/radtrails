@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SESSION_TYPE_LABELS } from "@/lib/coaching-constraints";
 import type { TeamEvent } from "@/lib/team-events";
 
 export type TeamRideWithRsvp = TeamEvent & { viewerUnavailable: boolean };
@@ -55,7 +56,7 @@ export default function TeamRides({
 
   return (
     <section className="mt-10 border-t border-[#e3e3e3] pt-8">
-      <h2 className="text-xl font-semibold">Team rides</h2>
+      <h2 className="text-xl font-semibold">Group Rides</h2>
       <p className="mt-1 text-sm text-[#56585e]">
         {canRsvp
           ? "You are assumed attending. Mark yourself not available if you cannot make a ride."
@@ -70,7 +71,10 @@ export default function TeamRides({
         {rides.map((ride) => (
           <li key={ride.id} className="flex flex-wrap items-center gap-3 py-3">
             <span className="flex-1">
-              <span className="font-medium">Practice Ride</span> — {ride.eventDate}{" "}
+              <span className="font-medium">
+                {SESSION_TYPE_LABELS.practiceride}
+              </span>{" "}
+              — {ride.eventDate}{" "}
               {ride.startTime}–{ride.finishTime} with Coach{" "}
               {ride.coachDisplayName ?? ""} · {ride.attendees.length} attending
               <a

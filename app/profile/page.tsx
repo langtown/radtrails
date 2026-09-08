@@ -64,7 +64,7 @@ export default async function ProfilePage() {
     ...(isCoach || calendarSessions.length > 0 || teamEvents.length > 0
       ? [{ id: "sessions-calendar", label: "Calendar" }]
       : []),
-    ...(canSeeTeamRides ? [{ id: "team-rides", label: "Team rides" }] : []),
+    ...(canSeeTeamRides ? [{ id: "team-rides", label: "Group Rides" }] : []),
     ...(power ? [{ id: "power-zones", label: "Power zones" }] : []),
     ...(isCoach ? [{ id: "coaching", label: "Coaching" }] : []),
     { id: "sign-out", label: "Sign out" },

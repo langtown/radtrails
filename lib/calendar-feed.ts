@@ -169,7 +169,7 @@ export async function buildFeedForToken(
     for (const teamEvent of teamEvents) {
       events.push({
         uid: `team-event-${teamEvent.id}@radtrails.org`,
-        summary: "Practice Ride",
+        summary: SESSION_TYPE_LABELS.practiceride,
         description: [
           teamEvent.info,
           `Meetup: ${teamEvent.locationUrl}`,
