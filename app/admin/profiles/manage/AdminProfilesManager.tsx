@@ -119,26 +119,15 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
   );
 }
 
-export default function AdminProfilesManager() {
-  const [persona, setPersona] = useState<PersonaKey>(PERSONA_KEYS[0]);
+export default function AdminProfilesManager({
+  initialPersona,
+}: {
+  initialPersona: PersonaKey;
+}) {
+  const [persona, setPersona] = useState<PersonaKey>(initialPersona);
   const [profiles, setProfiles] = useState<AdminProfileListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Initialize persona from the query string when present, so links like
-  // /admin/profiles/manage?persona=theteam land on the expected filter.
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const p = params.get("persona");
-      if (p && (PERSONA_KEYS as readonly string[]).includes(p)) {
-        setPersona(p as PersonaKey);
-      }
-    } catch {
-      // ignore URL parsing errors
-    }
-    // run only once
-  }, []);
 
   useEffect(() => {
     let cancelled = false;

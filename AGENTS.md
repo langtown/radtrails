@@ -25,6 +25,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `app/home/page.tsx`: home page.
 - `app/services/page.tsx`: services, pricing, and coaching page.
 - `app/racing/page.tsx`: racing team page.
+- `app/racing/alumni/page.tsx`: alumni page.
+- `app/community/page.tsx`: community involvement page.
+- `app/keeping-it-rad/page.tsx`: trail work and conservation page.
 - `app/support/page.tsx`: support/contact/donation page.
 - `app/globals.css`: global Tailwind/CSS styling.
 - `components/NavBar.tsx`: shared top navigation.
@@ -43,6 +46,9 @@ Editable content is intentionally centralized in `lib/content`:
 - `home.ts`: home page SEO metadata and homepage gallery image list.
 - `services.ts`: services, prices, coaching profiles, and services page SEO metadata.
 - `racing.ts`: racing page SEO metadata, featured racer details, legacy copy, and athlete profiles.
+- `community.ts`: community page SEO metadata, introduction, and community pillars.
+- `conservation.ts`: Keeping it Rad SEO metadata and trail-conservation copy.
+- `social.ts`: homepage social-feed URLs and labels.
 - `support.ts`: support page SEO metadata.
 
 Prefer updating these content files before editing page JSX. Use page JSX only when changing layout, visual treatment, or behavior.
@@ -242,6 +248,20 @@ completed artifact.
 
 ## Pull Request Process
 
+Repository-wide GitHub guidance lives under `.github/`:
+
+- `.github/CONTRIBUTING.md`: branch, commit, testing, and PR workflow for contributors.
+- `.github/PULL_REQUEST_TEMPLATE.md`: required PR summary, related GitHub/Beads work, validation,
+  responsive checks, screenshots, and deployed-preview confirmation.
+- `.github/CODEOWNERS`: assigns `@langtown` as the default reviewer for all repository files.
+- `.github/dependabot.yml`: checks npm and GitHub Actions dependencies weekly on Monday and limits
+  each ecosystem to five open dependency PRs.
+- `.github/copilot-instructions.md`: repository guidance for GitHub Copilot.
+
+Keep these files in `.github/`, where GitHub discovers them. Before completing a PR, verify the
+deployed build at `https://preview-radtrails.langtown.workers.dev/` and record that check in the PR
+template. The preview alias is updated by the Workers Build flow described above.
+
 1. Create a feature branch: `git checkout -b feature/description`
 2. Make your changes
 3. Commit with a clear message: `git commit -m "Description of change"`
@@ -249,7 +269,8 @@ completed artifact.
 5. Create a PR on GitHub via the link shown after push, or at `github.com/langtown/radtrails/pull/new/feature/description`
 6. Use force push only if amending the commit: `git push -f origin branch-name`
 
-No GitHub CLI token is configured in this environment, so PRs must be created manually through the GitHub web interface.
+Use `gh` to create and manage pull requests when it is authenticated; otherwise use the GitHub web
+interface. Follow `.github/CONTRIBUTING.md`; do not maintain a second root-level contribution guide.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:970c3bf2 -->
 ## Beads Issue Tracker

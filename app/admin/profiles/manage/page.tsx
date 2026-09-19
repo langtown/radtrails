@@ -3,6 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { getDb } from "@/lib/db";
 import { requireAdminUser } from "@/lib/persona-admin";
+import { PERSONA_KEYS, type PersonaKey } from "@/lib/personas";
 import AdminProfilesManager from "./AdminProfilesManager";
 
 export const metadata: Metadata = {
@@ -12,8 +13,20 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ManageProfilesPage() {
+export default async function ManageProfilesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ persona?: string | string[] }>;
+}) {
   const db = await getDb();
+  const requestedPersona = (await searchParams).persona;
+  const personaValue = Array.isArray(requestedPersona)
+    ? requestedPersona[0]
+    : requestedPersona;
+  const initialPersona: PersonaKey =
+    personaValue && (PERSONA_KEYS as readonly string[]).includes(personaValue)
+      ? (personaValue as PersonaKey)
+      : PERSONA_KEYS[0];
 
   try {
     await requireAdminUser(
@@ -57,7 +70,7 @@ export default async function ManageProfilesPage() {
         </Link>
       </div>
 
-      <AdminProfilesManager />
+      <AdminProfilesManager initialPersona={initialPersona} />
     </div>
   );
 }

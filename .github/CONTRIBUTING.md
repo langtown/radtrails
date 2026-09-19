@@ -16,7 +16,7 @@ git checkout -b feature/description
 
 ### 2. Make Your Changes
 
-- Edit files in the relevant directories (see [AGENTS.md](./AGENTS.md) for structure)
+- Edit files in the relevant directories (see [AGENTS.md](../AGENTS.md) for structure)
 - For content changes: update files in `lib/content/`
 - For component/page changes: modify files in `components/` or `app/`
 - For images: add to `public/images/` with appropriate subdirectory
@@ -58,33 +58,10 @@ Visit this link to create the PR on GitHub.
 
 ## PR Description Template
 
-When creating a PR, use this format:
-
-```markdown
-## Description
-Brief explanation of what this PR does and why.
-
-## Changes
-- List the main changes
-- One bullet per change
-- Be specific about affected files/sections
-
-## Type of Change
-- [ ] New feature
-- [ ] Bug fix
-- [ ] Content update
-- [ ] Documentation
-- [ ] Refactoring
-
-## Testing
-If applicable, describe how to test these changes:
-- Step 1
-- Step 2
-- Expected result
-
-## Related Issues
-Closes #issue-number (if applicable)
-```
+GitHub automatically loads `.github/PULL_REQUEST_TEMPLATE.md`. Complete its summary, GitHub and
+Beads issue references, validation checklist, and screenshots section. For user-facing changes,
+check the deployed build at <https://preview-radtrails.langtown.workers.dev/> before marking the
+preview validation item complete.
 
 ## Example: Complete Workflow
 
@@ -108,12 +85,12 @@ git push -u origin feature/update-coach-profiles
 
 ## Important Notes
 
-- Use `nvm use` before running Node/npm commands (see [AGENTS.md](./AGENTS.md))
+- Use `nvm use` before running Node/npm commands (see [AGENTS.md](../AGENTS.md))
 - Test locally with `npm run dev` before pushing
 - Run `npm run lint` to check for code issues
-- No GitHub CLI token is configured—PRs must be created via GitHub web interface
+- Use `gh` for pull requests when authenticated; otherwise use the GitHub web interface
 - Use `git push -f origin branch-name` only when amending commits (force push)
 
 ## Questions?
 
-Refer to [AGENTS.md](./AGENTS.md) for project-specific information about app structure, commands, and deployment.
+Refer to [AGENTS.md](../AGENTS.md) for project-specific information about app structure, commands, and deployment.
