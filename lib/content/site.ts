@@ -27,5 +27,6 @@ export const navItems = [
     ],
   },
   { href: "/community", label: "Community" },
+  { href: "/keeping-it-rad", label: "Keeping it Rad" },
   { href: "/support", label: "Support" },
 ];
