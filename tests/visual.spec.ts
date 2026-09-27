@@ -5,6 +5,7 @@ const pages = [
   { url: '/services', title: 'Services' },
   { url: '/racing', title: 'Racing' },
   { url: '/community', title: 'Community' },
+  { url: '/keeping-it-rad', title: 'Keeping-it-rad' },
   { url: '/support', title: 'Support' },
 ];
 
@@ -22,10 +23,14 @@ for (const page of pages) {
     });
 
     // Navigate to the page
-    await pageObj.goto(page.url, { waitUntil: 'networkidle' });
+    await pageObj.goto(page.url, { waitUntil: 'domcontentloaded' });
+    await pageObj.locator('h1').waitFor({ state: 'visible' });
 
     // Take a screenshot for visual verification
-    await pageObj.screenshot({ path: `test-results/${page.title.toLowerCase()}-screenshot.png` });
+    await pageObj.screenshot({
+      path: `test-results/${page.title.toLowerCase()}-screenshot.png`,
+      caret: 'initial',
+    });
 
     // Assert no console errors
     expect(consoleErrors).toHaveLength(0);
