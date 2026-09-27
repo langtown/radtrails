@@ -23,7 +23,11 @@ export default function KeepingItRadPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover"
+          style={{
+            objectPosition: "35% top",
+            transform: "translate(5%, -5%) scale(1.1)",
+          }}
         />
         <div className="absolute inset-0 bg-black/45" />
         <div className="relative mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 md:px-8">
