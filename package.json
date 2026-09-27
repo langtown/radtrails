@@ -27,7 +27,7 @@
     "@fullcalendar/interaction": "^6.1.21",
     "@fullcalendar/react": "^6.1.21",
     "@fullcalendar/timegrid": "^6.1.21",
-    "next": "^16.2.6",
+    "next": "^16.3.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
@@ -43,7 +43,7 @@
     "eslint-config-next": "^16.2.6",
     "tailwindcss": "^4",
     "typescript": "^6",
-    "vitest": "^4.1.10",
+    "vitest": "^5.0.2",
     "wrangler": "^4.101.0"
   },
   "overrides": {
