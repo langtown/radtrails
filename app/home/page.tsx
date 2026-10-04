@@ -55,7 +55,7 @@ export default async function Home() {
               Enhancing mental well being through mountain bike racing and recreation
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed md:text-xl">
-              hello have a nice day
+              Join us to foster growth and resilience through outdoor experiences and competitive spirit.
             </p>
             <a href={site.donationUrl} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex min-h-12 items-center rounded-[50px] bg-[#1a1a1a] px-8 text-sm font-semibold text-white transition-colors hover:bg-black">
               Donate
