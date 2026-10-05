@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 import Script from "next/script";
-import { Lato, Inter } from "next/font/google";
+import { Lato, Inter, Bricolage_Grotesque, Space_Grotesk, Fraunces } from "next/font/google";
 import { homePageMeta } from "@/lib/content/home";
 import { site } from "@/lib/content/site";
 import "./globals.css";
@@ -16,6 +17,25 @@ const lato = Lato({
 const inter = Inter({
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-display",
+  weight: ["600", "700", "800"],
+  subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-mono-display",
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-serif",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -69,7 +89,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${lato.variable} ${inter.variable} h-full antialiased`}
+      className={`${lato.variable} ${inter.variable} ${bricolage.variable} ${spaceGrotesk.variable} ${fraunces.variable} h-full antialiased`}
     >
       <head>
         {/* Google Tag Manager */}
@@ -98,6 +118,7 @@ gtag('config', 'G-55LWQ8NG00');`,
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <SmoothScroll />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

@@ -10,13 +10,13 @@ export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
   return (
     <div className="flex items-center gap-4">
       {authControls}
-      <span className="mx-1 hidden h-5 w-px bg-[#dadce0] md:block" />
+      <span className="mx-1 hidden h-5 w-px bg-white/20 md:block" />
       <a
         href={site.social.facebook}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Facebook"
-        className="text-[#0d141a] transition-colors hover:text-[#673de6]"
+        className="text-white/70 transition-colors hover:text-[#a8bd6a]"
       >
         <SocialIcon platform="facebook" />
       </a>
@@ -25,7 +25,7 @@ export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram"
-        className="text-[#0d141a] transition-colors hover:text-[#673de6]"
+        className="text-white/70 transition-colors hover:text-[#a8bd6a]"
       >
         <SocialIcon platform="instagram" />
       </a>
@@ -35,31 +35,31 @@ export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
 
 export default function NavBar() {
   return (
-    <header className="sticky top-0 z-30 border-b border-[#dadce0] bg-white">
-      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-5 md:flex-row md:justify-between md:px-8">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#08080a]/70 backdrop-blur-xl">
+      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-4 md:flex-row md:justify-between md:px-8">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center" aria-label="Ride and Develop home">
-            <Image src="/images/logo.png" alt="Ride and Develop logo" width={900} height={449} className="h-24 w-auto md:h-28" priority />
+            <Image src="/images/logo.png" alt="Ride and Develop logo" width={900} height={449} className="h-20 w-auto invert md:h-24" priority />
           </Link>
           <NextRideNav />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-[15px] font-medium text-[#0d141a]">
+        <div className="eyebrow flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium uppercase tracking-[0.15em] text-white/70">
           {navItems.map((item) =>
             "children" in item && item.children ? (
               <details key={item.href} className="group relative">
-                <summary className="flex cursor-pointer list-none items-center gap-1 transition-colors hover:text-[#673de6] [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center gap-1 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
                   {item.label}
-                  <span aria-hidden="true" className="text-xs transition-transform group-open:rotate-180">
+                  <span aria-hidden="true" className="text-[0.6rem] transition-transform group-open:rotate-180">
                     ▾
                   </span>
                 </summary>
-                <div className="absolute left-0 top-full z-20 mt-2 min-w-[10rem] rounded-lg border border-[#dadce0] bg-white py-2 shadow-md">
+                <div className="absolute left-0 top-full z-20 mt-3 min-w-[11rem] overflow-hidden rounded-xl border border-white/10 bg-[#101015]/95 py-2 shadow-xl backdrop-blur-xl">
                   {item.children.map((child) => (
                     <Link
                       key={child.href}
                       href={child.href}
-                      className="block px-4 py-2 text-sm transition-colors hover:bg-[#f7f7f7] hover:text-[#673de6]"
+                      className="block px-4 py-2.5 transition-colors hover:bg-white/5 hover:text-white"
                     >
                       {child.label}
                     </Link>
@@ -67,7 +67,7 @@ export default function NavBar() {
                 </div>
               </details>
             ) : (
-              <Link key={item.href} href={item.href} className="transition-colors hover:text-[#673de6]">
+              <Link key={item.href} href={item.href} className="transition-colors hover:text-white">
                 {item.label}
               </Link>
             ),
