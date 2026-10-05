@@ -40,7 +40,7 @@ export default function CommunityPage() {
                 <LineReveal trigger="view" delay={0.05} className="display mt-4 text-3xl font-bold leading-[1.05] md:text-5xl" lines={[pillar.title]} />
                 <Reveal delay={0.15} className="mt-5 text-lg leading-relaxed text-white/55">{pillar.body}</Reveal>
               </div>
-              <ParallaxImage src={pillar.image} alt={pillar.imageAlt} sizes="(min-width: 768px) 50vw, 100vw" strength={50} className="relative min-h-[320px] rounded-2xl md:min-h-[440px]" imgClassName={pillar.imagePosition ? "" : ""} />
+              <ParallaxImage src={pillar.image} alt={pillar.imageAlt} sizes="(min-width: 768px) 50vw, 100vw" strength={50} className="relative min-h-[320px] rounded-2xl md:min-h-[440px]" objectPosition={pillar.imagePosition} />
             </div>
           ))}
         </div>

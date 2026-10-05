@@ -17,6 +17,7 @@ export default function ParallaxImage({
   sizes,
   priority,
   strength = 70,
+  objectPosition,
 }: {
   src: string;
   alt: string;
@@ -25,6 +26,7 @@ export default function ParallaxImage({
   sizes?: string;
   priority?: boolean;
   strength?: number;
+  objectPosition?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -40,7 +42,7 @@ export default function ParallaxImage({
         className="absolute inset-[-12%] will-change-transform"
         style={reduce ? undefined : { y }}
       >
-        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className={`object-cover ${imgClassName}`} />
+        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className={`object-cover ${imgClassName}`} style={objectPosition ? { objectPosition } : undefined} />
       </motion.div>
     </div>
   );
