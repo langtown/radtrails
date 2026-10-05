@@ -1,0 +1,19 @@
+# Ride and Develop
+
+> Ride and Develop (radtrails.org) is a nonprofit that enhances mental well-being through mountain bike racing and outdoor recreation. It fields the Langtown Racing Academy team, offers paid coaching and guided-ride services across Ventura County, Northern LA County, and Santa Cruz, runs community programs, and accepts donations. Audience: prospective riders and families, students, donors, and anyone seeking MTB coaching or guiding.
+
+## Core Pages
+
+- [Home](https://radtrails.org/): Organization overview — mission and vision, intro to Langtown Racing Academy, service and community highlights, and a photo gallery.
+- [Services](https://radtrails.org/services): Instruction and guide services with pricing (private and group lessons, training programs, guided rides and clinics) plus coach profiles.
+- [Racing](https://radtrails.org/racing): Langtown Racing Academy — featured racer, current team roster with bios and sponsors, the Langtown racing legacy, and service location.
+- [Alumni](https://radtrails.org/racing/alumni): Former Langtown Racing Academy team members.
+- [Community](https://radtrails.org/community): Community pillars (trail service, outreach, belonging) and ways to get involved.
+- [Support](https://radtrails.org/support): How to donate (via Givelify) and a contact form for inquiries.
+
+## Secondary Resources
+
+- [Account Profile](https://radtrails.org/profile): Authenticated rider profile editor (name, photo, bio, social links); edits are moderated before publication.
+- [Coach Dashboard](https://radtrails.org/coach): Authenticated coach tools for scheduling, team events, and rider management.
+- [Admin](https://radtrails.org/admin): Authenticated admin area for reviewing profiles and granting personas (includes /admin/setup, /admin/personas, and /admin/profiles/manage).
+- [API](https://radtrails.org/api): JSON endpoints for Google OIDC auth, public profiles, coach scheduling, account data, a calendar feed, and admin actions — for machine use, not human browsing.
