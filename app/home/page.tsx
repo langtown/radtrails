@@ -89,7 +89,7 @@ export default async function Home() {
       {/* Marquee ticker */}
       <div className="border-y border-white/10 py-6">
         <div className="marquee overflow-hidden">
-          <div className="eyebrow marquee-track flex w-max items-center gap-5 text-xs uppercase tracking-[0.3em] text-white/40">
+          <div className="eyebrow marquee-track flex w-max items-center gap-5 text-xs uppercase tracking-[0.3em] text-white/55">
             {Array.from({ length: 2 }).map((_, dup) => (
               <div key={dup} className="flex items-center gap-5 pr-5" aria-hidden={dup === 1}>
                 {["Ride", "Develop", "Race", "Resilience", "Community", "Grow"].map((word) => (

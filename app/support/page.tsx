@@ -67,19 +67,19 @@ export default function SupportPage() {
                   <label htmlFor="name" className="block text-sm font-medium text-white/80">
                     Your first name is required.
                   </label>
-                  <input id="name" name="Name" type="text" placeholder="Enter your first name here." className="mt-2 min-h-12 w-full rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/40" />
+                  <input id="name" name="Name" type="text" placeholder="Enter your first name here." className="mt-2 min-h-12 w-full rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/55 focus:border-white/40" />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-white/80">
                     Your email address is needed.*
                   </label>
-                  <input id="email" name="Email" type="email" placeholder="Enter your email address here." className="mt-2 min-h-12 w-full rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/40" />
+                  <input id="email" name="Email" type="email" placeholder="Enter your email address here." className="mt-2 min-h-12 w-full rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/55 focus:border-white/40" />
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-white/80">
                     Your message or inquiry.*
                   </label>
-                  <textarea id="message" name="Message" rows={6} placeholder="Write your message here." className="mt-2 w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/40" />
+                  <textarea id="message" name="Message" rows={6} placeholder="Write your message here." className="mt-2 w-full rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-white outline-none transition-colors placeholder:text-white/55 focus:border-white/40" />
                 </div>
                 <button type="submit" className="group inline-flex w-fit items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#08080a] transition-transform duration-300 hover:-translate-y-0.5">
                   Submit <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>

@@ -55,7 +55,7 @@ export default function ServicesPage() {
                     </li>
                   ))}
                 </ul>
-                {card.note && <p className="mt-4 text-sm text-white/40">{card.note}</p>}
+                {card.note && <p className="mt-4 text-sm text-white/55">{card.note}</p>}
               </div>
             </Reveal>
           ))}

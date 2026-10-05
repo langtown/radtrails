@@ -43,7 +43,7 @@ export default function Footer() {
                 name="Email"
                 type="email"
                 placeholder="Your email for updates"
-                className="min-h-12 flex-1 rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/40"
+                className="min-h-12 flex-1 rounded-full border border-white/15 bg-white/5 px-5 text-white outline-none transition-colors placeholder:text-white/55 focus:border-white/40"
               />
               <button type="submit" className="min-h-12 rounded-full bg-white px-6 text-sm font-semibold text-[#08080a] transition-transform duration-300 hover:-translate-y-0.5">
                 Join our community
@@ -52,7 +52,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-12 text-xs text-white/40">© {new Date().getFullYear()} Ride and Develop. All rights reserved.</p>
+        <p className="mt-12 text-xs text-white/55">© {new Date().getFullYear()} Ride and Develop. All rights reserved.</p>
       </div>
     </footer>
   );

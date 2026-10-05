@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import ScrollProgress from "@/components/ScrollProgress";
 import Script from "next/script";
 import { Lato, Inter, Bricolage_Grotesque, Space_Grotesk, Fraunces } from "next/font/google";
 import { homePageMeta } from "@/lib/content/home";
@@ -119,6 +120,7 @@ gtag('config', 'G-55LWQ8NG00');`,
       </head>
       <body className="min-h-full flex flex-col">
         <SmoothScroll />
+        <ScrollProgress />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

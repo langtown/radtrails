@@ -5,6 +5,7 @@ import { navItems, site } from "@/lib/content/site";
 import AuthNav from "./AuthNav";
 import NextRideNav from "./NextRideNav";
 import SocialIcon from "./SocialIcon";
+import MobileNav from "./MobileNav";
 
 export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
   return (
@@ -36,15 +37,21 @@ export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
 export default function NavBar() {
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#08080a]/70 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-4 md:flex-row md:justify-between md:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-4 py-4 md:px-8">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center" aria-label="Ride and Develop home">
-            <Image src="/images/logo.png" alt="Ride and Develop logo" width={900} height={449} className="h-20 w-auto invert md:h-24" priority />
+            <Image src="/images/logo.png" alt="Ride and Develop logo" width={900} height={449} className="h-16 w-auto invert md:h-24" priority />
           </Link>
           <NextRideNav />
         </div>
 
-        <div className="eyebrow flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium uppercase tracking-[0.15em] text-white/70">
+        {/* Mobile hamburger */}
+        <div className="md:hidden">
+          <MobileNav navItems={navItems} authControls={<AuthNav />} facebook={site.social.facebook} instagram={site.social.instagram} />
+        </div>
+
+        {/* Desktop links */}
+        <div className="eyebrow hidden flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium uppercase tracking-[0.15em] text-white/70 md:flex">
           {navItems.map((item) =>
             "children" in item && item.children ? (
               <details key={item.href} className="group relative">
