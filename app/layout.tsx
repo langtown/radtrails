@@ -3,6 +3,7 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollProgress from "@/components/ScrollProgress";
+import BackToTop from "@/components/BackToTop";
 import Script from "next/script";
 import { Lato, Inter, Bricolage_Grotesque, Space_Grotesk, Fraunces } from "next/font/google";
 import { homePageMeta } from "@/lib/content/home";
@@ -117,6 +118,25 @@ gtag('js', new Date());
 gtag('config', 'G-55LWQ8NG00');`,
           }}
         />
+        {/* Structured data for search engines */}
+        <Script
+          id="ld-org"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SportsOrganization",
+              name: site.name,
+              url: site.domain,
+              logo: `${site.domain.replace(/\/$/, "")}/images/logo.png`,
+              description: homePageMeta.description,
+              email: site.email,
+              telephone: site.phone,
+              sameAs: [site.social.facebook, site.social.instagram],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <SmoothScroll />
@@ -130,11 +150,18 @@ gtag('config', 'G-55LWQ8NG00');`,
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-white focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-[#08080a]"
+        >
+          Skip to content
+        </a>
         <NavBar />
-        <main className="flex-1">
+        <main id="main" className="flex-1">
           {children}
         </main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );
