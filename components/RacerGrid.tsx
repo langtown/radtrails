@@ -9,8 +9,8 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
     <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {racers.map((racer) => (
         <article key={racer.key} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition-colors duration-500 hover:border-white/25">
-          <div className="relative min-h-72 overflow-hidden bg-white/5">
-            {racer.image ? (
+          <div className={`relative min-h-72 overflow-hidden ${!racer.image || racer.image === "/images/logo.png" ? "bg-black" : "bg-white/5"}`}>
+            {racer.image && racer.image !== "/images/logo.png" ? (
               <Image
                 src={racer.image}
                 alt={racer.name}
@@ -24,9 +24,12 @@ export default function RacerGrid({ racers }: { racers: readonly RacingCard[] })
                 unoptimized={racer.image.startsWith("/api/")}
               />
             ) : (
-              <div
-                className="h-full min-h-72 w-full bg-white/5"
-                aria-label={`${racer.name} photo placeholder`}
+              <Image
+                src="/images/logo.png"
+                alt={`Ride and Develop logo — ${racer.name}`}
+                fill
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-contain p-8 invert"
               />
             )}
           </div>

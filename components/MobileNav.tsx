@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -33,6 +34,16 @@ export default function MobileNav({
     };
   }, [open]);
 
+  // A portaled menu no longer inherits the trigger's md:hidden breakpoint.
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onChange = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
+  }, []);
+
   // Close on Escape.
   useEffect(() => {
     if (!open) return;
@@ -55,9 +66,11 @@ export default function MobileNav({
         </svg>
       </button>
 
-      {open && (
+      {/* The header's backdrop-filter contains fixed descendants. Mount on body
+          so the menu covers the viewport instead of only the header. */}
+      {open && createPortal(
         <div className="fixed inset-0 z-[70] flex flex-col bg-[#08080a]/97 backdrop-blur-xl">
-          <div className="flex items-center justify-end px-4 py-5">
+          <div className="flex shrink-0 items-center justify-end px-4 py-5">
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -70,7 +83,7 @@ export default function MobileNav({
             </button>
           </div>
 
-          <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-6 pb-10">
+          <nav data-lenis-prevent className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-6 pb-10">
             {navItems.map((item) => (
               <div key={item.href} className="border-b border-white/10 py-2">
                 <Link
@@ -111,7 +124,8 @@ export default function MobileNav({
               </div>
             </div>
           </nav>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

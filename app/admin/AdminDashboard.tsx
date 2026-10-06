@@ -1,25 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { AdminDashboardStats } from "@/lib/persona-admin";
 import type { AdminProfileListItem } from "@/lib/profiles";
 import { PERSONA_KEYS } from "@/lib/personas";
 
 type Coach = { id: number; displayName: string };
-
-function statusLabel(status: string | null): string {
-  switch (status) {
-    case "pending":
-      return "Pending review";
-    case "approved":
-      return "Approved";
-    case "rejected":
-      return "Changes requested";
-    case "draft":
-      return "Draft";
-    default:
-      return "No profile submitted";
-  }
-}
 
 export default function AdminDashboard({
   stats,
