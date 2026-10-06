@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { expect, test } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import CoachScheduleManager from "@/app/coach/CoachScheduleManager";
 import type { SessionOccurrence } from "@/lib/session-occurrences";
 import type { WeeklyAssignment } from "@/lib/weekly-assignments";
@@ -36,6 +36,15 @@ const OCCURRENCE: SessionOccurrence = {
   riderResponse: null,
   notes: null,
 };
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2026, 7, 20, 12));
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 test("shows the weekly assignment, the add-rider form, and upcoming sessions with a playlist link", () => {
   const html = renderToStaticMarkup(
