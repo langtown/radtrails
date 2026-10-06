@@ -99,9 +99,14 @@ export default function AdminDashboard({
         <section className="rounded-xl border border-white/10 bg-[#0e0e14] p-6 shadow-sm">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="text-xl font-semibold">Personas and profiles</h2>
-            <Link href="/admin/personas" className="text-sm font-semibold text-[#a8bd6a] underline">
-              Manage Personas
-            </Link>
+            <div className="flex items-center gap-5">
+              <Link href="/admin/consents" className="text-sm font-semibold text-[#a8bd6a] underline">
+                Minor consents
+              </Link>
+              <Link href="/admin/personas" className="text-sm font-semibold text-[#a8bd6a] underline">
+                Manage Personas
+              </Link>
+            </div>
           </div>
           <p className="mt-1 text-sm text-white/55">
             Edit a person&apos;s public name, photo, bio, and social links.

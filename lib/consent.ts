@@ -122,6 +122,46 @@ export async function recordMinorConsent(
   return saved;
 }
 
+export type MinorConsentAdminRow = MinorConsentRecord & {
+  userId: number;
+  email: string | null;
+};
+
+/** Lists every stored consent with the account's email, newest first (admin). */
+export async function listMinorConsents(
+  db: D1Database,
+): Promise<MinorConsentAdminRow[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT mc.user_id, u.email, mc.minor_name, mc.guardian_name,
+              mc.guardian_relationship, mc.signature, mc.consent_version, mc.agreed_at
+         FROM minor_consents mc
+         JOIN users u ON u.id = mc.user_id
+         ORDER BY mc.agreed_at DESC`,
+    )
+    .all<{
+      user_id: number;
+      email: string | null;
+      minor_name: string;
+      guardian_name: string;
+      guardian_relationship: string;
+      signature: string;
+      consent_version: string;
+      agreed_at: string;
+    }>();
+
+  return results.map((row) => ({
+    userId: row.user_id,
+    email: row.email,
+    minorName: row.minor_name,
+    guardianName: row.guardian_name,
+    guardianRelationship: row.guardian_relationship,
+    signature: row.signature,
+    consentVersion: row.consent_version,
+    agreedAt: row.agreed_at,
+  }));
+}
+
 /** HTTP behavior for GET /api/me/consent. */
 export async function handleGetConsent(
   db: D1Database,
