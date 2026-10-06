@@ -52,15 +52,15 @@ export function AuthControls({ state }: { state: AuthState }) {
   }
 
   if (state.status === "signedOut") {
-    // A plain anchor leaves the app for Google's authorization screen and
-    // avoids client-side navigation or prefetching of the redirect endpoint.
+    // Routes to the sign-in page, which carries the under-13 consent gate
+    // before handing off to Google's authorization screen.
     return (
-      <a
-        href="/api/auth/login"
+      <Link
+        href="/login"
         className="transition-colors hover:text-[#a8bd6a]"
       >
         login
-      </a>
+      </Link>
     );
   }
 

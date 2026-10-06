@@ -16,6 +16,7 @@ import { listTeamEvents } from "@/lib/team-events";
 import TeamRides from "./TeamRides";
 import { ProfileEditor } from "./ProfileEditor";
 import ProfileSideNav from "./ProfileSideNav";
+import MinorConsentForm from "@/components/MinorConsentForm";
 
 export const metadata: Metadata = {
   title: "Your profile",
@@ -61,6 +62,7 @@ export default async function ProfilePage() {
   const navItems = [
     { id: "profile-overview", label: "Profile" },
     { id: "profile-editor", label: "Edit profile" },
+    ...(publicPersonas.length > 0 ? [{ id: "minor-consent", label: "Consent" }] : []),
     ...(isCoach || calendarSessions.length > 0 || teamEvents.length > 0
       ? [{ id: "sessions-calendar", label: "Calendar" }]
       : []),
@@ -125,6 +127,12 @@ export default async function ProfilePage() {
               initialPlaylistUrl={playlist.playlistUrl}
             />
           </div>
+
+          {publicPersonas.length > 0 && (
+            <div id="minor-consent" className="mt-10">
+              <MinorConsentForm />
+            </div>
+          )}
 
           {(isCoach || calendarSessions.length > 0 || teamEvents.length > 0) && (
             <div id="sessions-calendar">
