@@ -57,16 +57,16 @@ export default function CalendarSubscribe() {
   }, []);
 
   return (
-    <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+    <section className="mt-10 border-t border-white/10 pt-8">
       <h2 className="text-xl font-semibold">Subscribe to your calendar</h2>
-      <p className="mt-2 max-w-xl text-sm text-[#56585e]">
+      <p className="mt-2 max-w-xl text-sm text-white/55">
         Add your sessions to Google or Apple Calendar. The feed updates
         automatically when the schedule changes and includes a reminder 30
         minutes before each session.
       </p>
 
       {state.status === "loading" && (
-        <p className="mt-4 text-sm text-[#56585e]">Loading your feed…</p>
+        <p className="mt-4 text-sm text-white/55">Loading your feed…</p>
       )}
       {state.status === "error" && (
         <p className="mt-4 text-sm text-[#a33]">
@@ -81,12 +81,12 @@ export default function CalendarSubscribe() {
               value={state.feedUrl}
               onFocus={(event) => event.target.select()}
               aria-label="Your calendar feed URL"
-              className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#c9c9c9] bg-[#f7f7f7] px-3 text-sm text-[#56585e]"
+              className="min-h-11 min-w-0 flex-1 rounded-lg border border-white/10 bg-[#101016] px-3 text-sm text-white/55"
             />
             <button
               type="button"
               onClick={() => copy(state.feedUrl)}
-              className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-5 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+              className="min-h-11 rounded-[50px] border border-white/10 px-5 text-sm font-semibold text-white/55 transition-colors hover:border-white/25 hover:text-white"
             >
               {copied ? "Copied" : "Copy link"}
             </button>
@@ -98,7 +98,7 @@ export default function CalendarSubscribe() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white transition-colors hover:bg-black"
+              className="inline-flex min-h-11 items-center rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#23232b]"
             >
               Add to Google Calendar
             </a>
@@ -106,12 +106,12 @@ export default function CalendarSubscribe() {
               type="button"
               onClick={rotate}
               disabled={rotating}
-              className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a] disabled:opacity-50"
+              className="min-h-11 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55 transition-colors hover:border-white/25 hover:text-white disabled:opacity-50"
             >
               {rotating ? "Regenerating…" : "Regenerate link"}
             </button>
           </div>
-          <p className="mt-3 max-w-xl text-xs text-[#56585e]">
+          <p className="mt-3 max-w-xl text-xs text-white/55">
             Anyone with this link can see your schedule. Regenerate it to
             stop sharing — the old link stops working immediately.
           </p>

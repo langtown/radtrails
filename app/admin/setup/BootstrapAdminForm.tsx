@@ -64,9 +64,9 @@ export default function BootstrapAdminForm() {
         spellCheck={false}
         value={code}
         onChange={(event) => setCode(event.target.value)}
-        className="mt-2 min-h-11 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+        className="mt-2 min-h-11 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
       />
-      <p className="mt-2 text-sm text-[#56585e]">
+      <p className="mt-2 text-sm text-white/55">
         This must match the secret stored as ADMIN_BOOTSTRAP_TOKEN. The code is
         never stored in D1.
       </p>
@@ -83,7 +83,7 @@ export default function BootstrapAdminForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+        className="mt-6 min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white hover:bg-[#23232b] disabled:opacity-50"
       >
         {submitting ? "Setting up…" : "Make this account the first admin"}
       </button>

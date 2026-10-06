@@ -312,18 +312,18 @@ export function ProfileEditor({
   }
 
   const inputClass =
-    "mt-2 min-h-11 w-full rounded-lg border border-[#c9c9c9] bg-white px-3 py-2 text-[#1a1a1a] outline-none transition focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]";
+    "mt-2 min-h-11 w-full rounded-lg border border-white/10 bg-[#0e0e14] px-3 py-2 text-white outline-none transition focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40";
 
   return (
     <form onSubmit={submit} className="mt-10">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e3e3e3] pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5">
         <div>
           <h2 className="text-2xl font-semibold">Profile details</h2>
-          <p className="mt-1 text-sm text-[#56585e]">
+          <p className="mt-1 text-sm text-white/55">
             Saving sends all profile changes to an admin for review.
           </p>
         </div>
-        <span className="rounded-[50px] bg-[#ebe4ff] px-4 py-2 text-sm font-semibold text-[#5025d1]">
+        <span className="rounded-[50px] bg-[#1a2116] px-4 py-2 text-sm font-semibold text-[#a8bd6a]">
           {statusLabel(profile?.status)}
         </span>
       </div>
@@ -338,7 +338,7 @@ export function ProfileEditor({
       <div className="mt-8 grid gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <section>
           <h3 className="font-semibold">Profile photo</h3>
-          <div className="relative mt-3 aspect-[4/3] overflow-hidden rounded-lg bg-[#dadce0]">
+          <div className="relative mt-3 aspect-[4/3] overflow-hidden rounded-lg bg-[#1a1a22]">
             {previewUrl ? (
               <Image
                 src={previewUrl}
@@ -366,7 +366,7 @@ export function ProfileEditor({
                 unoptimized
               />
             ) : (
-              <div className="flex h-full items-center justify-center px-6 text-center text-sm text-[#56585e]">
+              <div className="flex h-full items-center justify-center px-6 text-center text-sm text-white/55">
                 Your profile photo preview will appear here.
               </div>
             )}
@@ -381,9 +381,9 @@ export function ProfileEditor({
             type="file"
             accept={PROFILE_IMAGE_TYPES.join(",")}
             onChange={(event) => selectImage(event.target.files?.[0] ?? null)}
-            className="mt-2 block w-full text-sm file:mr-3 file:rounded-[50px] file:border-0 file:bg-[#1a1a1a] file:px-4 file:py-2 file:font-semibold file:text-white"
+            className="mt-2 block w-full text-sm file:mr-3 file:rounded-[50px] file:border-0 file:bg-[#17171d] file:px-4 file:py-2 file:font-semibold file:text-white"
           />
-          <p className="mt-2 text-xs leading-relaxed text-[#56585e]">
+          <p className="mt-2 text-xs leading-relaxed text-white/55">
             JPEG, PNG, or WebP up to 1 MB. Resize large phone photos before
             uploading.
           </p>
@@ -424,7 +424,7 @@ export function ProfileEditor({
             className="mt-2 w-full accent-[#673de6] disabled:opacity-40"
           />
 
-          <p className="mt-1 text-xs text-[#56585e]">
+          <p className="mt-1 text-xs text-white/55">
             Move the focus until the card preview crops your photo correctly.
           </p>
           {overflowAxis === "x" && previewUrl && (
@@ -434,7 +434,7 @@ export function ProfileEditor({
             </p>
           )}
           {overflowAxis === "y" && previewUrl && (
-            <p className="mt-1 text-xs text-[#56585e]">
+            <p className="mt-1 text-xs text-white/55">
               This photo fills the card width, so the horizontal focus has no
               visible effect.
             </p>
@@ -469,16 +469,16 @@ export function ProfileEditor({
               defaultValue={profile?.bio ?? ""}
               className={inputClass}
             />
-            <p className="mt-1 text-xs text-[#56585e]">
+            <p className="mt-1 text-xs text-white/55">
               Up to {MAX_PROFILE_BIO_CHARACTERS.toLocaleString()} characters.
             </p>
           </div>
         </section>
       </div>
 
-      <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+      <section className="mt-10 border-t border-white/10 pt-8">
         <h3 className="text-xl font-semibold">Session playlist</h3>
-        <p className="mt-1 text-sm text-[#56585e]">
+        <p className="mt-1 text-sm text-white/55">
           Leave a link for your coach to play during your Intervals session.
           Saved along with your profile above.
         </p>
@@ -494,9 +494,9 @@ export function ProfileEditor({
 
       {canEditSocials ? (
         <>
-        <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+        <section className="mt-10 border-t border-white/10 pt-8">
           <h3 className="text-xl font-semibold">Sponsors</h3>
-          <p className="mt-1 text-sm text-[#56585e]">
+          <p className="mt-1 text-sm text-white/55">
             Optional sponsors, one per line, shown on your approved profile.
             Add a link after a name like:{" "}
             <code>Rad Bikes | https://radbikes.example</code>
@@ -516,15 +516,15 @@ export function ProfileEditor({
               .join("\n")}
             className={inputClass}
           />
-          <p className="mt-1 text-xs text-[#56585e]">
+          <p className="mt-1 text-xs text-white/55">
             Up to {MAX_PROFILE_SPONSORS} sponsors,{" "}
             {MAX_SPONSOR_NAME_CHARACTERS} characters each.
           </p>
         </section>
 
-        <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+        <section className="mt-10 border-t border-white/10 pt-8">
           <h3 className="text-xl font-semibold">Social links</h3>
-          <p className="mt-1 text-sm text-[#56585e]">
+          <p className="mt-1 text-sm text-white/55">
             Optional HTTPS links that can appear with your approved profile.
           </p>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
@@ -552,7 +552,7 @@ export function ProfileEditor({
         </section>
         </>
       ) : (
-        <p className="mt-10 rounded-lg bg-[#f7f7f7] px-5 py-4 text-sm text-[#56585e]">
+        <p className="mt-10 rounded-lg bg-[#101016] px-5 py-4 text-sm text-white/55">
           Sponsors and social links are available when an admin adds a team,
           coach, alumni, or admin persona.
         </p>
@@ -575,12 +575,12 @@ export function ProfileEditor({
         <button
           type="submit"
           disabled={isSaving}
-          className="min-h-12 rounded-[50px] bg-[#1a1a1a] px-8 text-sm font-semibold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-60"
+          className="min-h-12 rounded-[50px] bg-[#17171d] px-8 text-sm font-semibold text-white transition-colors hover:bg-[#23232b] disabled:cursor-wait disabled:opacity-60"
         >
           {isSaving ? "Saving…" : "Submit for review"}
         </button>
         {profile?.submittedAt && (
-          <span className="text-xs text-[#56585e]">
+          <span className="text-xs text-white/55">
             Last submitted {profile.submittedAt} UTC
           </span>
         )}

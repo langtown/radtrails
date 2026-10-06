@@ -91,7 +91,7 @@ export default function SessionsCalendar({
   );
 
   return (
-    <section id="sessions-calendar" className="mt-10 border-t border-[#e3e3e3] pt-8">
+    <section id="sessions-calendar" className="mt-10 border-t border-white/10 pt-8">
       <h2 className="mb-4 text-xl font-semibold">Your sessions</h2>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

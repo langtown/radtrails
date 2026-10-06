@@ -13,6 +13,16 @@ export const site = {
     facebook: "https://www.facebook.com/LangtownRacingAcademy",
     instagram: "https://www.instagram.com/langtownracingacademy/",
   },
+  // Nonprofit disclosures. Ride and Develop is an IRS-recognized 501(c)(3).
+  legal: {
+    taxStatus: "501(c)(3)",
+    // IRS Employer Identification Number, formatted "XX-XXXXXXX".
+    // Leave empty to render a placeholder; fill in to publish the real number.
+    ein: "",
+    // CA Registry of Charitable Trusts registration number, if registered.
+    stateCharityReg: "",
+    policiesUpdated: "October 5, 2026",
+  },
 };
 
 export const navItems = [

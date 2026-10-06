@@ -5,6 +5,10 @@ import Script from "next/script";
 import { homeGallery, homePageMeta } from "@/lib/content/home";
 import { site } from "@/lib/content/site";
 import { social } from "@/lib/content/social";
+import Reveal from "@/components/motion/Reveal";
+import LineReveal from "@/components/motion/LineReveal";
+import KineticText from "@/components/motion/KineticText";
+import ParallaxImage from "@/components/motion/ParallaxImage";
 
 async function fetchOEmbed(endpoint: string): Promise<string | null> {
   try {
@@ -45,154 +49,256 @@ export default async function Home() {
   const hasSocial = instagramEmbeds.length > 0 || facebookEmbeds.length > 0;
 
   return (
-    <div className="bg-white text-[#1a1a1a]">
-      <section className="relative min-h-[620px] overflow-hidden">
-        <Image src="/images/home/hero-china-peak.jpg" alt="Ride and Develop mountain bike racing team" fill priority sizes="100vw" className="object-cover object-center" />
-        <div className="absolute inset-0 bg-black/35" />
-        <div className="relative mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 md:px-8">
-          <div className="max-w-3xl text-white">
-            <h1 className="text-4xl font-semibold leading-tight md:text-6xl">
-              Enhancing mental well being through mountain bike racing and recreation
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed md:text-xl">
-              Join us to foster growth and resilience through outdoor experiences and competitive spirit.
-            </p>
-            <a href={site.donationUrl} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex min-h-12 items-center rounded-[50px] bg-[#1a1a1a] px-8 text-sm font-semibold text-white transition-colors hover:bg-black">
-              Donate
+    <div className="grain bg-[#08080a] text-white">
+      {/* Hero */}
+      <section className="relative flex min-h-[100svh] items-center overflow-hidden">
+        <ParallaxImage src="/images/home/hero-china-peak.jpg" alt="Ride and Develop mountain bike racing team" priority sizes="100vw" strength={50} className="absolute inset-0" imgClassName="opacity-[0.55]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08080a]/50 via-[#08080a]/25 to-[#08080a]" />
+        <div className="relative z-[1] mx-auto w-full max-w-7xl px-5 py-32 md:px-10">
+          <Reveal className="eyebrow flex items-center gap-2.5 text-[11px] uppercase tracking-[0.3em] text-white/55 md:text-xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#a8bd6a]" /> Mountain bike racing · outdoor recreation
+          </Reveal>
+          <KineticText
+            className="display mt-7 text-[clamp(2.6rem,9vw,7.5rem)] font-extrabold leading-[0.9]"
+            delay={0.25}
+            lines={[
+              [{ text: "Enhancing mental" }],
+              [{ text: "well-being through" }],
+              [{ text: "mountain bike racing", className: "serif-italic font-light" }],
+            ]}
+          />
+          <Reveal delay={0.65} className="mt-8 max-w-xl text-lg leading-relaxed text-white/60 md:text-xl">
+            Join us to foster growth and resilience through outdoor experiences and competitive spirit.
+          </Reveal>
+          <Reveal delay={0.78} className="mt-10 flex flex-wrap items-center gap-6">
+            <a href={site.donationUrl} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[#08080a] transition-transform duration-300 hover:-translate-y-0.5">
+              Donate <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
             </a>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-        <p className="mx-auto max-w-4xl text-center text-xl leading-relaxed text-[#56585e]">
-          At Ride and Develop, we empower individuals through mountain bike racing and outdoor recreation, fostering personal growth and resilience in our community.
-        </p>
-
-        <div className="mt-20 grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <h2 className="text-3xl font-semibold leading-tight md:text-5xl">Our Mission and Vision</h2>
-            <p className="mt-5 text-lg leading-relaxed text-[#56585e]">
-              We are dedicated to harnessing the transformative power of outdoor experiences to promote mental health, foster confident athletes through teamwork, goal-setting, and perseverance, and guide our members toward fulfilling, passion-driven careers.
-            </p>
-          </div>
-          <div className="relative min-h-[320px] overflow-hidden rounded-lg md:min-h-[440px]">
-            <Image src="/images/home/stage5.jpg" alt="Rider descending a dusty trail" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-center" />
-          </div>
-        </div>
-
-        <div className="mt-20 grid items-center gap-10 md:grid-cols-2">
-          <div className="relative min-h-[320px] overflow-hidden rounded-lg md:min-h-[440px]">
-            <Image src="/images/home/gallery/joe-and-mia.jpg" alt="Ride and Develop community members" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" />
-          </div>
-          <p className="text-lg leading-relaxed text-[#56585e]">
-            Ride and Develop started because we know what a bike can do—turn a tough day around, teach resilience when you crash and get back up, and connect people who might never meet otherwise. We empower stronger minds and capable riders by racing mountain bikes, giving back through trail service, sharing outdoor knowledge, and building a welcoming community where everyone belongs.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-[#f7f7f7]">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 md:grid-cols-[360px_1fr] md:px-8">
-          <Image src="/images/home/lta-logo.png" alt="Langtown Racing Academy logo" width={320} height={320} className="mx-auto h-auto w-64 md:w-80" />
-          <div>
-            <h2 className="text-3xl font-semibold md:text-5xl">Welcome to Langtown Racing Academy</h2>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#56585e]">
-              Discover the thrill of competitive racing with our talented team of racers at Langtown Racing Academy. Join us in our journey to excellence on course!
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/support" className="inline-flex min-h-12 items-center rounded-[50px] bg-[#1a1a1a] px-8 text-sm font-semibold text-white transition-colors hover:bg-black">
-                Join us
-              </Link>
-              <Link href="/racing" className="inline-flex min-h-12 items-center rounded-[50px] border border-[#1a1a1a] px-8 text-sm font-semibold transition-colors hover:bg-[#1a1a1a] hover:text-white">
-                The Team
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-        <div className="max-w-3xl">
-          <h2 className="text-3xl font-semibold md:text-5xl">Skill Focused Learning</h2>
-          <p className="mt-5 text-lg leading-relaxed text-[#56585e]">
-            We provide coaching, training, and support for individuals to thrive in mountain biking and outdoor activities.
-          </p>
-        </div>
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
-          <article className="grid gap-5">
-            <div className="relative min-h-80 overflow-hidden rounded-lg">
-              <Image src="/images/home/skills-cornering-coaching.jpg" alt="Coaching services on mountain bike trails" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-center" />
-            </div>
-            <h3 className="text-xl font-semibold">Coaching Services</h3>
-            <p className="leading-relaxed text-[#56585e]">
-              Our coaching programs empower individuals to develop skills, confidence, and resilience through mountain biking.
-            </p>
-            <Link href="/services" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
-              View services
+            <Link href="/racing" className="group inline-flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors hover:text-white">
+              Meet the team <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
             </Link>
-          </article>
-          <article className="grid gap-5">
-            <div className="relative min-h-80 overflow-hidden rounded-lg">
-              <Image src="/images/home/gallery/kern.jpg" alt="Community engagement through riding" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-center" />
-            </div>
-            <h3 className="text-xl font-semibold">Community Engagement</h3>
-            <p className="leading-relaxed text-[#56585e]">
-              Join us in fostering teamwork and personal growth through outdoor experiences and competitive racing opportunities.
-            </p>
-            <Link href="/support" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
-              Get involved
-            </Link>
-          </article>
+          </Reveal>
+        </div>
+        <div className="float absolute bottom-8 left-1/2 -translate-x-1/2 text-white/35" aria-hidden>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
         </div>
       </section>
 
-      <section className="bg-[#f7f7f7]">
-        <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-          <h2 className="text-center text-3xl font-semibold md:text-5xl">Gallery</h2>
-          <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {galleryImages.map((image) => (
-              <div key={image.src} className="relative min-h-[320px] overflow-hidden rounded-lg md:min-h-[380px]">
-                <Image src={image.src} alt={image.alt} fill loading="lazy" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-300 hover:scale-105" />
+      {/* Marquee ticker */}
+      <div className="border-y border-white/10 py-6">
+        <div className="marquee overflow-hidden">
+          <div className="eyebrow marquee-track flex w-max items-center gap-5 text-xs uppercase tracking-[0.3em] text-white/55">
+            {Array.from({ length: 2 }).map((_, dup) => (
+              <div key={dup} className="flex items-center gap-5 pr-5" aria-hidden={dup === 1}>
+                {["Ride", "Develop", "Race", "Resilience", "Community", "Grow"].map((word) => (
+                  <span key={word} className="flex items-center gap-5">
+                    <span>{word}</span>
+                    <span className="text-[#a8bd6a]/70">/</span>
+                  </span>
+                ))}
               </div>
             ))}
           </div>
-          <p className="mx-auto mt-8 max-w-2xl text-center text-lg text-[#56585e]">
-            Explore our empowering journey through mountain biking and recreation.
-          </p>
+        </div>
+      </div>
+
+      {/* Statement */}
+      <section className="mx-auto max-w-6xl px-5 py-28 md:px-10 md:py-44">
+        <LineReveal
+          trigger="view"
+          className="display text-[clamp(1.75rem,4.5vw,3.5rem)] font-bold leading-[1.1]"
+          lines={[
+            "We empower individuals through",
+            "mountain bike racing and outdoor",
+            <span key="l3">recreation — fostering <span className="serif-italic font-normal text-[#a8bd6a]">personal</span></span>,
+            <span key="l4"><span className="serif-italic font-normal text-[#a8bd6a]">growth &amp; resilience</span> in our community.</span>,
+          ]}
+        />
+      </section>
+
+      {/* 01 — Our purpose */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 md:grid-cols-12 md:gap-16 md:px-10 md:py-28">
+          <div className="md:col-span-5">
+            <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(01) — Our purpose</Reveal>
+            <LineReveal trigger="view" delay={0.05} className="display mt-5 text-4xl font-bold leading-[1.0] md:text-6xl" lines={["Our mission", <span key="v" className="serif-italic font-light">& vision</span>]} />
+            <Reveal delay={0.15} className="mt-7 max-w-md text-base leading-relaxed text-white/55 md:text-lg">
+              We are dedicated to harnessing the transformative power of outdoor experiences to promote mental health, foster confident athletes through teamwork, goal-setting, and perseverance, and guide our members toward fulfilling, passion-driven careers.
+            </Reveal>
+          </div>
+          <ParallaxImage src="/images/home/stage5.jpg" alt="Rider descending a dusty trail" sizes="(min-width: 768px) 58vw, 100vw" strength={60} className="relative aspect-[4/3] rounded-2xl md:col-span-7 md:aspect-[16/11]" />
+        </div>
+      </section>
+
+      {/* 02 — Our story */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 md:grid-cols-12 md:gap-16 md:px-10 md:py-28">
+          <ParallaxImage src="/images/home/gallery/joe-and-mia.jpg" alt="Ride and Develop community members" sizes="(min-width: 768px) 58vw, 100vw" strength={60} className="relative order-2 aspect-[4/3] rounded-2xl md:order-1 md:col-span-7 md:aspect-[16/11]" imgClassName="object-top" />
+          <div className="order-1 md:order-2 md:col-span-5">
+            <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(02) — Our story</Reveal>
+            <LineReveal trigger="view" delay={0.05} className="display mt-5 text-4xl font-bold leading-[1.0] md:text-6xl" lines={["Why", <span key="r" className="serif-italic font-light">we ride</span>]} />
+            <Reveal delay={0.15} className="mt-7 max-w-md text-base leading-relaxed text-white/55 md:text-lg">
+              Ride and Develop started because we know what a bike can do—turn a tough day around, teach resilience when you crash and get back up, and connect people who might never meet otherwise. We empower stronger minds and capable riders by racing mountain bikes, giving back through trail service, sharing outdoor knowledge, and building a welcoming community where everyone belongs.
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 — The academy */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto max-w-4xl px-5 py-24 text-center md:px-10 md:py-32">
+          <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(03) — The academy</Reveal>
+          <LineReveal trigger="view" delay={0.05} className="display mt-5 text-4xl font-bold leading-[1.02] md:text-7xl" lines={["Langtown", <span key="a" className="serif-italic font-light">Racing Academy</span>]} />
+          <Reveal delay={0.15} className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-white/55 md:text-lg">
+            Discover the thrill of competitive racing with our talented team of racers at Langtown Racing Academy. Join us in our journey to excellence on course!
+          </Reveal>
+          <Reveal delay={0.22} className="mt-9 flex flex-wrap items-center justify-center gap-6">
+            <Link href="/support" className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[#08080a] transition-transform duration-300 hover:-translate-y-0.5">
+              Join us <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+            </Link>
+            <Link href="/racing" className="group inline-flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors hover:text-white">
+              The team <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+            </Link>
+          </Reveal>
+          <Reveal delay={0.1} className="mt-14 flex justify-center">
+            <Image src="/images/home/lta-logo.png" alt="Langtown Racing Academy logo" width={320} height={320} className="h-auto w-48 opacity-90 invert md:w-64" />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 04 — What we offer */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-5 py-20 md:px-10 md:py-28">
+          <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(04) — What we offer</Reveal>
+          <LineReveal trigger="view" delay={0.05} className="display mt-5 max-w-3xl text-4xl font-bold leading-[1.0] md:text-6xl" lines={["Skill focused", <span key="l" className="serif-italic font-light">learning</span>]} />
+          <div className="mt-14 grid gap-5 md:grid-cols-2">
+            {[
+              {
+                title: "Coaching Services",
+                body: "Our coaching programs empower individuals to develop skills, confidence, and resilience through mountain biking.",
+                href: "/services",
+                cta: "View services",
+                img: "/images/home/skills-cornering-coaching.jpg",
+                alt: "Coaching services on mountain bike trails",
+              },
+              {
+                title: "Community Engagement",
+                body: "Join us in fostering teamwork and personal growth through outdoor experiences and competitive racing opportunities.",
+                href: "/support",
+                cta: "Get involved",
+                img: "/images/home/gallery/kern.jpg",
+                alt: "Community engagement through riding",
+              },
+            ].map((card, i) => (
+              <Reveal key={card.title} delay={i * 0.1}>
+                <Link href={card.href} className="group block overflow-hidden rounded-2xl border border-white/10 transition-colors duration-500 hover:border-white/25">
+                  <ParallaxImage src={card.img} alt={card.alt} sizes="(min-width: 768px) 50vw, 100vw" strength={40} className="relative aspect-[16/10]" />
+                  <div className="flex items-end justify-between gap-4 p-7 md:p-9">
+                    <div>
+                      <h3 className="display text-2xl font-bold md:text-3xl">{card.title}</h3>
+                      <p className="mt-3 max-w-md text-sm leading-relaxed text-white/55 md:text-base">{card.body}</p>
+                    </div>
+                    <span className="mb-1 inline-flex h-11 w-11 flex-none items-center justify-center rounded-full border border-white/20 text-lg transition-all duration-300 group-hover:border-white/50 group-hover:bg-white group-hover:text-[#08080a]" aria-hidden>→</span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-5 py-20 md:px-10 md:py-28">
+          <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(05) — In the field</Reveal>
+          <LineReveal trigger="view" delay={0.05} className="display mt-5 text-4xl font-bold leading-[1.0] md:text-6xl" lines={["Gallery"]} />
+          {/* Bento that always fills complete rows of 6 columns for 9 photos:
+              [4,2] · [2,4] · [2,2,2] · [4,2]. Uniform tile height keeps rows clean. */}
+          <div className="mt-14 grid auto-rows-[220px] grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-[240px] md:grid-cols-6 md:auto-rows-[300px]">
+            {galleryImages.map((image, i) => {
+              const spans = [
+                "md:col-span-4",
+                "md:col-span-2",
+                "md:col-span-2",
+                "md:col-span-4",
+                "md:col-span-2",
+                "md:col-span-2",
+                "md:col-span-2",
+                "md:col-span-4",
+                "md:col-span-2",
+              ];
+              return (
+                <Reveal key={image.src} delay={(i % 3) * 0.08} className={`${spans[i % spans.length]} h-full`}>
+                  <div className="group h-full overflow-hidden rounded-xl border border-white/10 transition-colors duration-500 hover:border-white/30">
+                    <ParallaxImage src={image.src} alt={image.alt} sizes="(min-width: 768px) 66vw, 100vw" strength={28} className="relative h-full" imgClassName="transition-transform duration-700 ease-out group-hover:scale-105" />
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="relative overflow-hidden border-t border-white/10">
+        <ParallaxImage src="/images/home/gallery/kern.jpg" alt="" sizes="100vw" strength={60} className="absolute inset-0" imgClassName="opacity-20" />
+        <div className="absolute inset-0 bg-[#08080a]/70" />
+        <div className="relative mx-auto max-w-5xl px-5 py-28 text-center md:px-10 md:py-40">
+          <LineReveal
+            trigger="view"
+            className="display text-[clamp(2.2rem,6vw,5rem)] font-extrabold leading-[0.98]"
+            lines={["Ready to turn a", <span key="t" className="serif-italic font-light">tough day around?</span>]}
+          />
+          <Reveal delay={0.2} className="mx-auto mt-7 max-w-xl text-base text-white/60 md:text-lg">
+            Ride with us, support the mission, or line up with the team. Everyone belongs here.
+          </Reveal>
+          <Reveal delay={0.3} className="mt-10 flex flex-wrap items-center justify-center gap-6">
+            <a href={site.donationUrl} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#08080a] transition-transform duration-300 hover:-translate-y-0.5">
+              Donate <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+            </a>
+            <Link href="/support" className="group inline-flex items-center gap-2 text-sm font-semibold text-white/80 transition-colors hover:text-white">
+              Get involved <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+            </Link>
+          </Reveal>
         </div>
       </section>
 
       {hasSocial && (
-        <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-          <h2 className="text-center text-3xl font-semibold md:text-5xl">{social.heading}</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-[#56585e]">{social.description}</p>
-          <div className="mt-12 grid gap-10 md:grid-cols-2">
-            {instagramEmbeds.length > 0 && (
-              <div className="flex flex-col items-center gap-6">
-                {instagramEmbeds.map((html, i) => (
-                  <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
-                ))}
-                <a href={social.instagramUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
-                  {social.instagramHandle}
-                </a>
-              </div>
-            )}
+        <section className="border-t border-white/10">
+          <div className="mx-auto max-w-7xl px-5 py-20 md:px-10 md:py-28">
+            <Reveal className="eyebrow text-xs uppercase tracking-[0.3em] text-[#a8bd6a]">(06) — Follow along</Reveal>
+            <LineReveal trigger="view" delay={0.05} className="display mt-5 text-4xl font-bold leading-[1.0] md:text-6xl" lines={[social.heading]} />
+            <Reveal delay={0.15} className="mt-5 max-w-2xl text-base leading-relaxed text-white/55 md:text-lg">{social.description}</Reveal>
+            <div className="mt-12 grid gap-10 md:grid-cols-2">
+              {instagramEmbeds.length > 0 && (
+                <div className="flex flex-col items-center gap-6">
+                  {instagramEmbeds.map((html, i) => (
+                    <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
+                  ))}
+                  <a href={social.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#a8bd6a] hover:text-white">
+                    {social.instagramHandle}
+                  </a>
+                </div>
+              )}
+              {facebookEmbeds.length > 0 && (
+                <div className="flex flex-col items-center gap-6">
+                  <div id="fb-root" />
+                  {facebookEmbeds.map((html, i) => (
+                    <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
+                  ))}
+                  <a href={social.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#a8bd6a] hover:text-white">
+                    {social.facebookHandle}
+                  </a>
+                </div>
+              )}
+            </div>
+            <Script src="https://www.instagram.com/embed.js" strategy="lazyOnload" />
             {facebookEmbeds.length > 0 && (
-              <div className="flex flex-col items-center gap-6">
-                <div id="fb-root" />
-                {facebookEmbeds.map((html, i) => (
-                  <div key={i} className="w-full max-w-sm" dangerouslySetInnerHTML={{ __html: html }} />
-                ))}
-                <a href={social.facebookUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1a1a1a] underline underline-offset-4">
-                  {social.facebookHandle}
-                </a>
-              </div>
+              <Script src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0" strategy="lazyOnload" />
             )}
           </div>
-          <Script src="https://www.instagram.com/embed.js" strategy="lazyOnload" />
-          {facebookEmbeds.length > 0 && (
-            <Script src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0" strategy="lazyOnload" />
-          )}
         </section>
       )}
     </div>

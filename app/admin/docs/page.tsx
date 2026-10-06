@@ -22,7 +22,7 @@ function Section({
   return (
     <section className="mt-10">
       <h2 className="text-xl font-semibold">{title}</h2>
-      <div className="mt-3 space-y-4 text-[#56585e]">{children}</div>
+      <div className="mt-3 space-y-4 text-white/55">{children}</div>
     </section>
   );
 }
@@ -45,7 +45,7 @@ export default async function AdminDocsPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
         <h1 className="text-3xl font-semibold">Not available</h1>
-        <p className="mt-4 text-[#56585e]">
+        <p className="mt-4 text-white/55">
           You do not have access to this page.
         </p>
       </div>
@@ -56,20 +56,20 @@ export default async function AdminDocsPage() {
     <div className="mx-auto max-w-4xl px-4 py-16 md:px-8">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#673de6]">
+          <p className="text-sm font-semibold uppercase tracking-wide text-[#a8bd6a]">
             Administration
           </p>
           <h1 className="mt-2 text-3xl font-semibold md:text-4xl">
             Admin guide
           </h1>
-          <p className="mt-4 max-w-2xl text-[#56585e]">
+          <p className="mt-4 max-w-2xl text-white/55">
             How personas and coach calendars work, for anyone administering
             the site.
           </p>
         </div>
         <Link
           href="/admin"
-          className="text-sm font-semibold text-[#5025d1] underline"
+          className="text-sm font-semibold text-[#a8bd6a] underline"
         >
           Admin dashboard
         </Link>
@@ -135,7 +135,7 @@ export default async function AdminDocsPage() {
           Grant or revoke personas at{" "}
           <Link
             href="/admin/personas"
-            className="font-semibold text-[#5025d1] underline"
+            className="font-semibold text-[#a8bd6a] underline"
           >
             /admin/personas
           </Link>
@@ -160,7 +160,7 @@ export default async function AdminDocsPage() {
           an admin approves or rejects it at{" "}
           <Link
             href="/admin/profiles"
-            className="font-semibold text-[#5025d1] underline"
+            className="font-semibold text-[#a8bd6a] underline"
           >
             /admin/profiles
           </Link>

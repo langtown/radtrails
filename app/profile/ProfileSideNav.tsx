@@ -43,8 +43,8 @@ export default function ProfileSideNav({ items }: ProfileSideNavProps) {
             href={`#${item.id}`}
             className={`block rounded-lg px-3 py-1.5 text-sm transition-colors ${
               activeId === item.id
-                ? "bg-[#f0f0f0] font-semibold text-[#1a1a1a]"
-                : "text-[#56585e] hover:text-[#1a1a1a]"
+                ? "bg-[#101016] font-semibold text-white"
+                : "text-white/55 hover:text-white"
             }`}
           >
             {item.label}

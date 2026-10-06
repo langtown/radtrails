@@ -91,26 +91,26 @@ export default async function ProfilePage() {
               <h1 className="text-3xl font-semibold md:text-4xl">
                 {user.displayName ?? "Your profile"}
               </h1>
-              {user.email && <p className="mt-1 text-[#56585e]">{user.email}</p>}
+              {user.email && <p className="mt-1 text-white/55">{user.email}</p>}
             </div>
           </div>
 
           <section className="mt-10">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-white/55">
               Your role
             </h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {user.personas.map((persona) => (
                 <span
                   key={persona}
-                  className="rounded-[50px] border border-[#c9c9c9] px-4 py-1.5 text-sm font-medium"
+                  className="rounded-[50px] border border-white/10 px-4 py-1.5 text-sm font-medium"
                 >
                   {PERSONA_LABELS[persona] ?? persona}
                 </span>
               ))}
             </div>
 
-            <p className="mt-4 max-w-xl text-[#56585e]">
+            <p className="mt-4 max-w-xl text-white/55">
               {publicPersonas.length > 0
                 ? "You appear on the site. Your name, photo, and bio are published once an admin approves them."
                 : "You have an account, and you do not appear anywhere on the public site. An admin adds riders and coaches to the site."}
@@ -136,7 +136,7 @@ export default async function ProfilePage() {
               {(isCoach ||
                 calendarSessions.some((session) => session.status === "scheduled")) && (
                 <details className="mt-6 max-w-xl">
-                  <summary className="cursor-pointer text-sm font-semibold text-[#56585e]">
+                  <summary className="cursor-pointer text-sm font-semibold text-white/55">
                     Add sessions to your calendar app
                   </summary>
                   <CalendarSubscribe />
@@ -152,20 +152,20 @@ export default async function ProfilePage() {
           )}
 
           {power && (
-            <section id="power-zones" className="mt-10 border-t border-[#e3e3e3] pt-8">
+            <section id="power-zones" className="mt-10 border-t border-white/10 pt-8">
               <h2 className="text-xl font-semibold">Your power zones</h2>
               {power.zone5Watts !== null ? (
                 <>
-                  <p className="mt-2 text-[#56585e]">
+                  <p className="mt-2 text-white/55">
                     FTP{" "}
-                    <span className="text-2xl font-semibold text-[#1a1a1a]">
+                    <span className="text-2xl font-semibold text-white">
                       {deriveZonesFromZone5(power.zone5Watts).ftpWatts} W
                     </span>{" "}
                     — derived from your Zone 5 power ({power.zone5Watts} W)
                     {power.updatedAt &&
                       `, set by your coach on ${power.updatedAt.slice(0, 10)}`}
                   </p>
-                  <ul className="mt-4 max-w-md divide-y divide-[#e3e3e3]">
+                  <ul className="mt-4 max-w-md divide-y divide-white/10">
                     {deriveZonesFromZone5(power.zone5Watts).zones.map((zone) => (
                       <li
                         key={zone.zone}
@@ -173,7 +173,7 @@ export default async function ProfilePage() {
                       >
                         <span>
                           <span className="font-semibold">{zone.zone}</span>{" "}
-                          <span className="text-[#56585e]">{zone.label}</span>
+                          <span className="text-white/55">{zone.label}</span>
                         </span>
                         <span className="font-medium">
                           {zone.minWatts === null
@@ -187,7 +187,7 @@ export default async function ProfilePage() {
                   </ul>
                 </>
               ) : (
-                <p className="mt-2 text-[#56585e]">
+                <p className="mt-2 text-white/55">
                   Your coach has not set your Zone 5 power yet.
                 </p>
               )}
@@ -196,13 +196,13 @@ export default async function ProfilePage() {
 
           {isCoach && (
             <section id="coaching" className="mt-10">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-white/55">
                 Coaching
               </h2>
               <div className="mt-3 flex flex-wrap gap-3">
                 <Link
                   href="/coach"
-                  className="inline-flex min-h-11 items-center rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+                  className="inline-flex min-h-11 items-center rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55 transition-colors hover:border-white/25 hover:text-white"
                 >
                   Your calendar
                 </Link>
@@ -211,15 +211,15 @@ export default async function ProfilePage() {
           )}
 
           {!adminExists && (
-            <section className="mt-10 rounded-xl border border-[#e3e3e3] bg-[#f7f7f7] p-6">
+            <section className="mt-10 rounded-xl border border-white/10 bg-[#101016] p-6">
               <h2 className="text-xl font-semibold">Set up administration</h2>
-              <p className="mt-2 max-w-xl text-sm text-[#56585e]">
+              <p className="mt-2 max-w-xl text-sm text-white/55">
                 No administrator exists yet. If this account should manage the
                 site, finish the one-time setup using the configured admin code.
               </p>
               <Link
                 href="/admin/setup"
-                className="mt-5 inline-flex min-h-11 items-center rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white transition-colors hover:bg-black"
+                className="mt-5 inline-flex min-h-11 items-center rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#23232b]"
               >
                 Set up the first admin
               </Link>
@@ -230,7 +230,7 @@ export default async function ProfilePage() {
             <form action="/api/auth/logout" method="post" className="mt-12">
               <button
                 type="submit"
-                className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+                className="min-h-11 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55 transition-colors hover:border-white/25 hover:text-white"
               >
                 Sign out
               </button>

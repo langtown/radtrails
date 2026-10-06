@@ -36,7 +36,7 @@ export default async function PersonaAdminPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
         <h1 className="text-3xl font-semibold">Not available</h1>
-        <p className="mt-4 text-[#56585e]">
+        <p className="mt-4 text-white/55">
           You do not have access to this page.
         </p>
       </div>
@@ -50,7 +50,7 @@ export default async function PersonaAdminPage() {
           <h1 className="text-3xl font-semibold md:text-4xl">
             Manage Personas
           </h1>
-          <p className="mt-4 max-w-2xl text-[#56585e]">
+          <p className="mt-4 max-w-2xl text-white/55">
             Personas decide whether and where someone appears on the site.
             Content review is separate: adding a rider to TheTeam does not
             publish a profile edit that has not been approved.
@@ -58,7 +58,7 @@ export default async function PersonaAdminPage() {
         </div>
         <Link
           href="/admin"
-          className="text-sm font-semibold text-[#5025d1] underline"
+          className="text-sm font-semibold text-[#a8bd6a] underline"
         >
           Admin dashboard
         </Link>

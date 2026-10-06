@@ -51,7 +51,7 @@ export default function PersonaTable({
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#e3e3e3]">
+            <tr className="border-b border-white/10">
               <th className="py-3 pr-4 font-semibold">Person</th>
               {personaKeys.map((persona) => (
                 <th key={persona} className="px-3 py-3 font-semibold">
@@ -62,12 +62,12 @@ export default function PersonaTable({
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b border-[#f0f0f0]">
+              <tr key={user.id} className="border-b border-white/10">
                 <td className="py-3 pr-4">
                   <span className="block font-medium">
                     {user.displayName ?? "(no name)"}
                   </span>
-                  <span className="block text-[#56585e]">
+                  <span className="block text-white/55">
                     {user.email ?? "(no email)"}
                   </span>
                 </td>
@@ -84,8 +84,8 @@ export default function PersonaTable({
                         onClick={() => toggle(user.id, persona, held)}
                         className={`min-h-9 rounded-[50px] px-4 text-xs font-semibold transition-colors disabled:opacity-50 ${
                           held
-                            ? "bg-[#1a1a1a] text-white hover:bg-black"
-                            : "border border-[#c9c9c9] text-[#56585e] hover:border-[#1a1a1a]"
+                            ? "bg-[#17171d] text-white hover:bg-[#23232b]"
+                            : "border border-white/10 text-white/55 hover:border-white/25"
                         }`}
                       >
                         {held ? "Yes" : "No"}
@@ -100,7 +100,7 @@ export default function PersonaTable({
       </div>
 
       {users.length === 0 && (
-        <p className="mt-6 text-[#56585e]">No accounts yet.</p>
+        <p className="mt-6 text-white/55">No accounts yet.</p>
       )}
     </div>
   );

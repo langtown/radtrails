@@ -46,7 +46,7 @@ export function AuthControls({ state }: { state: AuthState }) {
     return (
       <span
         aria-label="Checking sign-in status"
-        className="h-5 w-24 animate-pulse rounded bg-[#f2f3f6]"
+        className="h-5 w-24 animate-pulse rounded bg-[#101016]"
       />
     );
   }
@@ -57,7 +57,7 @@ export function AuthControls({ state }: { state: AuthState }) {
     return (
       <a
         href="/api/auth/login"
-        className="transition-colors hover:text-[#673de6]"
+        className="transition-colors hover:text-[#a8bd6a]"
       >
         login
       </a>
@@ -71,7 +71,7 @@ export function AuthControls({ state }: { state: AuthState }) {
       {state.user.isAdmin && (
         <Link
           href="/admin"
-          className="transition-colors hover:text-[#673de6]"
+          className="transition-colors hover:text-[#a8bd6a]"
         >
           Admin
         </Link>
@@ -79,7 +79,7 @@ export function AuthControls({ state }: { state: AuthState }) {
       <Link
         href="/profile"
         aria-label={`Profile for ${label}`}
-        className="flex items-center gap-2 transition-colors hover:text-[#673de6]"
+        className="flex items-center gap-2 transition-colors hover:text-[#a8bd6a]"
       >
         {state.user.pictureUrl ? (
           <Image
@@ -91,7 +91,7 @@ export function AuthControls({ state }: { state: AuthState }) {
             unoptimized
           />
         ) : (
-          <span className="inline-block h-7 w-7 rounded-full bg-[#f2f3f6]" aria-hidden="true" />
+          <span className="inline-block h-7 w-7 rounded-full bg-[#101016]" aria-hidden="true" />
         )}
       </Link>
     </div>

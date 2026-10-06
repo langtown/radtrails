@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
+import ScrollProgress from "@/components/ScrollProgress";
+import BackToTop from "@/components/BackToTop";
 import Script from "next/script";
-import { Lato, Inter } from "next/font/google";
+import { Lato, Inter, Bricolage_Grotesque, Space_Grotesk, Fraunces } from "next/font/google";
 import { homePageMeta } from "@/lib/content/home";
 import { site } from "@/lib/content/site";
 import "./globals.css";
@@ -16,6 +19,25 @@ const lato = Lato({
 const inter = Inter({
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-display",
+  weight: ["600", "700", "800"],
+  subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-mono-display",
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-serif",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -69,7 +91,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${lato.variable} ${inter.variable} h-full antialiased`}
+      className={`${lato.variable} ${inter.variable} ${bricolage.variable} ${spaceGrotesk.variable} ${fraunces.variable} h-full antialiased`}
     >
       <head>
         {/* Google Tag Manager */}
@@ -96,8 +118,29 @@ gtag('js', new Date());
 gtag('config', 'G-55LWQ8NG00');`,
           }}
         />
+        {/* Structured data for search engines */}
+        <Script
+          id="ld-org"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SportsOrganization",
+              name: site.name,
+              url: site.domain,
+              logo: `${site.domain.replace(/\/$/, "")}/images/logo.png`,
+              description: homePageMeta.description,
+              email: site.email,
+              telephone: site.phone,
+              sameAs: [site.social.facebook, site.social.instagram],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
+        <SmoothScroll />
+        <ScrollProgress />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -107,11 +150,18 @@ gtag('config', 'G-55LWQ8NG00');`,
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-full focus:bg-white focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-[#08080a]"
+        >
+          Skip to content
+        </a>
         <NavBar />
-        <main className="flex-1">
+        <main id="main" className="flex-1">
           {children}
         </main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );
