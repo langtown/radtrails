@@ -332,7 +332,7 @@ export default function CoachScheduleManager({
               onChange={(event) =>
                 setSessionType(event.target.value as SessionType)
               }
-              className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+              className="mt-1 block min-h-11 rounded border border-white/10 px-3"
             >
               {SESSION_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -349,7 +349,7 @@ export default function CoachScheduleManager({
                 onChange={(event) =>
                   setRiderId(event.target.value ? Number(event.target.value) : "")
                 }
-                className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                className="mt-1 block min-h-11 rounded border border-white/10 px-3"
               >
                 <option value="">Choose a rider</option>
                 {eligibleRiders.map((rider) => (
@@ -368,7 +368,7 @@ export default function CoachScheduleManager({
                 required
                 value={teamDate}
                 onChange={(event) => setTeamDate(event.target.value)}
-                className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                className="mt-1 block min-h-11 rounded border border-white/10 px-3"
               />
             </label>
           ) : sessionType === "lesson" ? (
@@ -379,7 +379,7 @@ export default function CoachScheduleManager({
                 required
                 value={occurrenceDate}
                 onChange={(event) => setOccurrenceDate(event.target.value)}
-                className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                className="mt-1 block min-h-11 rounded border border-white/10 px-3"
               />
               {lessonDateInvalid && (
                 <span className="mt-1 block text-xs font-semibold text-red-700">
@@ -394,7 +394,7 @@ export default function CoachScheduleManager({
               <select
                 value={dayOfWeek}
                 onChange={(event) => setDayOfWeek(Number(event.target.value))}
-                className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                className="mt-1 block min-h-11 rounded border border-white/10 px-3"
               >
                 {DAYS_OF_WEEK.map((day, index) => (
                   <option
@@ -420,7 +420,7 @@ export default function CoachScheduleManager({
                   required
                   value={teamStart}
                   onChange={(event) => setTeamStart(event.target.value)}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
               <label className="text-sm">
@@ -430,7 +430,7 @@ export default function CoachScheduleManager({
                   required
                   value={teamFinish}
                   onChange={(event) => setTeamFinish(event.target.value)}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
             </>
@@ -443,7 +443,7 @@ export default function CoachScheduleManager({
                 max={timeMax}
                 value={startTime}
                 onChange={(event) => setStartTime(event.target.value)}
-                className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                className="mt-1 block min-h-11 rounded border border-white/10 px-3"
               />
             </label>
           )}
@@ -457,7 +457,7 @@ export default function CoachScheduleManager({
                   value={teamLocation}
                   onChange={(event) => setTeamLocation(event.target.value)}
                   placeholder="https://maps.app.goo.gl/..."
-                  className="mt-1 block min-h-11 w-64 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 w-64 rounded border border-white/10 px-3"
                 />
               </label>
               <label className="text-sm">
@@ -467,7 +467,7 @@ export default function CoachScheduleManager({
                   value={teamInfo}
                   onChange={(event) => setTeamInfo(event.target.value)}
                   placeholder="Route notes, pace, what to bring"
-                  className="mt-1 block min-h-11 w-64 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 w-64 rounded border border-white/10 px-3"
                 />
               </label>
             </>
@@ -475,7 +475,7 @@ export default function CoachScheduleManager({
           <button
             type="submit"
             disabled={lessonDateInvalid}
-            className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             Add to calendar
           </button>
@@ -490,17 +490,17 @@ export default function CoachScheduleManager({
           <div
             role="dialog"
             aria-label="Edit session"
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
+            className="w-full max-w-md rounded-xl bg-[#0e0e14] p-6 shadow-lg"
             onClick={(event) => event.stopPropagation()}
           >
             <h3 className="text-xl font-semibold">Edit session</h3>
-            <p className="mt-1 text-sm text-[#56585e]">
+            <p className="mt-1 text-sm text-white/55">
               {SESSION_TYPE_LABELS[editing.sessionType]} with{" "}
               {editing.riderDisplayName ?? `Rider #${editing.riderId}`} —
               currently {editing.occurrenceDate} at {editing.startTime}
             </p>
             {editing.sessionType === "intervals" && (
-              <p className="mt-2 text-xs text-[#56585e]">
+              <p className="mt-2 text-xs text-white/55">
                 Pick a new date and time, then choose whether it applies to
                 just this date or to every future Intervals session in this
                 rider&apos;s weekly series.
@@ -516,7 +516,7 @@ export default function CoachScheduleManager({
                   type="date"
                   name="occurrenceDate"
                   defaultValue={editing.occurrenceDate}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
               <label className="text-sm">
@@ -525,14 +525,14 @@ export default function CoachScheduleManager({
                   type="time"
                   name="startTime"
                   defaultValue={editing.startTime}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
               <button
                 type="submit"
                 name="scope"
                 value="single"
-                className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white"
+                className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white"
               >
                 Save this date
               </button>
@@ -541,7 +541,7 @@ export default function CoachScheduleManager({
                   type="submit"
                   name="scope"
                   value="series"
-                  className="min-h-11 rounded-[50px] border border-[#1a1a1a] px-6 text-sm font-semibold text-[#1a1a1a]"
+                  className="min-h-11 rounded-[50px] border border-white/25 px-6 text-sm font-semibold text-white"
                 >
                   Save this and future sessions
                 </button>
@@ -558,7 +558,7 @@ export default function CoachScheduleManager({
               <button
                 type="button"
                 onClick={() => setEditingId(null)}
-                className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e]"
+                className="min-h-11 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55"
               >
                 Close
               </button>
@@ -575,21 +575,21 @@ export default function CoachScheduleManager({
             return (
               <div
                 key={slotKeyOf(slot)}
-                className="rounded-xl border border-[#e3e3e3] p-4"
+                className="rounded-xl border border-white/10 p-4"
               >
                 <div className="flex items-baseline justify-between">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-white/55">
                     {SESSION_TYPE_LABELS[slot.sessionType]} ·{" "}
                     {slot.oneOff && slot.occurrenceDate
                       ? slot.occurrenceDate
                       : DAYS_OF_WEEK[slot.dayOfWeek]}{" "}
                     {slot.startTime}
                   </h3>
-                  <span className="text-xs text-[#56585e]">
+                  <span className="text-xs text-white/55">
                     {group.length}/{MAX_RIDERS_PER_SLOT} riders
                   </span>
                 </div>
-                <ul className="mt-3 divide-y divide-[#e3e3e3]">
+                <ul className="mt-3 divide-y divide-white/10">
                   {group.map((assignment) => {
                     const riderName =
                       assignment.riderDisplayName ?? `Rider #${assignment.riderId}`;
@@ -604,7 +604,7 @@ export default function CoachScheduleManager({
                             {isAdmin && assignment.riderSlug ? (
                               <a
                                 href={`/admin/profiles/manage/edit/${assignment.riderSlug}`}
-                                className="font-semibold text-[#5025d1] underline"
+                                className="font-semibold text-[#a8bd6a] underline"
                               >
                                 {riderName}
                               </a>
@@ -614,7 +614,7 @@ export default function CoachScheduleManager({
                             {assignment.riderZone5Watts !== null &&
                               ` · Z5 ${assignment.riderZone5Watts} W`}
                             {zones && (
-                              <span className="block text-xs text-[#56585e]">
+                              <span className="block text-xs text-white/55">
                                 {zones
                                   .map(
                                     (zone) =>
@@ -640,7 +640,7 @@ export default function CoachScheduleManager({
                                   : assignment.id,
                               )
                             }
-                            className="text-sm font-semibold text-[#5025d1] underline"
+                            className="text-sm font-semibold text-[#a8bd6a] underline"
                           >
                             Set FTP
                           </button>
@@ -664,11 +664,11 @@ export default function CoachScheduleManager({
                               max={3000}
                               defaultValue={assignment.riderZone5Watts ?? ""}
                               placeholder="Zone 5 watts"
-                              className="w-32 rounded border border-[#c9c9c9] px-2 py-1 text-sm"
+                              className="w-32 rounded border border-white/10 px-2 py-1 text-sm"
                             />
                             <button
                               type="submit"
-                              className="min-h-9 rounded-[50px] bg-[#1a1a1a] px-4 text-xs font-semibold text-white"
+                              className="min-h-9 rounded-[50px] bg-[#17171d] px-4 text-xs font-semibold text-white"
                             >
                               Save
                             </button>
@@ -683,13 +683,13 @@ export default function CoachScheduleManager({
           })}
         </div>
         {assignments.length === 0 && (
-          <p className="mt-4 text-[#56585e]">No riders scheduled yet.</p>
+          <p className="mt-4 text-white/55">No riders scheduled yet.</p>
         )}
       </section>
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Booking rules</h2>
-        <p className="mt-1 text-sm text-[#56585e]">
+        <p className="mt-1 text-sm text-white/55">
           Choose which days can be booked and up to two blackout windows that
           apply on every allowed day, set separately for Intervals and
           Lessons. Group Rides are never restricted by these rules. Leave
@@ -715,12 +715,12 @@ export default function CoachScheduleManager({
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Group Rides</h2>
-        <p className="mt-1 text-sm text-[#56585e]">
+        <p className="mt-1 text-sm text-white/55">
           One event on every team rider&apos;s calendar. Riders mark
           themselves not available from their profile; everyone else is
           assumed attending.
         </p>
-        <ul className="mt-4 divide-y divide-[#e3e3e3]">
+        <ul className="mt-4 divide-y divide-white/10">
           {teamEvents.map((teamEvent) => (
             <li key={teamEvent.id} className="flex flex-wrap items-center gap-3 py-3">
               <span className="flex-1">
@@ -733,14 +733,14 @@ export default function CoachScheduleManager({
                 href={teamEvent.locationUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-semibold text-[#5025d1] underline"
+                className="text-sm font-semibold text-[#a8bd6a] underline"
               >
                 Meetup map
               </a>
               <button
                 type="button"
                 onClick={() => setViewingTeamEventId(teamEvent.id)}
-                className="text-sm font-semibold text-[#5025d1] underline"
+                className="text-sm font-semibold text-[#a8bd6a] underline"
               >
                 Attendees
               </button>
@@ -754,7 +754,7 @@ export default function CoachScheduleManager({
             </li>
           ))}
           {teamEvents.length === 0 && (
-            <li className="py-3 text-[#56585e]">No team rides scheduled.</li>
+            <li className="py-3 text-white/55">No team rides scheduled.</li>
           )}
         </ul>
       </section>
@@ -767,28 +767,28 @@ export default function CoachScheduleManager({
           <div
             role="dialog"
             aria-label="Group Ride attendees"
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
+            className="w-full max-w-md rounded-xl bg-[#0e0e14] p-6 shadow-lg"
             onClick={(event) => event.stopPropagation()}
           >
             <h3 className="text-xl font-semibold">
               {SESSION_TYPE_LABELS.practiceride}
             </h3>
-            <p className="mt-1 text-sm text-[#56585e]">
+            <p className="mt-1 text-sm text-white/55">
               {viewingTeamEvent.eventDate} {viewingTeamEvent.startTime}–
               {viewingTeamEvent.finishTime} —{" "}
               <a
                 href={viewingTeamEvent.locationUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#5025d1] underline"
+                className="text-[#a8bd6a] underline"
               >
                 meetup map
               </a>
             </p>
             {viewingTeamEvent.info && (
-              <p className="mt-2 text-sm text-[#56585e]">{viewingTeamEvent.info}</p>
+              <p className="mt-2 text-sm text-white/55">{viewingTeamEvent.info}</p>
             )}
-            <h4 className="mt-4 text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+            <h4 className="mt-4 text-sm font-semibold uppercase tracking-wide text-white/55">
               Attending ({viewingTeamEvent.attendees.length})
             </h4>
             <ul className="mt-1 text-sm">
@@ -800,10 +800,10 @@ export default function CoachScheduleManager({
             </ul>
             {viewingTeamEvent.absentees.length > 0 && (
               <>
-                <h4 className="mt-4 text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                <h4 className="mt-4 text-sm font-semibold uppercase tracking-wide text-white/55">
                   Not available ({viewingTeamEvent.absentees.length})
                 </h4>
-                <ul className="mt-1 text-sm text-[#56585e]">
+                <ul className="mt-1 text-sm text-white/55">
                   {viewingTeamEvent.absentees.map((absentee) => (
                     <li key={absentee.id} className="py-0.5">
                       {absentee.displayName ?? `Rider #${absentee.id}`}
@@ -823,7 +823,7 @@ export default function CoachScheduleManager({
               <button
                 type="button"
                 onClick={() => setViewingTeamEventId(null)}
-                className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e]"
+                className="min-h-11 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55"
               >
                 Close
               </button>
@@ -834,7 +834,7 @@ export default function CoachScheduleManager({
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Upcoming sessions</h2>
-        <ul className="mt-4 divide-y divide-[#e3e3e3]">
+        <ul className="mt-4 divide-y divide-white/10">
           {scheduled.map((occurrence) => (
             <li key={occurrence.id} className="flex flex-wrap items-center gap-3 py-3">
               <span className="flex-1">
@@ -854,7 +854,7 @@ export default function CoachScheduleManager({
                       href={occurrence.riderPlaylistUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[#5025d1] underline"
+                      className="text-[#a8bd6a] underline"
                     >
                       playlist
                     </a>
@@ -869,17 +869,17 @@ export default function CoachScheduleManager({
                   type="date"
                   name="occurrenceDate"
                   defaultValue={occurrence.occurrenceDate}
-                  className="rounded border border-[#c9c9c9] px-2 py-1 text-sm"
+                  className="rounded border border-white/10 px-2 py-1 text-sm"
                 />
                 <input
                   type="time"
                   name="startTime"
                   defaultValue={occurrence.startTime}
-                  className="rounded border border-[#c9c9c9] px-2 py-1 text-sm"
+                  className="rounded border border-white/10 px-2 py-1 text-sm"
                 />
                 <button
                   type="submit"
-                  className="text-sm font-semibold text-[#5025d1] underline"
+                  className="text-sm font-semibold text-[#a8bd6a] underline"
                 >
                   Reschedule
                 </button>
@@ -894,7 +894,7 @@ export default function CoachScheduleManager({
             </li>
           ))}
           {scheduled.length === 0 && (
-            <li className="py-3 text-[#56585e]">No upcoming sessions.</li>
+            <li className="py-3 text-white/55">No upcoming sessions.</li>
           )}
         </ul>
       </section>
@@ -960,7 +960,7 @@ function BookingRulesEditor({
 
   return (
     <div>
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-white/55">
         {label}
       </h3>
       {error && (
@@ -980,8 +980,8 @@ function BookingRulesEditor({
                 aria-pressed={allowed}
                 className={`min-h-9 rounded-full border px-3 text-xs font-semibold ${
                   allowed
-                    ? "border-[#1a1a1a] bg-[#1a1a1a] text-white"
-                    : "border-[#c9c9c9] text-[#56585e]"
+                    ? "border-white/25 bg-[#17171d] text-white"
+                    : "border-white/10 text-white/55"
                 }`}
               >
                 {day.slice(0, 3)}
@@ -1023,7 +1023,7 @@ function BookingRulesEditor({
                         start: event.target.value,
                       })
                     }
-                    className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                    className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                   />
                 </label>
                 <label className="text-sm">
@@ -1038,7 +1038,7 @@ function BookingRulesEditor({
                         end: event.target.value,
                       })
                     }
-                    className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                    className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                   />
                 </label>
               </>
@@ -1047,7 +1047,7 @@ function BookingRulesEditor({
         ))}
         <button
           type="submit"
-          className="mt-4 min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white"
+          className="mt-4 min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white"
         >
           Save {label.toLowerCase()} booking rules
         </button>

@@ -47,7 +47,7 @@ function PersonaSelector({
         id="admin-persona"
         value={persona}
         onChange={(event) => setPersona(event.target.value as PersonaKey)}
-        className="rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+        className="rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
       >
         {PERSONA_KEYS.map((option) => (
           <option key={option} value={option}>
@@ -65,7 +65,7 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
 
   const body = (
     <>
-      <div className="relative h-48 w-full bg-[#dadce0]">
+      <div className="relative h-48 w-full bg-[#1a1a22]">
         {profile.imageUrl ? (
           <Image
             src={profile.imageUrl}
@@ -77,7 +77,7 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center px-6 text-center text-sm text-[#56585e]">
+          <div className="flex h-full items-center justify-center px-6 text-center text-sm text-white/55">
             No profile photo
           </div>
         )}
@@ -85,14 +85,14 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
       <div className="p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-lg font-semibold">{name}</h3>
-          <span className="rounded-[50px] bg-[#f2f3f6] px-3 py-1 text-xs font-semibold">
+          <span className="rounded-[50px] bg-[#101016] px-3 py-1 text-xs font-semibold">
             {statusLabel(profile.status)}
           </span>
         </div>
         {profile.slug && (
-          <p className="mt-1 text-xs text-[#56585e]">/{profile.slug}</p>
+          <p className="mt-1 text-xs text-white/55">/{profile.slug}</p>
         )}
-        <p className="mt-3 line-clamp-3 text-sm text-[#56585e]">
+        <p className="mt-3 line-clamp-3 text-sm text-white/55">
           {profile.bio || "No bio submitted."}
         </p>
       </div>
@@ -103,7 +103,7 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
   // editable as soon as the owner submits one.
   if (!profile.slug) {
     return (
-      <article className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white opacity-75 shadow-sm">
+      <article className="overflow-hidden rounded-xl border border-white/10 bg-[#0e0e14] opacity-75 shadow-sm">
         {body}
       </article>
     );
@@ -112,7 +112,7 @@ function ProfileCard({ profile }: { profile: AdminProfileListItem }) {
   return (
     <Link
       href={`/admin/profiles/manage/edit/${profile.slug}`}
-      className="block overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-sm transition hover:border-[#673de6] hover:shadow-md"
+      className="block overflow-hidden rounded-xl border border-white/10 bg-[#0e0e14] shadow-sm transition hover:border-[#a8bd6a] hover:shadow-md"
     >
       {body}
     </Link>
@@ -186,7 +186,7 @@ export default function AdminProfilesManager() {
     <div className="mt-8">
       <PersonaSelector persona={persona} setPersona={setPersona} />
 
-      <p className="mt-3 text-sm text-[#56585e]">
+      <p className="mt-3 text-sm text-white/55">
         {PERSONA_DESCRIPTIONS[persona] ?? "No description available."}
       </p>
 
@@ -200,15 +200,15 @@ export default function AdminProfilesManager() {
       )}
 
       {isLoading ? (
-        <p className="mt-10 text-sm text-[#56585e]">Loading profiles…</p>
+        <p className="mt-10 text-sm text-white/55">Loading profiles…</p>
       ) : (
         !error &&
         (profiles.length === 0 ? (
-          <div className="mt-10 rounded-lg bg-[#f7f7f7] px-6 py-10 text-center">
+          <div className="mt-10 rounded-lg bg-[#101016] px-6 py-10 text-center">
             <h2 className="text-xl font-semibold">
               Nobody holds the {PERSONA_LABELS[persona] ?? persona} persona
             </h2>
-            <p className="mt-2 text-sm text-[#56585e]">
+            <p className="mt-2 text-sm text-white/55">
               Grant it from a profile editor and the account will appear here.
             </p>
           </div>

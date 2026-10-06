@@ -286,7 +286,7 @@ export default function AdminProfileEditPage() {
     <div className="mx-auto max-w-4xl px-4 py-16 md:px-8">
       <Link
         href="/admin/profiles/manage"
-        className="text-sm font-semibold text-[#5025d1] underline"
+        className="text-sm font-semibold text-[#a8bd6a] underline"
       >
         Back to profiles
       </Link>
@@ -300,7 +300,7 @@ export default function AdminProfileEditPage() {
         </p>
       )}
       {!loadError && !profile && (
-        <p className="mt-8 text-sm text-[#56585e]">Loading profile…</p>
+        <p className="mt-8 text-sm text-white/55">Loading profile…</p>
       )}
 
       {profile && (
@@ -310,9 +310,9 @@ export default function AdminProfileEditPage() {
               <h1 className="text-3xl font-semibold">
                 Edit {profile.displayName}
               </h1>
-              <p className="mt-1 text-xs text-[#56585e]">/{profile.slug}</p>
+              <p className="mt-1 text-xs text-white/55">/{profile.slug}</p>
             </div>
-            <span className="rounded-[50px] bg-[#f2f3f6] px-3 py-1 text-xs font-semibold">
+            <span className="rounded-[50px] bg-[#101016] px-3 py-1 text-xs font-semibold">
               {statusLabel(profile.status)}
             </span>
           </div>
@@ -323,9 +323,9 @@ export default function AdminProfileEditPage() {
             </p>
           )}
 
-          <section className="mt-8 rounded-xl border border-[#e3e3e3] bg-white p-6 shadow-sm">
+          <section className="mt-8 rounded-xl border border-white/10 bg-[#0e0e14] p-6 shadow-sm">
             <h2 className="text-xl font-semibold">Personas</h2>
-            <p className="mt-2 text-sm text-[#56585e]">
+            <p className="mt-2 text-sm text-white/55">
               Personas decide whether and where this person appears on the
               site. Changes apply immediately.
             </p>
@@ -356,7 +356,7 @@ export default function AdminProfileEditPage() {
           <form onSubmit={(event) => void save(event)} className="mt-8 space-y-6">
             <div className="grid gap-6 md:grid-cols-[minmax(220px,0.6fr)_minmax(0,1.4fr)]">
               <div>
-                <div className="relative h-56 w-full overflow-hidden rounded-lg bg-[#dadce0]">
+                <div className="relative h-56 w-full overflow-hidden rounded-lg bg-[#1a1a22]">
                   {previewUrl ? (
                     <Image
                       alt={`${profile.displayName} profile photo`}
@@ -388,7 +388,7 @@ export default function AdminProfileEditPage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-[#56585e]">
+                    <div className="flex h-full items-center justify-center px-6 text-center text-sm text-white/55">
                       No profile photo
                     </div>
                   )}
@@ -408,9 +408,9 @@ export default function AdminProfileEditPage() {
                     onChange={(event) =>
                       selectImage(event.target.files?.[0] ?? null)
                     }
-                    className="mt-2 block w-full text-sm file:mr-3 file:rounded-[50px] file:border-0 file:bg-[#1a1a1a] file:px-4 file:py-2 file:font-semibold file:text-white"
+                    className="mt-2 block w-full text-sm file:mr-3 file:rounded-[50px] file:border-0 file:bg-[#17171d] file:px-4 file:py-2 file:font-semibold file:text-white"
                   />
-                  <p className="mt-1 text-xs leading-relaxed text-[#56585e]">
+                  <p className="mt-1 text-xs leading-relaxed text-white/55">
                     JPEG, PNG, or WebP up to 1 MB. The photo is uploaded when
                     you save.
                   </p>
@@ -482,7 +482,7 @@ export default function AdminProfileEditPage() {
                     required
                     maxLength={MAX_PROFILE_NAME_CHARACTERS}
                     defaultValue={profile.displayName}
-                    className="mt-2 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+                    className="mt-2 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
                   />
                 </div>
                 <div>
@@ -495,7 +495,7 @@ export default function AdminProfileEditPage() {
                     rows={6}
                     maxLength={MAX_PROFILE_BIO_CHARACTERS}
                     defaultValue={profile.bio ?? ""}
-                    className="mt-2 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+                    className="mt-2 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
                   />
                 </div>
               </div>
@@ -503,7 +503,7 @@ export default function AdminProfileEditPage() {
 
             <div>
               <h2 className="text-xl font-semibold">Sponsors</h2>
-              <p className="mt-1 text-sm text-[#56585e]">
+              <p className="mt-1 text-sm text-white/55">
                 One sponsor per line, shown on the public profile. Add a link
                 after a name like:{" "}
                 <code>Rad Bikes | https://radbikes.example</code>
@@ -523,7 +523,7 @@ export default function AdminProfileEditPage() {
                       : sponsor.name,
                   )
                   .join("\n")}
-                className="mt-3 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+                className="mt-3 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
               />
             </div>
 
@@ -544,7 +544,7 @@ export default function AdminProfileEditPage() {
                       type="text"
                       maxLength={MAX_SOCIAL_URL_CHARACTERS}
                       defaultValue={profile.socials[platform] ?? ""}
-                      className="mt-2 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+                      className="mt-2 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
                     />
                   </div>
                 ))}
@@ -568,11 +568,11 @@ export default function AdminProfileEditPage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+                className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white hover:bg-[#23232b] disabled:opacity-50"
               >
                 {isSaving ? "Saving…" : "Save and publish"}
               </button>
-              <p className="text-xs text-[#56585e]">
+              <p className="text-xs text-white/55">
                 Saving approves the profile and publishes it immediately.
               </p>
             </div>

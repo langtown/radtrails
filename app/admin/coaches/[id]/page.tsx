@@ -52,7 +52,7 @@ export default function AdminCoachSchedulePage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
         <h1 className="text-3xl font-semibold">Not available</h1>
-        <p className="mt-4 text-[#56585e]">{loadError}</p>
+        <p className="mt-4 text-white/55">{loadError}</p>
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function AdminCoachSchedulePage() {
   if (!data) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
-        <p className="text-[#56585e]">Loading…</p>
+        <p className="text-white/55">Loading…</p>
       </div>
     );
   }

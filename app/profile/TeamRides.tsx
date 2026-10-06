@@ -55,9 +55,9 @@ export default function TeamRides({
   if (rides.length === 0) return null;
 
   return (
-    <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+    <section className="mt-10 border-t border-white/10 pt-8">
       <h2 className="text-xl font-semibold">Group Rides</h2>
-      <p className="mt-1 text-sm text-[#56585e]">
+      <p className="mt-1 text-sm text-white/55">
         {canRsvp
           ? "You are assumed attending. Mark yourself not available if you cannot make a ride."
           : "Team riders are assumed attending unless they mark themselves not available."}
@@ -67,7 +67,7 @@ export default function TeamRides({
           {error}
         </p>
       )}
-      <ul className="mt-4 divide-y divide-[#e3e3e3]">
+      <ul className="mt-4 divide-y divide-white/10">
         {rides.map((ride) => (
           <li key={ride.id} className="flex flex-wrap items-center gap-3 py-3">
             <span className="flex-1">
@@ -81,11 +81,11 @@ export default function TeamRides({
                 href={ride.locationUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ml-2 text-sm font-semibold text-[#5025d1] underline"
+                className="ml-2 text-sm font-semibold text-[#a8bd6a] underline"
               >
                 Meetup map
               </a>
-              <span className="mt-1 block text-sm text-[#56585e]">
+              <span className="mt-1 block text-sm text-white/55">
                 Going:{" "}
                 {ride.attendees
                   .map((attendee) => attendee.displayName ?? `Rider #${attendee.id}`)
@@ -109,7 +109,7 @@ export default function TeamRides({
                   type="button"
                   disabled={busyId === ride.id}
                   onClick={() => setUnavailable(ride.id, false)}
-                  className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-5 text-sm font-semibold text-[#56585e] disabled:opacity-50"
+                  className="min-h-11 rounded-[50px] border border-white/10 px-5 text-sm font-semibold text-white/55 disabled:opacity-50"
                 >
                   {busyId === ride.id ? "Saving…" : "Back in"}
                 </button>

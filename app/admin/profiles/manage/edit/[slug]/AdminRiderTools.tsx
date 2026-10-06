@@ -142,7 +142,7 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
   return (
     <>
       {sessions !== null && sessions.length > 0 && (
-        <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+        <section className="mt-10 border-t border-white/10 pt-8">
           <h2 className="text-xl font-semibold">Interval schedule</h2>
           <SessionsCalendar
             sessions={sessions}
@@ -160,11 +160,11 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
           <div
             role="dialog"
             aria-label="Edit session"
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
+            className="w-full max-w-md rounded-xl bg-[#0e0e14] p-6 shadow-lg"
             onClick={(event) => event.stopPropagation()}
           >
             <h3 className="text-xl font-semibold">Edit session</h3>
-            <p className="mt-1 text-sm text-[#56585e]">
+            <p className="mt-1 text-sm text-white/55">
               {SESSION_TYPE_LABELS[editing.sessionType]} with Coach{" "}
               {editing.coachDisplayName ?? ""} — currently{" "}
               {editing.occurrenceDate} at {editing.startTime}
@@ -179,7 +179,7 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
                   type="date"
                   name="occurrenceDate"
                   defaultValue={editing.occurrenceDate}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
               <label className="text-sm">
@@ -188,12 +188,12 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
                   type="time"
                   name="startTime"
                   defaultValue={editing.startTime}
-                  className="mt-1 block min-h-11 rounded border border-[#c9c9c9] px-3"
+                  className="mt-1 block min-h-11 rounded border border-white/10 px-3"
                 />
               </label>
               <button
                 type="submit"
-                className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white"
+                className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white"
               >
                 Save
               </button>
@@ -214,7 +214,7 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
               <button
                 type="button"
                 onClick={() => setEditingId(null)}
-                className="min-h-11 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e]"
+                className="min-h-11 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55"
               >
                 Close
               </button>
@@ -223,9 +223,9 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
         </div>
       )}
 
-      <section className="mt-10 border-t border-[#e3e3e3] pt-8">
+      <section className="mt-10 border-t border-white/10 pt-8">
         <h2 className="text-xl font-semibold">Session playlist</h2>
-        <p className="mt-1 text-sm text-[#56585e]">
+        <p className="mt-1 text-sm text-white/55">
           The link played during this rider&apos;s Intervals sessions. Takes
           effect immediately.
         </p>
@@ -252,12 +252,12 @@ export default function AdminRiderTools({ userId }: { userId: number }) {
               onChange={(event) => setPlaylistUrl(event.target.value)}
               placeholder="https://open.spotify.com/playlist/..."
               maxLength={300}
-              className="min-h-11 flex-1 rounded-lg border border-[#c9c9c9] px-3 py-2"
+              className="min-h-11 flex-1 rounded-lg border border-white/10 px-3 py-2"
             />
             <button
               type="submit"
               disabled={isSaving}
-              className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white disabled:opacity-50"
+              className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white disabled:opacity-50"
             >
               {isSaving ? "Saving…" : "Save playlist"}
             </button>

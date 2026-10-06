@@ -68,11 +68,11 @@ export default function ReviewQueue({
 
   if (profiles.length === 0) {
     return (
-      <div className="mt-10 rounded-lg bg-[#f7f7f7] px-6 py-10 text-center">
+      <div className="mt-10 rounded-lg bg-[#101016] px-6 py-10 text-center">
         <h2 className="text-xl font-semibold">
           No profiles are waiting for review
         </h2>
-        <p className="mt-2 text-sm text-[#56585e]">
+        <p className="mt-2 text-sm text-white/55">
           New submissions will appear here.
         </p>
       </div>
@@ -96,10 +96,10 @@ export default function ReviewQueue({
         return (
           <article
             key={profile.userId}
-            className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-sm"
+            className="overflow-hidden rounded-xl border border-white/10 bg-[#0e0e14] shadow-sm"
           >
             <div className="grid md:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.2fr)]">
-              <div className="relative min-h-80 bg-[#dadce0]">
+              <div className="relative min-h-80 bg-[#1a1a22]">
                 {profile.imageUrl ? (
                   <Image
                     src={profile.imageUrl}
@@ -113,7 +113,7 @@ export default function ReviewQueue({
                     unoptimized
                   />
                 ) : (
-                  <div className="flex h-full min-h-80 items-center justify-center px-6 text-center text-sm text-[#56585e]">
+                  <div className="flex h-full min-h-80 items-center justify-center px-6 text-center text-sm text-white/55">
                     No profile photo submitted
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function ReviewQueue({
                     <h2 className="text-2xl font-semibold">
                       {profile.displayName}
                     </h2>
-                    <p className="mt-1 text-xs text-[#56585e]">
+                    <p className="mt-1 text-xs text-white/55">
                       /{profile.slug}
                     </p>
                   </div>
@@ -133,7 +133,7 @@ export default function ReviewQueue({
                     {profile.personas.map((persona) => (
                       <span
                         key={persona}
-                        className="rounded-[50px] bg-[#f2f3f6] px-3 py-1 text-xs font-semibold"
+                        className="rounded-[50px] bg-[#101016] px-3 py-1 text-xs font-semibold"
                       >
                         {PERSONA_LABELS[persona] ?? persona}
                       </span>
@@ -141,16 +141,16 @@ export default function ReviewQueue({
                   </div>
                 </div>
 
-                <p className="mt-5 whitespace-pre-wrap leading-relaxed text-[#56585e]">
+                <p className="mt-5 whitespace-pre-wrap leading-relaxed text-white/55">
                   {profile.bio || "No bio submitted."}
                 </p>
 
                 {profile.sponsors.length > 0 && (
                   <div className="mt-6">
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-white/55">
                       Sponsors
                     </h3>
-                    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#56585e]">
+                    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/55">
                       {profile.sponsors.map((sponsor) => (
                         <li key={sponsor.name}>
                           {sponsor.url ? (
@@ -158,7 +158,7 @@ export default function ReviewQueue({
                               href={sponsor.url}
                               target="_blank"
                               rel="nofollow noopener noreferrer"
-                              className="font-semibold text-[#5025d1] underline"
+                              className="font-semibold text-[#a8bd6a] underline"
                             >
                               {sponsor.name}
                             </a>
@@ -173,7 +173,7 @@ export default function ReviewQueue({
 
                 {Object.keys(profile.socials).length > 0 && (
                   <div className="mt-6">
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-[#56585e]">
+                    <h3 className="text-sm font-semibold uppercase tracking-wide text-white/55">
                       Social links
                     </h3>
                     <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm">
@@ -185,7 +185,7 @@ export default function ReviewQueue({
                             href={url}
                             target="_blank"
                             rel="nofollow noopener noreferrer"
-                            className="font-semibold text-[#5025d1] underline"
+                            className="font-semibold text-[#a8bd6a] underline"
                           >
                             {SOCIAL_LABELS[platform]}
                           </a>
@@ -213,7 +213,7 @@ export default function ReviewQueue({
                       [profile.userId]: event.target.value,
                     }))
                   }
-                  className="mt-2 w-full rounded-lg border border-[#c9c9c9] px-3 py-2 outline-none focus:border-[#673de6] focus:ring-2 focus:ring-[#ebe4ff]"
+                  className="mt-2 w-full rounded-lg border border-white/10 px-3 py-2 outline-none focus:border-[#a8bd6a] focus:ring-2 focus:ring-[#a8bd6a]/40"
                 />
 
                 <div className="mt-5 flex flex-wrap gap-3">
@@ -221,7 +221,7 @@ export default function ReviewQueue({
                     type="button"
                     disabled={busyId !== null}
                     onClick={() => decide(profile.userId, "approve")}
-                    className="min-h-11 rounded-[50px] bg-[#1a1a1a] px-6 text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+                    className="min-h-11 rounded-[50px] bg-[#17171d] px-6 text-sm font-semibold text-white hover:bg-[#23232b] disabled:opacity-50"
                   >
                     {isBusy ? "Saving…" : "Approve"}
                   </button>
@@ -236,7 +236,7 @@ export default function ReviewQueue({
                 </div>
 
                 {profile.submittedAt && (
-                  <p className="mt-4 text-xs text-[#56585e]">
+                  <p className="mt-4 text-xs text-white/55">
                     Submitted {profile.submittedAt} UTC
                   </p>
                 )}

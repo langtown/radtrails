@@ -67,7 +67,7 @@ export default function NextRideNav() {
         <Link
           key={`${ride.eventDate}T${ride.startTime}-${ride.label}`}
           href={href}
-          className="block text-[12px] font-semibold leading-tight text-[#673de6] transition-colors hover:text-[#5025d1]"
+          className="block text-[12px] font-semibold leading-tight text-[#a8bd6a] transition-colors hover:text-[#a8bd6a]"
         >
           {index === 0 ? "Next ride: " : "Then: "}
           {ride.label} {formatRide(ride.eventDate, ride.startTime)}

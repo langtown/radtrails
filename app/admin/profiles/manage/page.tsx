@@ -28,7 +28,7 @@ export default async function ManageProfilesPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
         <h1 className="text-3xl font-semibold">Not available</h1>
-        <p className="mt-4 text-[#56585e]">
+        <p className="mt-4 text-white/55">
           You do not have access to this page.
         </p>
       </div>
@@ -42,7 +42,7 @@ export default async function ManageProfilesPage() {
           <h1 className="text-3xl font-semibold md:text-4xl">
             Manage profiles
           </h1>
-          <p className="mt-4 max-w-2xl text-[#56585e]">
+          <p className="mt-4 max-w-2xl text-white/55">
             Pick a persona to see everyone who holds it. Open a card to edit
             their public name, photo, bio, and links, or to change which
             personas the account holds. Saving an edit approves and publishes
@@ -51,7 +51,7 @@ export default async function ManageProfilesPage() {
         </div>
         <Link
           href="/admin"
-          className="text-sm font-semibold text-[#5025d1] underline"
+          className="text-sm font-semibold text-[#a8bd6a] underline"
         >
           Admin dashboard
         </Link>

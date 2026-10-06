@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #08080a;
+  --foreground: #ededed;
   --primary: #673de6;
   --primary-dark: #5025d1;
   --primary-light: #ebe4ff;
@@ -292,4 +292,57 @@ button {
     opacity: 0.85;
     transform: scale(1.12);
   }
+}
+
+/* ----------------------------------------------------------------------------
+   FullCalendar dark theme (coach/profile schedules)
+---------------------------------------------------------------------------- */
+.fc {
+  color: #ededed;
+}
+.fc .fc-toolbar-title,
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number,
+.fc .fc-list-day-text,
+.fc .fc-list-day-side-text {
+  color: #ededed;
+}
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid,
+.fc .fc-list,
+.fc-theme-standard .fc-list-day-cushion {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.fc-theme-standard .fc-list-day-cushion {
+  background: rgba(255, 255, 255, 0.03);
+}
+.fc .fc-button-primary {
+  background: #17171d;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ededed;
+}
+.fc .fc-button-primary:hover {
+  background: #23232b;
+}
+.fc .fc-button-primary:disabled {
+  background: #101016;
+  color: rgba(255, 255, 255, 0.4);
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background: #a8bd6a;
+  border-color: #a8bd6a;
+  color: #08080a;
+}
+.fc .fc-daygrid-day.fc-day-today,
+.fc .fc-timegrid-col.fc-day-today {
+  background: rgba(168, 189, 106, 0.08);
+}
+.fc-event,
+.fc-daygrid-event,
+.fc-timegrid-event {
+  background: #17171d;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ededed;
 }

@@ -29,7 +29,7 @@ export default async function AdminCoachesPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 md:px-8">
         <h1 className="text-3xl font-semibold">Not available</h1>
-        <p className="mt-4 text-[#56585e]">
+        <p className="mt-4 text-white/55">
           You do not have access to this page.
         </p>
       </div>
@@ -39,19 +39,19 @@ export default async function AdminCoachesPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 md:px-8">
       <h1 className="text-3xl font-semibold md:text-4xl">Coach calendars</h1>
-      <ul className="mt-8 divide-y divide-[#e3e3e3]">
+      <ul className="mt-8 divide-y divide-white/10">
         {coaches.map((coach) => (
           <li key={coach.id} className="py-3">
             <Link
               href={`/admin/coaches/${coach.id}`}
-              className="text-sm font-semibold text-[#5025d1] underline"
+              className="text-sm font-semibold text-[#a8bd6a] underline"
             >
               {coach.displayName ?? coach.email ?? `Coach #${coach.id}`}
             </Link>
           </li>
         ))}
         {coaches.length === 0 && (
-          <li className="py-3 text-[#56585e]">No coaches yet.</li>
+          <li className="py-3 text-white/55">No coaches yet.</li>
         )}
       </ul>
     </div>

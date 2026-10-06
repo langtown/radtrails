@@ -52,7 +52,7 @@ export default function AdminDashboard({
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 md:px-8">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-[#673de6]">
+        <p className="text-sm font-semibold uppercase tracking-wide text-[#a8bd6a]">
           Administration
         </p>
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-5">
@@ -61,32 +61,32 @@ export default function AdminDashboard({
           </h1>
           <Link
             href="/admin/docs"
-            className="text-sm font-semibold text-[#5025d1]"
+            className="text-sm font-semibold text-[#a8bd6a]"
           >
             📒 Admin guide
           </Link>
         </div>
-        <p className="mt-4 max-w-2xl text-[#56585e]">
+        <p className="mt-4 max-w-2xl text-white/55">
           Manage member profiles and control where each person appears on the
           site.
         </p>
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-xl border border-[#e3e3e3] bg-white p-6 shadow-sm">
+        <section className="rounded-xl border border-white/10 bg-[#0e0e14] p-6 shadow-sm">
           <h2 className="text-xl font-semibold">Coach calendars</h2>
-          <p className="mt-1 text-sm text-[#56585e]">
+          <p className="mt-1 text-sm text-white/55">
             Manage a coach&apos;s weekly schedule and upcoming sessions.
           </p>
           {coaches.length === 0 ? (
-            <p className="mt-6 text-sm text-[#56585e]">No coaches yet.</p>
+            <p className="mt-6 text-sm text-white/55">No coaches yet.</p>
           ) : (
             <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {coaches.map((coach) => (
                 <li key={coach.id}>
                   <Link
                     href={`/admin/coaches/${coach.id}`}
-                    className="block rounded-lg border border-[#e3e3e3] px-4 py-3 text-sm font-semibold transition hover:border-[#673de6] hover:shadow-sm"
+                    className="block rounded-lg border border-white/10 px-4 py-3 text-sm font-semibold transition hover:border-[#a8bd6a] hover:shadow-sm"
                   >
                     {coach.displayName}
                   </Link>
@@ -96,14 +96,14 @@ export default function AdminDashboard({
           )}
         </section>
 
-        <section className="rounded-xl border border-[#e3e3e3] bg-white p-6 shadow-sm">
+        <section className="rounded-xl border border-white/10 bg-[#0e0e14] p-6 shadow-sm">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="text-xl font-semibold">Personas and profiles</h2>
-            <Link href="/admin/personas" className="text-sm font-semibold text-[#5025d1] underline">
+            <Link href="/admin/personas" className="text-sm font-semibold text-[#a8bd6a] underline">
               Manage Personas
             </Link>
           </div>
-          <p className="mt-1 text-sm text-[#56585e]">
+          <p className="mt-1 text-sm text-white/55">
             Edit a person&apos;s public name, photo, bio, and social links.
           </p>
 
@@ -115,7 +115,7 @@ export default function AdminDashboard({
               return (
                 <div
                   key={persona}
-                  className="rounded-lg border border-[#e3e3e3] bg-white px-4 py-4 transition hover:border-[#673de6] hover:shadow-sm"
+                  className="rounded-lg border border-white/10 bg-[#0e0e14] px-4 py-4 transition hover:border-[#a8bd6a] hover:shadow-sm"
                 >
                   <div className="flex items-start justify-between">
                     <Link
@@ -126,7 +126,7 @@ export default function AdminDashboard({
                         <h3 className="text-sm font-semibold">
                           {PERSONA_LABELS[persona] ?? persona}
                         </h3>
-                        <p className="mt-1 text-sm text-[#56585e]">
+                        <p className="mt-1 text-sm text-white/55">
                           {list.length} {list.length === 1 ? "member" : "members"}
                         </p>
                       </div>
@@ -149,7 +149,7 @@ export default function AdminDashboard({
         {stats.pendingProfiles > 0 && (
           <Link
             href="/admin/profiles"
-            className="inline-flex min-h-11 items-center gap-3 rounded-[50px] border border-[#c9c9c9] px-6 text-sm font-semibold text-[#56585e] transition-colors hover:border-[#1a1a1a] hover:text-[#1a1a1a]"
+            className="inline-flex min-h-11 items-center gap-3 rounded-[50px] border border-white/10 px-6 text-sm font-semibold text-white/55 transition-colors hover:border-white/25 hover:text-white"
           >
             Review profiles
             <span className="inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800">
@@ -159,7 +159,7 @@ export default function AdminDashboard({
         )}
       </div>
 
-      <p className="mt-8 text-sm text-[#56585e]">
+      <p className="mt-8 text-sm text-white/55">
         {stats.publishedProfiles} approved public{' '}
         {stats.publishedProfiles === 1 ? 'profile is' : 'profiles are'}{' '}
         currently stored
