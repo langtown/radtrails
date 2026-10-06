@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/racing/alumni", priority: 0.5 },
     { path: "/community", priority: 0.7 },
     { path: "/support", priority: 0.9 },
+    { path: "/privacy", priority: 0.3 },
+    { path: "/terms", priority: 0.3 },
   ];
   return routes.map(({ path, priority }) => ({
     url: `${base}${path}`,

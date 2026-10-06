@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/lib/content/site";
 
 export default function Footer() {
@@ -30,6 +31,7 @@ export default function Footer() {
             <a href={site.phoneHref} className="block text-white/70 transition-colors hover:text-white">
               {site.phone}
             </a>
+            <p className="max-w-xs text-white/50">{site.address}</p>
           </div>
 
           <div className="space-y-4">
@@ -52,7 +54,25 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-12 text-xs text-white/55">© {new Date().getFullYear()} Ride and Develop. All rights reserved.</p>
+        <div className="mt-12 border-t border-white/10 pt-8">
+          <p className="max-w-3xl text-xs leading-relaxed text-white/45">
+            {site.legalName} is a registered {site.legal.taxStatus} nonprofit organization. Donations are tax-deductible
+            to the extent allowed by law
+            {site.legal.ein ? ` · EIN ${site.legal.ein}` : ""}
+            {site.legal.stateCharityReg ? ` · CA Reg. ${site.legal.stateCharityReg}` : ""}.
+          </p>
+          <div className="mt-5 flex flex-col gap-3 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} {site.legalName}. All rights reserved.</p>
+            <div className="flex items-center gap-5">
+              <Link href="/privacy" className="transition-colors hover:text-white">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="transition-colors hover:text-white">
+                Terms of Use
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );
