@@ -13,6 +13,16 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+Dependency tooling uses the latest stable direct releases. `@cloudflare/vitest-plugin` runs
+Vitest 5 against workerd. FullCalendar 7 imports plugins and theme styles through
+`@fullcalendar/react` and uses `temporal-polyfill`.
+
+TypeScript runs side-by-side: `npx tsc` uses TypeScript 7 via the `@typescript/native` alias,
+while the `typescript` alias supplies Microsoft's TypeScript 6 compatibility API for ESLint
+and Next.js tooling. Keep both aliases until those tools support the new compiler API.
+The scoped `@node-minify/core` override selects patched `glob` 10.5.0 for OpenNext's build
+chain; it can be removed once the upstream dependency is patched.
+
 Copy `.dev.vars.example` to the gitignored `.dev.vars`, then provide the Google OAuth credentials and
 a random `ADMIN_BOOTSTRAP_TOKEN`. See [docs/authentication.md](docs/authentication.md) for OAuth,
 first-admin setup, database migrations, security, free-tier limits, and the production checklist.
@@ -133,3 +143,7 @@ npm run deploy
 ```
 
 Use `npm run next:build` only when you specifically want a plain Next.js build without Cloudflare/OpenNext artifacts.
+
+## Clinic
+
+The clinic and Stripe checkout live at `/clinics`, with public navigation links temporarily hidden. See [clinic setup and operation](docs/clinic.md). Local development uses the usual `npm run dev`; no second server or proxy is needed.

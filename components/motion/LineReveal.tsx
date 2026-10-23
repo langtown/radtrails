@@ -25,18 +25,6 @@ export default function LineReveal({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: trigger === "load" ? "0px" : "-8% 0px" });
 
-  if (reduce) {
-    return (
-      <div className={className}>
-        {lines.map((line, i) => (
-          <span key={i} className={`block ${lineClassName}`}>
-            {line}
-          </span>
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div ref={ref} className={className}>
       {lines.map((line, i) => (
@@ -44,8 +32,8 @@ export default function LineReveal({
           <motion.span
             className={`block ${lineClassName}`}
             initial={{ y: "110%" }}
-            animate={inView ? { y: "0%" } : { y: "110%" }}
-            transition={{ duration: 1, delay: delay + i * 0.11, ease: [0.22, 1, 0.36, 1] }}
+            animate={reduce || inView ? { y: "0%" } : { y: "110%" }}
+            transition={{ duration: reduce ? 0 : 1, delay: reduce ? 0 : delay + i * 0.11, ease: [0.22, 1, 0.36, 1] }}
           >
             {line}
           </motion.span>

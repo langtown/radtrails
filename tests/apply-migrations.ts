@@ -1,5 +1,5 @@
 import { applyD1Migrations, env } from "cloudflare:test";
-import type { D1Migration } from "@cloudflare/vitest-pool-workers";
+import type { D1Migration } from "@cloudflare/vitest-plugin";
 
 // TEST_MIGRATIONS is injected by vitest.config.mts and exists only under test,
 // so it is read through a cast rather than widening the production Env type.

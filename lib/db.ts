@@ -1,7 +1,9 @@
+import {clinicConfigFromEnv, type ClinicConfig} from "./clinic";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export type AppRuntime = {
   db: D1Database;
+  clinic: ClinicConfig;
   adminBootstrapToken: string | undefined;
   rateLimiters: {
     login: RateLimit | undefined;
@@ -30,6 +32,7 @@ export async function getAppRuntime(): Promise<AppRuntime> {
 
   return {
     db: env.DB,
+    clinic: clinicConfigFromEnv(env),
     adminBootstrapToken:
       "ADMIN_BOOTSTRAP_TOKEN" in env &&
       typeof env.ADMIN_BOOTSTRAP_TOKEN === "string"

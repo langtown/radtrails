@@ -23,7 +23,7 @@ one, and do not introduce Hono/Zod into this codebase to match a blueprint that 
 * **Validation**: Hand-written `validateX(input: unknown): X` functions, not Zod. Input shapes here
   are small (a handful of known fields), so a schema library adds a dependency without buying much;
   revisit if a payload's shape grows complex enough that manual checks get hard to read.
-* **Testing**: Vitest + `@cloudflare/vitest-pool-workers`. Tests run inside workerd against a real
+* **Testing**: Vitest + `@cloudflare/vitest-plugin`. Tests run inside workerd against a real
   in-memory D1 seeded from `migrations/` — not mocks. A migration that breaks a query fails the suite.
 
 ## Architecture & Directory Layout

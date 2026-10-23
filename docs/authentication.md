@@ -248,31 +248,25 @@ make db-pull-prod                    # snapshot prod, replace local D1, import p
 ```
 
 `db-pull-prod` is intended for working on a copy of production data in development. Stop the dev
-server first. It exports the current local database, moves the local D1 persistence directory to an
-ignored timestamped backup, applies the checked-in migrations to a fresh local database, and imports
-production application rows. Restore the moved directory or re-run the command if you need to undo a
-pull. The export includes `profile_images` BLOBs, so profile photos come across with profile records.
+server first. Python 3 (with its standard SQLite module) is required. The command exports the full
+production schema, data, and migration history into a timestamped backup. It imports into temporary
+Wrangler local state using SQLite directly, avoiding workerd's SQL statement-size limit for image
+BLOBs. Pending checked-in migrations apply only to that staged copy. Integrity and foreign-key checks
+must pass before the current local D1 directory is moved to a recoverable backup and replaced.
+Export, import, or migration failures leave the current local state untouched.
 
-To copy local rows to production, first run the tests and review the generated backup, then use the
-explicit production confirmation:
+To undo a successful pull, stop dev, move the current `.wrangler/state/v3/d1` aside, and restore the
+printed `local-state-<timestamp>` directory at that path. This restores its original migration history
+as well as its data. Do not re-run the pull to undo it: that downloads production again.
 
-```bash
-make db-backup-local
-make db-push-prod CONFIRM_PROD_SYNC=YES
-```
+Production data writes are not exposed through the Makefile. Production schema migrations run
+through the Cloudflare Workers Build pipeline.
 
-This always writes a complete production backup before changing anything. It replaces application
-rows, including users, sessions, personas, profiles, published profiles, and image BLOBs; expect all
-existing sessions to be invalidated and all local identities to become production identities. It does
-not copy `d1_migrations`; apply schema changes separately with `make db-migrate-prod`. If the command
-fails, stop and restore the saved SQL backup through a reviewed Wrangler import rather than retrying
-blindly.
-
-Useful read-only/export targets are `make db-export-local-data`, `make db-export-prod-data`,
-`make db-backup-local`, and `make db-backup-prod`. All files are written below `.local/d1-backups/`,
-which is gitignored because exports contain personal data and image bytes. Never commit or paste an
-export into an issue or chat. The table list in the Makefile must be updated if a new application
-table is added.
+`make db-backup-prod` creates a full production SQL backup. `make db-pull-prod` automatically
+backs up local D1 before replacing it. All backup and export files are written below
+`.local/d1-backups/`, which is gitignored because they contain personal data and image bytes.
+Never commit or paste an export or pull log into an issue or chat. Full snapshots automatically
+include new tables; no table allowlist needs maintenance.
 
 The current app stores uploaded profile images as D1 BLOBs. If images or other objects move to R2 (or
 another object store), a D1 SQL export will not contain those objects; add a separate versioned object

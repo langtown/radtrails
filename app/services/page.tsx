@@ -16,7 +16,7 @@ const serviceCards = [
   { title: "Private Lessons", intro: null, items: ["Service fee of $150 includes first two hours.", "$75 per each additional hour."] },
   { title: "Group Lessons", intro: "Grab a few friends and learn together.", items: serviceGroups[1].items },
   { title: "Training Programs", intro: serviceGroups[2].intro, items: serviceGroups[2].items },
-  { title: "Guided Rides and Clinics", intro: serviceGroups[3].intro, items: serviceGroups[3].items, note: "Clinics: Calendar Coming Soon!" },
+  { title: "Guided Rides and Clinics", intro: serviceGroups[3].intro, items: serviceGroups[3].items },
 ];
 
 export default function ServicesPage() {
@@ -55,7 +55,6 @@ export default function ServicesPage() {
                     </li>
                   ))}
                 </ul>
-                {card.note && <p className="mt-4 text-sm text-white/55">{card.note}</p>}
               </div>
             </Reveal>
           ))}

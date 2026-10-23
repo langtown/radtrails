@@ -26,6 +26,7 @@
 		"binding": "IMAGES"
 	},
 	"vars": {
+		"CLINIC_ORIGIN": "https://radtrails.org",
 		// Not a secret: the client id travels in every redirect URL to Google.
 		// GOOGLE_CLIENT_SECRET and ADMIN_BOOTSTRAP_TOKEN are Cloudflare secrets,
 		// never vars in this file.

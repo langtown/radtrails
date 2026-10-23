@@ -2,9 +2,13 @@
 
 import { useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
+import dayGridPlugin from "@fullcalendar/react/daygrid";
+import interactionPlugin from "@fullcalendar/react/interaction";
+import timeGridPlugin from "@fullcalendar/react/timegrid";
+import themePlugin from "@fullcalendar/react/themes/classic";
+import "@fullcalendar/react/skeleton.css";
+import "@fullcalendar/react/themes/classic/theme.css";
+import "@fullcalendar/react/themes/classic/palette.css";
 import { SESSION_TYPE_LABELS } from "@/lib/coaching-constraints";
 import type { SessionOccurrence } from "@/lib/session-occurrences";
 import type { TeamEvent } from "@/lib/team-events";
@@ -94,7 +98,8 @@ export default function SessionsCalendar({
     <section id="sessions-calendar" className="mt-10 border-t border-white/10 pt-8">
       <h2 className="mb-4 text-xl font-semibold">Your sessions</h2>
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[themePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        buttonClass={(info) => info.isSelected ? "calendar-button-selected" : ""}
         initialView="dayGridMonth"
         headerToolbar={{
           left: "prev,next today",
@@ -115,9 +120,7 @@ export default function SessionsCalendar({
             onSelectSession?.(Number(rawId));
           }
         }}
-        eventClassNames={
-          onSelectSession || onSelectTeamEvent ? ["cursor-pointer"] : []
-        }
+        eventClass={onSelectSession || onSelectTeamEvent ? "cursor-pointer" : ""}
         height="auto"
         firstDay={1}
         nowIndicator

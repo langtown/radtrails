@@ -6,6 +6,7 @@ import AuthNav from "./AuthNav";
 import NextRideNav from "./NextRideNav";
 import SocialIcon from "./SocialIcon";
 import MobileNav from "./MobileNav";
+import CartNav from "./CartNav";
 
 export function NavUtilityArea({ authControls }: { authControls: ReactNode }) {
   return (
@@ -45,41 +46,44 @@ export default function NavBar() {
           <NextRideNav />
         </div>
 
-        {/* Mobile hamburger */}
-        <div className="md:hidden">
-          <MobileNav navItems={navItems} authControls={<AuthNav />} facebook={site.social.facebook} instagram={site.social.instagram} />
-        </div>
+        <div className="ml-auto flex items-center gap-3 md:gap-5">
+          {/* Mobile hamburger */}
+          <div className="md:hidden">
+            <MobileNav navItems={navItems} authControls={<AuthNav />} facebook={site.social.facebook} instagram={site.social.instagram} />
+          </div>
 
-        {/* Desktop links */}
-        <div className="eyebrow hidden flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium uppercase tracking-[0.15em] text-white/70 md:flex">
-          {navItems.map((item) =>
-            "children" in item && item.children ? (
-              <details key={item.href} className="group relative">
-                <summary className="flex cursor-pointer list-none items-center gap-1 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+          {/* Desktop links */}
+          <div className="eyebrow hidden flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-medium uppercase tracking-[0.15em] text-white/70 md:flex">
+            {navItems.map((item) =>
+              "children" in item && item.children ? (
+                <details key={item.href} className="group relative">
+                  <summary className="flex cursor-pointer list-none items-center gap-1 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+                    {item.label}
+                    <span aria-hidden="true" className="text-[0.6rem] transition-transform group-open:rotate-180">
+                      ▾
+                    </span>
+                  </summary>
+                  <div className="absolute left-0 top-full z-20 mt-3 min-w-[11rem] overflow-hidden rounded-xl border border-white/10 bg-[#101015]/95 py-2 shadow-xl backdrop-blur-xl">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className="block px-4 py-2.5 transition-colors hover:bg-white/5 hover:text-white"
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              ) : (
+                <Link key={item.href} href={item.href} className="transition-colors hover:text-white">
                   {item.label}
-                  <span aria-hidden="true" className="text-[0.6rem] transition-transform group-open:rotate-180">
-                    ▾
-                  </span>
-                </summary>
-                <div className="absolute left-0 top-full z-20 mt-3 min-w-[11rem] overflow-hidden rounded-xl border border-white/10 bg-[#101015]/95 py-2 shadow-xl backdrop-blur-xl">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      href={child.href}
-                      className="block px-4 py-2.5 transition-colors hover:bg-white/5 hover:text-white"
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              </details>
-            ) : (
-              <Link key={item.href} href={item.href} className="transition-colors hover:text-white">
-                {item.label}
-              </Link>
-            ),
-          )}
-          <NavUtilityArea authControls={<AuthNav />} />
+                </Link>
+              ),
+            )}
+            <NavUtilityArea authControls={<AuthNav />} />
+          </div>
+          <CartNav />
         </div>
       </nav>
     </header>
