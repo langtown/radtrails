@@ -6,3 +6,9 @@ GOOGLE_CLIENT_SECRET=<your Google OAuth client secret>
 # Generate with: openssl rand -base64 32
 # Enter this once at /admin/setup after signing in as the initial administrator.
 ADMIN_BOOTSTRAP_TOKEN=<a random value of at least 32 bytes>
+
+# Clinics sandbox settings for local testing. Public menu links are hidden.
+CLINIC_ORIGIN=http://localhost:3000
+STRIPE_PRICE_IDS=
+# STRIPE_SECRET_KEY=sk_test_...
+# STRIPE_WEBHOOK_SECRET=whsec_...

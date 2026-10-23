@@ -39,7 +39,7 @@ export const serviceGroups = [
   },
   {
     title: "Clinics",
-    intro: "Calendar coming soon.",
+    intro: "Explore our riding clinics and e-bike rentals.",
     items: [],
   },
 ];

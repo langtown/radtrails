@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [{ source: "/clinic", destination: "/clinics", permanent: true }];
+  },
 };
 
 export default nextConfig;

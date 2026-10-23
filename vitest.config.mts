@@ -3,7 +3,7 @@ import { defineConfig } from "vitest/config";
 import {
   cloudflareTest,
   readD1Migrations,
-} from "@cloudflare/vitest-pool-workers";
+} from "@cloudflare/vitest-plugin";
 
 // Tests run inside workerd against a real (in-memory) D1, seeded from the same
 // checked-in migrations as local and production. A schema change that breaks

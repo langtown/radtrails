@@ -297,52 +297,30 @@ button {
 /* ----------------------------------------------------------------------------
    FullCalendar dark theme (coach/profile schedules)
 ---------------------------------------------------------------------------- */
-.fc {
-  color: #ededed;
+#sessions-calendar {
+  --fc-classic-background: #08080a;
+  --fc-classic-foreground: #ededed;
+  --fc-classic-border: rgba(255, 255, 255, 0.1);
+  --fc-classic-strong-border: rgba(255, 255, 255, 0.25);
+  --fc-classic-faint: rgba(255, 255, 255, 0.03);
+  --fc-classic-muted: rgba(255, 255, 255, 0.08);
+  --fc-classic-strong: rgba(255, 255, 255, 0.14);
+  --fc-classic-faint-foreground: rgba(255, 255, 255, 0.4);
+  --fc-classic-muted-foreground: rgba(255, 255, 255, 0.6);
+  --fc-classic-button: #17171d;
+  --fc-classic-button-border: rgba(255, 255, 255, 0.15);
+  --fc-classic-button-strong: #23232b;
+  --fc-classic-button-strong-border: #a8bd6a;
+  --fc-classic-button-foreground: #ededed;
+  --fc-classic-primary: #a8bd6a;
+  --fc-classic-primary-foreground: #08080a;
+  --fc-classic-event: #17171d;
+  --fc-classic-event-contrast: #ededed;
+  --fc-classic-today: rgba(168, 189, 106, 0.08);
 }
-.fc .fc-toolbar-title,
-.fc .fc-col-header-cell-cushion,
-.fc .fc-daygrid-day-number,
-.fc .fc-list-day-text,
-.fc .fc-list-day-side-text {
-  color: #ededed;
-}
-.fc-theme-standard td,
-.fc-theme-standard th,
-.fc-theme-standard .fc-scrollgrid,
-.fc .fc-list,
-.fc-theme-standard .fc-list-day-cushion {
-  border-color: rgba(255, 255, 255, 0.1);
-}
-.fc-theme-standard .fc-list-day-cushion {
-  background: rgba(255, 255, 255, 0.03);
-}
-.fc .fc-button-primary {
-  background: #17171d;
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #ededed;
-}
-.fc .fc-button-primary:hover {
-  background: #23232b;
-}
-.fc .fc-button-primary:disabled {
-  background: #101016;
-  color: rgba(255, 255, 255, 0.4);
-}
-.fc .fc-button-primary:not(:disabled).fc-button-active,
-.fc .fc-button-primary:not(:disabled):active {
+
+#sessions-calendar .calendar-button-selected {
   background: #a8bd6a;
   border-color: #a8bd6a;
   color: #08080a;
-}
-.fc .fc-daygrid-day.fc-day-today,
-.fc .fc-timegrid-col.fc-day-today {
-  background: rgba(168, 189, 106, 0.08);
-}
-.fc-event,
-.fc-daygrid-event,
-.fc-timegrid-event {
-  background: #17171d;
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #ededed;
 }
